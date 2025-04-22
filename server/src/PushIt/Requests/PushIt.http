@@ -1,0 +1,25 @@
+@PushIt_HostAddress = http://localhost:5176
+
+POST {{PushIt_HostAddress}}/canvas
+Content-Type: application/json
+
+{
+    "Name":"placeholder",
+    "CreatedDateTime":"2025-04-22T15:00:00",
+    "dummyVariable":"someTextHere",
+    "moreDummyVariables":
+        [
+            "filling",
+            "with Test",
+            "Texts"
+        ]
+}
+
+###
+
+GET {{PushIt_HostAddress}}/canvas/placeholder
+Accept: application/json
+
+###
+
+DELETE {{PushIt_HostAddress}}/canvas/placeholder
