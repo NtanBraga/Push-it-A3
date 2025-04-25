@@ -1,9 +1,7 @@
 public record CanvasResponse
 (
-    Guid Id,
     string Name,
+    List<QuadroAnotacao> QuadrosAnotacoes,
     DateTime CreatedDateTime,
-    string dummyVariable,
-    List<string> moreDummyVariables,
     DateTime LastModification
 );

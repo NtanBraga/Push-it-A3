@@ -1,21 +1,16 @@
 public class Canvas
 {
-    public Guid Id { get; }
     public string Name { get; }
+    public List<QuadroAnotacao> QuadrosAnotacoes { get; }
     public DateTime CreatedDateTime { get; }
-    public string dummyVariable { get; }
-    public List<string> moreDummyVariables { get; }
-
     public DateTime LastModification { get; }
 
-    public Canvas(Guid id, string name, DateTime createdDateTime, string dummyVariable, List<string> moreDummyVariables, DateTime lastModification)
+    public Canvas(string name, List<QuadroAnotacao> quadrosAnotacoes, DateTime createdDateTime, DateTime lastModification)
     {
         //Impor Regras de Negócio aqui!
-        Id = id;
         Name = name;
+        this.QuadrosAnotacoes = quadrosAnotacoes;
         CreatedDateTime = createdDateTime;
-        this.dummyVariable = dummyVariable;
-        this.moreDummyVariables = moreDummyVariables;
         LastModification = lastModification;
     }
 }

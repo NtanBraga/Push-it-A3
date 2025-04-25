@@ -15,15 +15,7 @@ public class CanvasController : ControllerBase{
     public IActionResult CreateCanvas(CreateCanvasRequest request)
     {
         //Converte request para formato interno do sistema
-        Canvas canvas = new Canvas
-        (
-            new Guid(),
-            request.Name,
-            request.CreatedDateTime,
-            request.dummyVariable,
-            request.moreDummyVariables,
-            DateTime.Now
-        );
+        Canvas canvas = Canvas.ToCanvas(request);
 
         // Aqui salvaria na database ou lista em memória
         this._canvasService.CreateCanvas(canvas);
