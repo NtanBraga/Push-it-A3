@@ -25,8 +25,7 @@ public class CanvasController : ControllerBase{
         // Aqui salvaria na database ou lista em memória
         if(!this._canvasService.CreateCanvas(canvas))
         {
-            const int Conflict = 409;
-            return new StatusCodeResult(Conflict);
+            return BadRequest();
         }
 
         //Cria a response de acordo com o Contrato/DTO definido para o json

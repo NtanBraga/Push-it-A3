@@ -5,16 +5,11 @@ Content-Type: application/json
 
 {
     "Name":"placeholder",
-    "CreatedDateTime":"2025-04-22T15:00:00",
-    "dummyVariable":"someTextHere",
-    "moreDummyVariables":
-        [
-            "filling",
-            "with Test",
-            "Texts"
-        ]
+    "QuadrosAnotacoes": [ ],
+    "CreatedDateTime":"2025-04-22T15:00:00"
 }
 
+###[{"TextoInterno":"texto1"},{"TextoInterno":"texto2"},{"TextoInterno":"texto3"}]
 ###
 
 GET {{PushIt_HostAddress}}/canvas/placeholder
