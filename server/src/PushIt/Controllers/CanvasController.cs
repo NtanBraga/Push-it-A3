@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -22,7 +23,11 @@ public class CanvasController : ControllerBase{
         }
 
         // Aqui salvaria na database ou lista em memória
-        this._canvasService.CreateCanvas(canvas);
+        if(!this._canvasService.CreateCanvas(canvas))
+        {
+            const int Conflict = 409;
+            return new StatusCodeResult(Conflict);
+        }
 
         //Cria a response de acordo com o Contrato/DTO definido para o json
         CanvasResponse response = canvas.ToCanvasResponse();
@@ -37,16 +42,19 @@ public class CanvasController : ControllerBase{
     [HttpGet("/canvas/{name}")]
     public IActionResult GetCanvas(string name)
     {
-        Canvas canvas = this._canvasService.GetCanvas(name);
+        Canvas? canvas = this._canvasService.GetCanvas(name);
+        if(canvas is null)
+        {
+            return NotFound();
+        }
 
-        var response = canvas.ToCanvasResponse();
-
+        CanvasResponse response = canvas.ToCanvasResponse();
         return Ok(response);
     }
 
 
 
-    //PUT canvas/name
+    //PUT /canvas/name
     [HttpPut("/canvas/{name}")]
     public IActionResult UpdateCanvas(string name, UpdateCanvasRequest request)
     {
