@@ -10,26 +10,18 @@ public class CanvasController : ControllerBase{
         this._canvasService = canvasService;
     }
 
+    //POST /canvas
     [HttpPost("/canvas")]
-
     public IActionResult CreateCanvas(CreateCanvasRequest request)
     {
         //Converte request para formato interno do sistema
-        Canvas canvas = Canvas.ToCanvas(request);
+        Canvas canvas = request.ToCanvas();
 
         // Aqui salvaria na database ou lista em memória
         this._canvasService.CreateCanvas(canvas);
 
-        //Cria o json para devolver na response
-        CanvasResponse response = new CanvasResponse
-        (
-            canvas.Id,
-            canvas.Name,
-            canvas.CreatedDateTime,
-            canvas.dummyVariable,
-            canvas.moreDummyVariables,
-            canvas.LastModification
-        );
+        //Cria a response de acordo com o Contrato/DTO definido para o json
+        CanvasResponse response = canvas.ToCanvasResponse();
 
         return CreatedAtAction(
             nameof(GetCanvas), 
@@ -37,29 +29,27 @@ public class CanvasController : ControllerBase{
             response);
     }
 
+    //GET /canvas/name
     [HttpGet("/canvas/{name}")]
     public IActionResult GetCanvas(string name)
     {
         Canvas canvas = this._canvasService.GetCanvas(name);
-        var response = new CanvasResponse
-        (
-            canvas.Id,
-            canvas.Name,
-            canvas.CreatedDateTime,
-            canvas.dummyVariable,
-            canvas.moreDummyVariables,
-            canvas.LastModification
-        );
-        
+
+        var response = canvas.ToCanvasResponse();
+
         return Ok(response);
     }
 
+
+
+    //PUT canvas/name
     [HttpPut("/canvas/{name}")]
     public IActionResult UpdateCanvas(string name, UpdateCanvasRequest request)
     {
         return Ok(request);
     }
 
+    //DELETE canvas/name
     [HttpDelete("/canvas/{name}")]
     public IActionResult DeleteCanvas(string name)
     {

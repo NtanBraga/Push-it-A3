@@ -13,4 +13,14 @@ public class Canvas
         CreatedDateTime = createdDateTime;
         LastModification = lastModification;
     }
+
+    public static Canvas ToCanvas(CreateCanvasRequest request)
+    {
+        return new Canvas(
+            name: request.Name,
+            quadrosAnotacoes: request.QuadrosAnotacoes,
+            createdDateTime: request.CreatedDateTime,
+            lastModification: DateTime.Now
+        );
+    }
 }

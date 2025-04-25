@@ -12,5 +12,5 @@ public class CanvasService : ICanvasService
         return this.canvasPseudoDatabase[canvasName];
     }
 
-    public static Canvas Tocanvas(CreateCanvasRequest request)
+  
 }
