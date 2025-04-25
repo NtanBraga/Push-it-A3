@@ -16,6 +16,10 @@ public class CanvasController : ControllerBase{
     {
         //Converte request para formato interno do sistema
         Canvas canvas = request.ToCanvas();
+        if(!canvas.IsValid()) 
+        {
+            return BadRequest();
+        }
 
         // Aqui salvaria na database ou lista em memória
         this._canvasService.CreateCanvas(canvas);

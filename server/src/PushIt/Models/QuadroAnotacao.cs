@@ -5,7 +5,6 @@ public class QuadroAnotacao
 
     public QuadroAnotacao(string textoInterno)
     {
-        //Impor Regras de Negócio aqui!
         this.TextoInterno = textoInterno;
     }
 }
