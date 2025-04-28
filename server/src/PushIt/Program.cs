@@ -4,9 +4,10 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<ICanvasService, CanvasService>();
 
 //Adicionada essa função devido a erros de requisição 'fetch' da porta do React com a API
+const string AllowAllPolicyName = "AllowAll";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy(AllowAllPolicyName, policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyHeader()
@@ -22,7 +23,7 @@ var app = builder.Build();
 //     app.MapOpenApi();
 // }
 
-app.UseCors("AllowAll"); //Adicionado ao pipeline junto com a função AddCors
+app.UseCors(AllowAllPolicyName); //Adicionado ao pipeline junto com a função AddCors
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
