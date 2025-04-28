@@ -2,13 +2,22 @@ public class CanvasService : ICanvasService
 {
     private readonly Dictionary<string, Canvas> canvasPseudoDatabase = new(); 
     //Definindo no Program.cs como singleton se mantém salvo por todo o tempo de execução do server
-    public void CreateCanvas(Canvas canvasToCreate)
+    public bool CreateCanvas(Canvas canvas)
     {
-        this.canvasPseudoDatabase.Add(canvasToCreate.Name, canvasToCreate);
+        if(this.canvasPseudoDatabase.ContainsKey(canvas.Name))
+        {
+            return false;
+        }
+
+        this.canvasPseudoDatabase.Add(canvas.Name, canvas);
+        return true;
     }
 
-    public Canvas GetCanvas(string canvasName)
+    public Canvas? GetCanvas(string canvasName)
     {
-        return this.canvasPseudoDatabase[canvasName];
+        this.canvasPseudoDatabase.TryGetValue(canvasName, out Canvas? canvas);
+        return canvas;
     }
+
+  
 }

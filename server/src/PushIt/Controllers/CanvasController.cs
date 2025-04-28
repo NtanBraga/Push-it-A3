@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -10,34 +11,25 @@ public class CanvasController : ControllerBase{
         this._canvasService = canvasService;
     }
 
+    //POST /canvas
     [HttpPost("/canvas")]
-
     public IActionResult CreateCanvas(CreateCanvasRequest request)
     {
         //Converte request para formato interno do sistema
-        Canvas canvas = new Canvas
-        (
-            new Guid(),
-            request.Name,
-            request.CreatedDateTime,
-            request.dummyVariable,
-            request.moreDummyVariables,
-            DateTime.Now
-        );
+        Canvas canvas = request.ToCanvas();
+        if(!canvas.IsValid()) 
+        {
+            return BadRequest();
+        }
 
         // Aqui salvaria na database ou lista em memória
-        this._canvasService.CreateCanvas(canvas);
+        if(!this._canvasService.CreateCanvas(canvas))
+        {
+            return BadRequest();
+        }
 
-        //Cria o json para devolver na response
-        CanvasResponse response = new CanvasResponse
-        (
-            canvas.Id,
-            canvas.Name,
-            canvas.CreatedDateTime,
-            canvas.dummyVariable,
-            canvas.moreDummyVariables,
-            canvas.LastModification
-        );
+        //Cria a response de acordo com o Contrato/DTO definido para o json
+        CanvasResponse response = canvas.ToCanvasResponse();
 
         return CreatedAtAction(
             nameof(GetCanvas), 
@@ -45,29 +37,30 @@ public class CanvasController : ControllerBase{
             response);
     }
 
+    //GET /canvas/name
     [HttpGet("/canvas/{name}")]
     public IActionResult GetCanvas(string name)
     {
-        Canvas canvas = this._canvasService.GetCanvas(name);
-        var response = new CanvasResponse
-        (
-            canvas.Id,
-            canvas.Name,
-            canvas.CreatedDateTime,
-            canvas.dummyVariable,
-            canvas.moreDummyVariables,
-            canvas.LastModification
-        );
-        
+        Canvas? canvas = this._canvasService.GetCanvas(name);
+        if(canvas is null)
+        {
+            return NotFound();
+        }
+
+        CanvasResponse response = canvas.ToCanvasResponse();
         return Ok(response);
     }
 
+
+
+    //PUT /canvas/name
     [HttpPut("/canvas/{name}")]
     public IActionResult UpdateCanvas(string name, UpdateCanvasRequest request)
     {
         return Ok(request);
     }
 
+    //DELETE canvas/name
     [HttpDelete("/canvas/{name}")]
     public IActionResult DeleteCanvas(string name)
     {
