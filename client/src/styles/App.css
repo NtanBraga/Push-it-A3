@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Coiny&display=swap');
+
+/*
+Para a organização dos estilos das paginas: 
+    *Toda tag deve ser acompanhada por um className;
+    *Caso usado algumas da tags: h1,form,input, utilize um className com o nome da pagina,ex: {nomepagina}_h1;
+    *fonte Coiny esta sendo usada para todas as fontes da aplicação;
+*/
+
+:root {
+    padding: 0 auto;
+    margin: 0;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+    font-family: "Coiny", system-ui;
+}
+.mainpage_h1 {
+    text-align: center;
+    margin-top: 26vmin;
+    font-size: 8vmin;
+    margin-bottom: 0.2vh;
+  }
+
+.mainpage_h3{
+    text-align: center;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-top: 1.2vw;
+}
+.mainpage_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+     
+}
+
+.mainpage_input {
+    width: 100%;
+    max-width: 500px;
+    min-width: 250px;
+    height: 3rem;
+    box-sizing: border-box;
+    padding: .8vmin .6vmin .8vmin .1vmin;
+    font-size: 3vmin;
+    text-align: center;
+    border-radius: 3vmin;
+    font-weight: bold;
+    font-family: "Coiny", system-ui;
+}
+
+.mainpage_button {
+    line-height: 2.6vmin;
+    margin-top: 1.2vw;
+    width: 100%;
+    max-width: 200px;
+    height: 3rem;
+    border-radius: 3vmin;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: "Coiny", system-ui;
+    cursor: pointer;
+}
+
+.mainpage_button:hover {
+    background-color: gray;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+    .mainpage_h1 {
+      margin-top: 10vmin;
+      font-size: clamp(2rem, 8vmin, 3rem);
+    }
+  
+    .mainpage_input {
+      min-width: 200px;
+      height: 2.5rem;
+      font-size: 0.9rem;
+    }
+  
+    .mainpage_button {
+      max-width: 150px;
+      height: 2.5rem;
+      font-size: 0.9rem;
+    }
+  }
