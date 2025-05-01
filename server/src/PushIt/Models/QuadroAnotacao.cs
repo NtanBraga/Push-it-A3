@@ -8,6 +8,8 @@ public class QuadroAnotacao
     public string text { get; }
     public string colour { get; }
 
+    public DateTime LastModification { get; }
+
     public QuadroAnotacao(string id, int x, int y, int width, int height, string text, string colour)
     {
          this.id = id;

@@ -51,8 +51,32 @@ public class CanvasController : ControllerBase{
         return Ok(response);
     }
 
+    [HttpPost("/canvas/{name}/quadros")]
+    public IActionResult CreateQuadro(string name, CreateQuadroRequest request)
+    {
+        return Ok();
+    }
+
+    [HttpGet("/canvas/{name}/quadros")]
+    public IActionResult GetAllQuadros()
+    {
+        return Ok();
+    }
+
+    [HttpGet("/canvas/{name}/quadros/{id}")]
+    public IActionResult GetQuadro()
+    {
+        return Ok();
+    }
+
     [HttpPut("/canvas/{name}/quadros/{id}")]
     public IActionResult UpdateInsertQuadro(string name, string id)
+    {
+        return Ok();
+    }
+
+    [HttpDelete("/canvas/{name}/quadros/{id}")]
+    public IActionResult DeleteQuadro(string name, string id)
     {
         return Ok();
     }
