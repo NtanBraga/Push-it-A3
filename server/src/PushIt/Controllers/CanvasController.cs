@@ -51,20 +51,26 @@ public class CanvasController : ControllerBase{
         return Ok(response);
     }
 
+    [HttpPut("/canvas/{name}/quadros/{id}")]
+    public IActionResult UpdateInsertQuadro(string name, string id)
+    {
+        return Ok();
+    }
+
 
 
     //PUT /canvas/name
-    [HttpPut("/canvas/{name}")]
-    public IActionResult UpdateCanvas(string name, UpdateCanvasRequest request)
-    {
-        return Ok(request);
-    }
+    // [HttpPut("/canvas/{name}")]
+    // public IActionResult UpdateCanvas(string name, UpdateCanvasRequest request)
+    // {
+    //     return Ok(request);
+    // }
 
-    //DELETE canvas/name
-    [HttpDelete("/canvas/{name}")]
-    public IActionResult DeleteCanvas(string name)
-    {
-        return Ok(name);
-    }
+    // //DELETE canvas/name
+    // [HttpDelete("/canvas/{name}")]
+    // public IActionResult DeleteCanvas(string name)
+    // {
+    //     return Ok(name);
+    // }
 
 }

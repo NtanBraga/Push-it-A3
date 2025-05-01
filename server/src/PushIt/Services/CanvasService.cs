@@ -19,5 +19,10 @@ public class CanvasService : ICanvasService
         return canvas;
     }
 
+    public bool UpdateInsertQuadro(string canvasName, string quadroId)
+    {
+        return default;
+    }
+
   
 }
