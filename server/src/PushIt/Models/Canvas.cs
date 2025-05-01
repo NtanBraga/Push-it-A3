@@ -27,10 +27,12 @@ public class Canvas
         return true;
     }
 
-    public bool HasQuadro(string id)
+    public bool HasQuadro(string id, out QuadroAnotacao? quadro)
     {
-        return this.QuadrosAnotacoes.Exists(
+        quadro = this.QuadrosAnotacoes.Find(
             quadro => quadro.id == id
         );
+
+        return quadro is not null;
     }
 }

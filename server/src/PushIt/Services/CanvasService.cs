@@ -22,10 +22,21 @@ public class CanvasService : ICanvasService
     public bool CreateQuadro(string canvasName, QuadroAnotacao quadro)
     {
         if(!this.canvasPseudoDatabase.ContainsKey(canvasName)){ return false; }
-        if(this.canvasPseudoDatabase[canvasName].HasQuadro(quadro.id)){ return false; }
+        if(this.canvasPseudoDatabase[canvasName].HasQuadro(quadro.id, out _)){ return false; }
 
         this.canvasPseudoDatabase[canvasName].QuadrosAnotacoes.Add(quadro);
         return true;
+    }
+
+    public QuadroAnotacao? GetQuadro(string canvasName, string quadroId)
+    {
+        QuadroAnotacao? quadro;
+
+        this.canvasPseudoDatabase.TryGetValue(canvasName, out Canvas? canvas);
+        if(canvas is null){ return null; }
+
+        canvas.HasQuadro(quadroId, out quadro);
+        return quadro;
     }
 
     public bool UpdateQuadro(string canvasName, string quadroId)

@@ -75,9 +75,17 @@ public class CanvasController : ControllerBase{
     }
 
     [HttpGet("/canvas/{name}/quadros/{id}")]
-    public IActionResult GetQuadro()
+    public IActionResult GetQuadro(string name, string id)
     {
-        return Ok();
+        QuadroAnotacao? quadro = this._canvasService.GetQuadro(name, id);
+        if(quadro is null)
+        {
+            return NotFound();
+        }
+
+        QuadroResponse response = quadro.ToQuadroResponse();
+        return Ok(response);
+
     }
 
     [HttpPut("/canvas/{name}/quadros/{id}")]
