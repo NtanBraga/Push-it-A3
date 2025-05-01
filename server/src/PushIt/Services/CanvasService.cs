@@ -19,7 +19,16 @@ public class CanvasService : ICanvasService
         return canvas;
     }
 
-    public bool UpdateInsertQuadro(string canvasName, string quadroId)
+    public bool CreateQuadro(string canvasName, QuadroAnotacao quadro)
+    {
+        if(!this.canvasPseudoDatabase.ContainsKey(canvasName)){ return false; }
+        if(this.canvasPseudoDatabase[canvasName].HasQuadro(quadro.id)){ return false; }
+
+        this.canvasPseudoDatabase[canvasName].QuadrosAnotacoes.Add(quadro);
+        return true;
+    }
+
+    public bool UpdateQuadro(string canvasName, string quadroId)
     {
         return default;
     }

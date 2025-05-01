@@ -1,6 +1,3 @@
-
-
-
 public static class CanvasMapping
 {
     public static Canvas ToCanvas(this CreateCanvasRequest request)

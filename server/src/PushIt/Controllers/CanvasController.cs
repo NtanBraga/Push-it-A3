@@ -51,10 +51,21 @@ public class CanvasController : ControllerBase{
         return Ok(response);
     }
 
+    //POST /canvas/name/quadros
     [HttpPost("/canvas/{name}/quadros")]
     public IActionResult CreateQuadro(string name, CreateQuadroRequest request)
     {
-        return Ok();
+        QuadroAnotacao quadro = request.ToQuadro();
+        if(!this._canvasService.CreateQuadro(name, quadro))
+        {
+            return BadRequest();
+        }
+
+        QuadroResponse response = quadro.ToQuadroResponse();
+        return CreatedAtAction(
+            nameof(GetQuadro),
+            new {id = quadro.id},
+            response);
     }
 
     [HttpGet("/canvas/{name}/quadros")]

@@ -1,4 +1,4 @@
-public record UpdateInsertQuadroRequest
+public record UpdateQuadroRequest
 (
      int x,
      int y,

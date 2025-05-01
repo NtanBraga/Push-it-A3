@@ -26,4 +26,11 @@ public class Canvas
 
         return true;
     }
+
+    public bool HasQuadro(string id)
+    {
+        return this.QuadrosAnotacoes.Exists(
+            quadro => quadro.id == id
+        );
+    }
 }
