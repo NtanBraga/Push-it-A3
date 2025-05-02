@@ -1,14 +1,44 @@
 import './styles/App.css';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import { canvasGet,canvasPost } from './components/ApiHandler';
 
 function App() {
 
   const navigate = useNavigate();
   const [ inputSearch, setInputSearch ] = React.useState('');
-  const handleSubmit = (event) => {
+  const [ error, setError ] = React.useState('');
+
+
+  //SUBMIT DO POST E GET
+  const handleSubmit = async (event) => {
     
     event.preventDefault();
+    setError('');
+
+    try{ // Se canvas existe, ele ira tentar procura-lo
+
+      await canvasGet(inputSearch);
+
+      navigate('/canvas', { state: { code: inputSearch}});
+      
+
+    }catch{
+      try{ // Se canvas não existe, ele cria um novo do zero
+
+        await canvasPost({
+          Name: inputSearch,
+          QuadroAnotacoes: [],
+          CreateDateTime: new Date().toISOString()
+        });
+
+        navigate('/canvas', { state: { code: inputSearch}});
+
+      }catch{
+        setError('Erro ao criar canvas.');
+      }
+    }
+
 
     navigate('/canvas', { state: { code: inputSearch }});
 
@@ -33,6 +63,7 @@ function App() {
               Acessar
             </button>
           </form>
+          {error && <p style={{ color: 'red'}}>{error}</p>}
         </section>
         <h3 className='mainpage_h3'>Não é necessário login</h3>
       </main>
