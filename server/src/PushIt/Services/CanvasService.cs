@@ -39,10 +39,14 @@ public class CanvasService : ICanvasService
         return quadro;
     }
 
-    public bool UpdateQuadro(string canvasName, string quadroId)
+    public List<QuadroAnotacao> GetAllQuadros(string canvasName)
     {
-        return default;
+        if(!this.canvasPseudoDatabase.ContainsKey(canvasName)){ return null; }
+        return this.canvasPseudoDatabase[canvasName].QuadrosAnotacoes;
     }
-
-  
 }
+
+    // public bool UpdateQuadro(string canvasName, string quadroId)
+    // {
+    //     return default;
+    // }

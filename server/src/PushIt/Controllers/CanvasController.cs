@@ -68,12 +68,7 @@ public class CanvasController : ControllerBase{
             response);
     }
 
-    [HttpGet("/canvas/{name}/quadros")]
-    public IActionResult GetAllQuadros()
-    {
-        return Ok();
-    }
-
+    //GET /canvas/name/quadros/id
     [HttpGet("/canvas/{name}/quadros/{id}")]
     public IActionResult GetQuadro(string name, string id)
     {
@@ -85,22 +80,32 @@ public class CanvasController : ControllerBase{
 
         QuadroResponse response = quadro.ToQuadroResponse();
         return Ok(response);
-
     }
 
-    [HttpPut("/canvas/{name}/quadros/{id}")]
-    public IActionResult UpdateInsertQuadro(string name, string id)
+    [HttpGet("/canvas/{name}/quadros")]
+    public IActionResult GetAllQuadros(string name)
     {
-        return Ok();
+        List<QuadroAnotacao> quadros = this._canvasService.GetAllQuadros(name);
+        if(quadros is null)
+        { 
+            return BadRequest(); 
+        }
+
+        List<QuadroResponse> response = quadros.ConvertAll<QuadroResponse>( q => q.ToQuadroResponse() ); 
+        return Ok(response);
     }
 
-    [HttpDelete("/canvas/{name}/quadros/{id}")]
-    public IActionResult DeleteQuadro(string name, string id)
-    {
-        return Ok();
-    }
+    // [HttpPut("/canvas/{name}/quadros/{id}")]
+    // public IActionResult UpdateInsertQuadro(string name, string id)
+    // {
+    //     return Ok();
+    // }
 
-
+    // [HttpDelete("/canvas/{name}/quadros/{id}")]
+    // public IActionResult DeleteQuadro(string name, string id)
+    // {
+    //     return Ok();
+    // }
 
     //PUT /canvas/name
     // [HttpPut("/canvas/{name}")]
