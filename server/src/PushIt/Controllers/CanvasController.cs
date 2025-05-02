@@ -64,7 +64,7 @@ public class CanvasController : ControllerBase{
         QuadroResponse response = quadro.ToQuadroResponse();
         return CreatedAtAction(
             nameof(GetQuadro),
-            new {id = quadro.id},
+            new {name = name, id = quadro.id},
             response);
     }
 

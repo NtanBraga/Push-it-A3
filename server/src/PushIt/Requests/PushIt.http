@@ -9,6 +9,31 @@ Content-Type: application/json
     "CreatedDateTime":"2025-04-22T15:00:00"
 }
 
+###
+
+POST {{PushIt_HostAddress}}/canvas/placeholder/quadros
+Content-Type: application/json
+
+{
+    "id":"IDhere2",
+    "x":1,
+    "y":1,
+    "width":33,
+    "height":1,
+    "text":"placeholder",
+    "colour":"#000000"  
+}
+
+###
+
+GET {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
+Accept: application/json
+
+###
+
+GET {{PushIt_HostAddress}}/canvas/placeholder/quadros
+Accept: application/json
+
 ###[{"TextoInterno":"texto1"},{"TextoInterno":"texto2"},{"TextoInterno":"texto3"}]
 ###
 
@@ -17,4 +42,6 @@ Accept: application/json
 
 ###
 
-DELETE {{PushIt_HostAddress}}/canvas/placeholder
+###DELETE {{PushIt_HostAddress}}/canvas/placeholder
+
+###
