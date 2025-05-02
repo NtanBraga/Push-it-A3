@@ -51,7 +51,7 @@ public class CanvasController : ControllerBase{
         return Ok(response);
     }
 
-    //POST /canvas/name/quadros
+    //POST /canvas/nomedocanvas/quadros
     [HttpPost("/canvas/{name}/quadros")]
     public IActionResult CreateQuadro(string name, CreateQuadroRequest request)
     {
@@ -68,7 +68,7 @@ public class CanvasController : ControllerBase{
             response);
     }
 
-    //GET /canvas/name/quadros/id
+    //GET /canvas/nomecanvas/quadros/iddoquadro
     [HttpGet("/canvas/{name}/quadros/{id}")]
     public IActionResult GetQuadro(string name, string id)
     {
@@ -82,6 +82,7 @@ public class CanvasController : ControllerBase{
         return Ok(response);
     }
 
+    //GET /canvas/nomedocanvas/quadros
     [HttpGet("/canvas/{name}/quadros")]
     public IActionResult GetAllQuadros(string name)
     {
