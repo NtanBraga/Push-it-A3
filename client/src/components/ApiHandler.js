@@ -2,27 +2,39 @@
 const APILOCAL = 'http://localhost:5176/canvas' //Direcionamento local do canvas
 
 
-//função que fará a criação do canvas via metodo POST
+//função POST que fará a criação do canvas
 export async function canvasPost(loadParam) {
 
-    const response = await fetch(APILOCAL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify(loadParam),
-    });
-
-    if(!response.ok) {
-        const text = await response.text();
-        throw new Error(`Erro ao buscar canvas: ${response.status} - ${text}`);
+    //Se os parametros da API forem passadas de forma inválida, esse erro é passado
+    if(!loadParam || typeof loadParam !== 'object'){
+        throw new Error('Erro na criação do canvas: payload');
     }
 
-    return await response.json();
+    //Criação do JSON com os dados do canvas para a API
+    try{
+        const response = await fetch(APILOCAL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(loadParam),
+        });
+
+        //Falha ao passar os dados do JSON para a API
+        if(!response.ok) {
+            const text = await response.text();
+            throw new Error(`Erro ao criar canvas: ${response.status} - ${text}`);
+        }
+
+        return await response.json();
+    }catch(error) {
+        throw new Error(error.message || 'Não foi possivel criar o canvas');
+    }
 }
 
 
-//função que procurará o canvas pelo nome via memoria local.
+//função GET que procurará o canvas pelo nome via memoria local.
 export async function canvasGet(name) {
 
+    //Estabelece comunicação do com canvas salvo
     const response = await fetch(`${APILOCAL}/${name}`, {
         headers: { Accept: 'application/json'},
     });
@@ -36,7 +48,7 @@ export async function canvasGet(name) {
 }
 
 
-//função de deleção do canvas -- NÃO IMPLEMENTADA
+//função de DELETE do canvas -- NÃO IMPLEMENTADA
 export async function canvasDelete(name) {
 
     const response = await fetch(`${APILOCAL}/${name}`, {
