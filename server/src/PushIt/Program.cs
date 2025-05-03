@@ -24,7 +24,7 @@ var app = builder.Build();
 // }
 
 app.UseCors(AllowAllPolicyName); //Adicionado ao pipeline junto com a função AddCors
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
 

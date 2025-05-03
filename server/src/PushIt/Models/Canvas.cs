@@ -1,7 +1,7 @@
 public class Canvas
 {
     public string Name { get; }
-    public List<QuadroAnotacao> QuadrosAnotacoes { get; }
+    public List<QuadroAnotacao> QuadrosAnotacoes { get; } = new();
     public DateTime CreatedDateTime { get; }
     public DateTime LastModification { get; }
 
@@ -25,5 +25,14 @@ public class Canvas
         }
 
         return true;
+    }
+
+    public bool HasQuadro(string id, out QuadroAnotacao? quadro)
+    {
+        quadro = this.QuadrosAnotacoes.Find(
+            q => q.id == id
+        );
+
+        return quadro is not null;
     }
 }
