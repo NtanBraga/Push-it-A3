@@ -104,3 +104,10 @@ body {
 .canvaspage_main{
   position: relative;
 }
+
+.canvaspage_button {
+  position: absolute;
+  z-index: 10;
+  top: 10;
+  left: 10;
+}
