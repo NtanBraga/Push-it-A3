@@ -1,20 +1,19 @@
 import React from "react";
-import { Stage, Layer,Rect } from 'react-konva'
+import { Stage, Layer} from 'react-konva'
+import { StickyNote } from "../components/StickyNote";
 
 function CanvasPage(){
     return(
         <main className="canvaspage_main">
             <Stage width={window.innerWidth} height={window.innerHeight}>
                 <Layer>
-                    <Rect
-                        x={20}
-                        y={20}
-                        width={100}
-                        height={50}
-                        fill="green"
-                        stroke="black"
-                        strokeWidth={4}
-                        />
+                    <StickyNote
+                        x={50}
+                        y={50}
+                        colour="Yellow"
+                        width={250}
+                        height={230}
+                    />
                 </Layer>
             </Stage>
         </main>
