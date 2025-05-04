@@ -7,6 +7,7 @@ import { Group, Rect } from "react-konva";
 
 //PARAMETROS PARA A INICIALIZAÇÃO DO QUADRO DE ANOTAÇÃO
 export function StickyNote({
+    id, // Identificação do sticky
     colour, //Selecionar cor
     x, //Posição
     y, //Posição

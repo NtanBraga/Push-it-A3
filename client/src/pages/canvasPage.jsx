@@ -11,6 +11,7 @@ function CanvasPage(){
 
     const addSticky = () => {
         const newSticky = {
+            id: Date.now(),
             x: Math.random() * (window.innerWidth - 100), //Posição aleatoria
             y: Math.random() * (window.innerHeight - 100), //Posição aleatoria
             width: 250, // Largura do sticky
@@ -30,8 +31,8 @@ function CanvasPage(){
             <Stage width={window.innerWidth} height={window.innerHeight}>
                 <Layer>
                     {/*Coloca na tela os quadros armazenados*/}
-                    {stickyNote.map((stickyNote,i) => (
-                        <StickyNote id={i} {...stickyNote}></StickyNote>
+                    {stickyNote.map((stickyNote) => (
+                        <StickyNote key={stickyNote.id} id={stickyNote.id} {...stickyNote}></StickyNote>
                     ))}
                 </Layer>
             </Stage>
