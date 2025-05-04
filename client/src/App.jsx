@@ -1,4 +1,4 @@
-import './styles/App.css';
+import './styles/Pages.css';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
 import { canvasGet,canvasPost } from './components/ApiHandler';
