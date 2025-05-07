@@ -1,5 +1,6 @@
 import React from "react";
 import { EditTextInput } from "./EditTextInput";
+import { ResizableText } from "./ResizableText";
 
 
 const RETURN_KEY = 13;
@@ -38,4 +39,14 @@ export function EditText({
             />
         );
     }
+    return (
+        <ResizableText
+        x={x}
+        y={y}
+        onDoubleClick={onToggleEdit}
+        text={text}
+        width={width}
+        height={height}
+    />
+    );
 }

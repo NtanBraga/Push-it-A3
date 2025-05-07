@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Stage, Layer} from 'react-konva'
-import { StickyNote } from "../components/StickyNote";
+import { StickyNote } from "../components/StickyNotes/StickyNote";
 
 function CanvasPage(){
 
@@ -16,6 +16,8 @@ function CanvasPage(){
             y: Math.random() * (window.innerHeight - 100), //Posição aleatoria
             width: 250, // Largura do sticky
             height: 230, // Altura do sticky
+            text: "Insira seu texto!!",
+            selected: false,
             colour: "Yellow" // Cor do sticky
         };
         //Adiciona a nova sticky no array
