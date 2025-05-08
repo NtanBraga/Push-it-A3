@@ -15,7 +15,7 @@ POST {{PushIt_HostAddress}}/canvas/placeholder/quadros
 Content-Type: application/json
 
 {
-    "id":"IDhere2",
+    "id":"IDhere",
     "x":1,
     "y":1,
     "width":33,
@@ -26,7 +26,21 @@ Content-Type: application/json
 
 ###
 
-GET {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
+PUT {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
+Content-Type: application/json
+
+{
+    "x":2121,
+    "y":67,
+    "width":33,
+    "height":1,
+    "text":"otherText",
+    "colour":"#01450"  
+}
+
+###
+
+GET {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere11
 Accept: application/json
 
 ###
