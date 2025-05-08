@@ -44,9 +44,13 @@ public class CanvasService : ICanvasService
         if(!this.canvasPseudoDatabase.ContainsKey(canvasName)){ return null; }
         return this.canvasPseudoDatabase[canvasName].QuadrosAnotacoes;
     }
-}
 
-    // public bool UpdateQuadro(string canvasName, string quadroId)
-    // {
-    //     return default;
-    // }
+    public bool UpdateQuadro(string canvasName, string quadroId, QuadroAnotacao novoQuadro)
+    {
+         if(!this.canvasPseudoDatabase.ContainsKey(canvasName)){ return false; }
+         if(!this.canvasPseudoDatabase[canvasName].HasQuadro(quadroId, out QuadroAnotacao? quadro)){ return false; }
+         
+        this.canvasPseudoDatabase[canvasName].UpdateQuadro(quadro!.id, novoQuadro);
+        return true;
+    }
+}

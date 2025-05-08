@@ -3,7 +3,7 @@ public class Canvas
     public string Name { get; }
     public List<QuadroAnotacao> QuadrosAnotacoes { get; } = new();
     public DateTime CreatedDateTime { get; }
-    public DateTime LastModification { get; }
+    public DateTime LastModification { get; set; }
 
     public Canvas(string name, List<QuadroAnotacao> quadrosAnotacoes, DateTime createdDateTime, DateTime lastModification)
     {
@@ -34,5 +34,19 @@ public class Canvas
         );
 
         return quadro is not null;
+    }
+
+    public bool UpdateQuadro(string quadroId, QuadroAnotacao novoQuadro)
+    {
+        int index = this.QuadrosAnotacoes.FindIndex(
+            q => q.id == quadroId
+        );
+
+        if(index < 0 ) { return false; }
+
+        this.QuadrosAnotacoes[index] = novoQuadro;
+        this.LastModification = DateTime.Now;
+
+        return true;
     }
 }

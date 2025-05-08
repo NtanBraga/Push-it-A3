@@ -96,11 +96,18 @@ public class CanvasController : ControllerBase{
         return Ok(response);
     }
 
-    // [HttpPut("/canvas/{name}/quadros/{id}")]
-    // public IActionResult UpdateInsertQuadro(string name, string id)
-    // {
-    //     return Ok();
-    // }
+    //PUT /canvas/nomecanvas/quadros/iddoquadro
+    [HttpPut("/canvas/{name}/quadros/{id}")]
+    public IActionResult UpdateQuadro(string name, string id, UpdateQuadroRequest request)
+    {
+         QuadroAnotacao quadro = request.ToQuadro(id);
+         if(!this._canvasService.UpdateQuadro(name, id, quadro))
+         {
+            return NotFound();
+         }
+
+         return NoContent();
+    }
 
     // [HttpDelete("/canvas/{name}/quadros/{id}")]
     // public IActionResult DeleteQuadro(string name, string id)

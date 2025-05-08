@@ -14,6 +14,20 @@ public static class QuadrosMapping
         );
     }
 
+    public static QuadroAnotacao ToQuadro(this UpdateQuadroRequest request, string _id)
+    {
+        return new QuadroAnotacao(
+            id: _id, 
+            x: request.x,
+            y: request.y,
+            width: request.width,
+            height: request.height,
+            text: request.text,
+            colour: request.colour,
+            lastModification: DateTime.Now
+        );
+    }
+
     public static QuadroResponse ToQuadroResponse(this QuadroAnotacao quadroAnotacao)
     {
         return new QuadroResponse(
