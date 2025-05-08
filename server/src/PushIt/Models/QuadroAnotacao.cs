@@ -24,5 +24,4 @@ public class QuadroAnotacao
          this.colour = colour;
          this.LastModification = lastModification;
     }
-    
 }
