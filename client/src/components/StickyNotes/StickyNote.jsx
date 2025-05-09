@@ -9,27 +9,38 @@ import { EditText } from "./EditText";
 //PARAMETROS PARA A INICIALIZAÇÃO DO QUADRO DE ANOTAÇÃO
 export function StickyNote({
     id, // Identificação do sticky
-    text,
+    text, // Eexto
     colour, //Selecionar cor
     x, //Posição
     y, //Posição
     width, //Largura
     height, // Altura
-    onClick,
-    selected,
-    onTextChange
+    onClick, // Estado
+    selected, // Booleano
+    onTextChange, // Estado
+    onTextClick // Estado
 }) {
 
+    //Verificar estado de edição do quadro de anotações
     const [isEditing, setIsEditing] = useState(false);
 
+    //Efeito para desativar edição quando o quadro não estiver selecionado
     useEffect(() => {
         if(!selected && isEditing) {
             setIsEditing(false);
         }
     }, [selected, isEditing]);
 
+    // Mudança no estado de edição
+    function toggleEdit() {
+        setIsEditing(!isEditing);
+        onTextClick(!isEditing);
+    }
+
+    // Formatação do Quadro de anotações agrupado em dois retangulos e um quadro de texto
     return(
         <Group x={x} y={y}>
+            {/*Retangulo visual*/}
             <Rect
                 x={20}
                 y={20}
@@ -43,6 +54,7 @@ export function StickyNote({
                 shadowOpacity={0.6}
                 perfectDrawEnabled={false}
             />
+            {/*Retangulo de interação*/}
             <Rect
                 x={0}
                 y={0}
@@ -53,6 +65,7 @@ export function StickyNote({
                 onClick={onClick}
                 onTap={onClick}
             />
+            {/*Componente para visualização,edição do texto*/}
             <EditText
                 x={20}
                 y={20}
@@ -60,6 +73,7 @@ export function StickyNote({
                 width={width}
                 height={height + 40}
                 isEditing={isEditing}
+                onToggleEdit={toggleEdit}
                 onChange={onTextChange}
             />
         </Group>

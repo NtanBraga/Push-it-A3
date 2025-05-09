@@ -1,21 +1,23 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Text } from "react-konva";
 
-export function ResizableText({
-    x,
-    y,
-    text,
-    width,
-    height,
-    onDoubleClick
-}) {
-    const textRef = useRef(null);
 
+// COMPONENTE QUE FAZ O DISPLAY DO TEXTO
+
+export function ResizableText({
+    x, // Posição
+    y, // Posição
+    text, // Texto
+    width, // Largura
+    height, // Altura
+    onDoubleClick // evento
+}) {
+
+    // Retorna o texto formatado para display
     return (
         <Text
             x={x}
             y={y}
-            ref={textRef}
             text={text}
             fill="black"
             fontFamily="sans-serif"
