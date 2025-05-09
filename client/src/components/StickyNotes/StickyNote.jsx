@@ -39,18 +39,19 @@ export function StickyNote({
             onTextClick(!isEditing);
         }
     }
-
+    //Função de começo de movimento que tambem sairá modo de edição quando ativado
     function handleStartDragging() {
         setIsDragging(true);
         setIsEditing(false);
     }
-
+    //Função de fim de movimento do quadro.
     function handleStopDragging() {
         setIsDragging(false);
     }
 
     // Formatação do Quadro de anotações agrupado em dois retangulos e um quadro de texto
     return(
+        //Inicialização do agrupamento com parametros de movimentação
         <Group x={x} y={y} draggable={true} onDragStart={handleStartDragging} onDragEnd={handleStopDragging}>
             {/*Retangulo visual*/}
             <Rect
