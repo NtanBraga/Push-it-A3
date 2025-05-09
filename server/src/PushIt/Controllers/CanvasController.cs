@@ -109,11 +109,11 @@ public class CanvasController : ControllerBase{
          return NoContent();
     }
 
-    // [HttpDelete("/canvas/{name}/quadros/{id}")]
-    // public IActionResult DeleteQuadro(string name, string id)
-    // {
-    //     return Ok();
-    // }
+    [HttpDelete("/canvas/{name}/quadros/{id}")]
+    public IActionResult DeleteQuadro(string name, string id)
+    {
+        return Ok();
+    }
 
     //PUT /canvas/name
     // [HttpPut("/canvas/{name}")]
