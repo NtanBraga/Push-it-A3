@@ -49,4 +49,18 @@ public class Canvas
 
         return true;
     }
+
+    public bool DeleteQuadro(string quadroId)
+    {
+        int index = this.QuadrosAnotacoes.FindIndex(
+            q => q.id == quadroId
+        );
+
+        if(index < 0 ) { return false; }
+
+        this.QuadrosAnotacoes.RemoveAt(index);
+        this.LastModification = DateTime.Now;
+
+        return true;
+    }
 }

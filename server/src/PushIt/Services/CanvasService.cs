@@ -53,4 +53,13 @@ public class CanvasService : ICanvasService
         this.canvasPseudoDatabase[canvasName].UpdateQuadro(quadro!.id, novoQuadro);
         return true;
     }
+
+    public bool DeleteQuadro(string canvasName, string quadroId)
+    {
+        if(!this.canvasPseudoDatabase.ContainsKey(canvasName)){ return false; }
+        if(!this.canvasPseudoDatabase[canvasName].HasQuadro(quadroId, out _)){ return false; }
+
+        this.canvasPseudoDatabase[canvasName].DeleteQuadro(quadroId);
+        return true;
+    }
 }

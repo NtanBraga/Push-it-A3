@@ -40,7 +40,7 @@ Content-Type: application/json
 
 ###
 
-GET {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere11
+GET {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
 Accept: application/json
 
 ###
@@ -48,14 +48,14 @@ Accept: application/json
 GET {{PushIt_HostAddress}}/canvas/placeholder/quadros
 Accept: application/json
 
+###
+
+DELETE {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
+
 ###[{"TextoInterno":"texto1"},{"TextoInterno":"texto2"},{"TextoInterno":"texto3"}]
 ###
 
 GET {{PushIt_HostAddress}}/canvas/placeholder
 Accept: application/json
-
-###
-
-###DELETE {{PushIt_HostAddress}}/canvas/placeholder
 
 ###

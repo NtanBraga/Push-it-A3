@@ -109,11 +109,18 @@ public class CanvasController : ControllerBase{
          return NoContent();
     }
 
-    // [HttpDelete("/canvas/{name}/quadros/{id}")]
-    // public IActionResult DeleteQuadro(string name, string id)
-    // {
-    //     return Ok();
-    // }
+
+    //DELETE /canvas/nomecanvas/quadros/iddoquadro
+    [HttpDelete("/canvas/{name}/quadros/{id}")]
+    public IActionResult DeleteQuadro(string name, string id)
+    {
+        if(!this._canvasService.DeleteQuadro(name, id))
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
 
     //PUT /canvas/name
     // [HttpPut("/canvas/{name}")]

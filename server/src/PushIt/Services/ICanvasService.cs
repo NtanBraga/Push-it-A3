@@ -6,4 +6,5 @@ public interface ICanvasService
     public QuadroAnotacao? GetQuadro(string canvasName, string quadroId);
     public List<QuadroAnotacao> GetAllQuadros(string canvasName);
     public bool UpdateQuadro(string canvasName, string quadroId, QuadroAnotacao novoQuadro);
+    public bool DeleteQuadro(string canvasName, string quadroId);
 }
