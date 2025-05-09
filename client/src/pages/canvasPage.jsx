@@ -13,8 +13,8 @@ function CanvasPage(){
     const addSticky = () => {
         const newSticky = {
             id: Date.now(), // ID unico de criação
-            x: Math.random() * (window.innerWidth - 100), //Posição aleatoria
-            y: Math.random() * (window.innerHeight - 100), //Posição aleatoria
+            x: 20, //Posição aleatoria
+            y: 20, //Posição aleatoria
             width: 250, // Largura do sticky
             height: 230, // Altura do sticky
             text: "Insira seu texto!!", // Texto default
