@@ -112,7 +112,12 @@ public class CanvasController : ControllerBase{
     [HttpDelete("/canvas/{name}/quadros/{id}")]
     public IActionResult DeleteQuadro(string name, string id)
     {
-        return Ok();
+        if(!this._canvasService.DeleteQuadro(name, id))
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 
     //PUT /canvas/name
