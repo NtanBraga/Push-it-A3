@@ -8,7 +8,7 @@ Para a organização dos estilos das paginas:
 */
 
 :root {
-    padding: 0 auto;
+    padding: 0;
     margin: 0;
   }
   
@@ -24,6 +24,8 @@ body {
     box-sizing: border-box;
     font-family: "Coiny", system-ui;
 }
+
+/*LANDINGPAGE ESTILOS*/
 .mainpage_h1 {
     text-align: center;
     margin-top: 26vmin;
@@ -52,7 +54,7 @@ body {
     height: 3rem;
     box-sizing: border-box;
     padding: .8vmin .6vmin .8vmin .1vmin;
-    font-size: 3vmin;
+    font-size: 22px;
     text-align: center;
     border-radius: 3vmin;
     font-weight: bold;
@@ -95,3 +97,17 @@ body {
       font-size: 0.9rem;
     }
   }
+
+
+/*CANVASPAGE ESTILOS*/
+
+.canvaspage_main{
+  position: relative;
+}
+
+.canvaspage_button {
+  position: absolute;
+  z-index: 10;
+  top: 10;
+  left: 10;
+}
