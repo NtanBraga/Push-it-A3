@@ -109,6 +109,8 @@ public class CanvasController : ControllerBase{
          return NoContent();
     }
 
+
+    //DELETE /canvas/nomecanvas/quadros/iddoquadro
     [HttpDelete("/canvas/{name}/quadros/{id}")]
     public IActionResult DeleteQuadro(string name, string id)
     {
