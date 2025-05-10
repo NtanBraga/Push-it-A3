@@ -1,10 +1,10 @@
 public record QuadroResponse
 (
     string id,
-    int x,
-    int y,
-    int width,
-    int height,
+    double x,
+    double y,
+    double width,
+    double height,
     string text,
     string colour,
 

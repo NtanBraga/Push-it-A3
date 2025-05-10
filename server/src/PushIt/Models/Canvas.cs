@@ -1,5 +1,8 @@
 public class Canvas
 {
+    public const int MaxQuadrosAmount = 100;
+    public const int MaxNameLength = 32;
+
     public string Name { get; }
     public List<QuadroAnotacao> QuadrosAnotacoes { get; } = new();
     public DateTime CreatedDateTime { get; }
@@ -7,19 +10,19 @@ public class Canvas
 
     public Canvas(string name, List<QuadroAnotacao> quadrosAnotacoes, DateTime createdDateTime, DateTime lastModification)
     {
-        Name = name;
+        this.Name = name;
         this.QuadrosAnotacoes = quadrosAnotacoes;
-        CreatedDateTime = createdDateTime;
-        LastModification = lastModification;
+        this.CreatedDateTime = createdDateTime;
+        this.LastModification = lastModification;
     }
 
     public bool IsValid()
     {
-        if(this.Name.Length <= 0 || this.Name.Length > 32)
+        if(this.Name.Length <= 0 || this.Name.Length > MaxNameLength)
         {
             return false;
         }
-        if(this.QuadrosAnotacoes.Count > 100)
+        if(this.QuadrosAnotacoes.Count > MaxQuadrosAmount)
         {
             return false;
         }

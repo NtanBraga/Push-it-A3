@@ -4,16 +4,16 @@ public class QuadroAnotacao
     public const string defaultColour = "#FFE338";
 
     public string id { get; }
-    public int x { get; }
-    public int y { get; }
-    public int width { get; }
-    public int height { get; }
+    public double x { get; }
+    public double y { get; }
+    public double width { get; }
+    public double height { get; }
     public string text { get; }
     public string colour { get; }
 
     public DateTime LastModification { get; }
 
-    public QuadroAnotacao(string id, int x, int y, int width, int height, string text, string colour, DateTime lastModification)
+    public QuadroAnotacao(string id, double x, double y, double width, double height, string text, string colour, DateTime lastModification)
     {
          this.id = id;
          this.x = x;

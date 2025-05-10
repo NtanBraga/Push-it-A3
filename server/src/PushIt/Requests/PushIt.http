@@ -15,9 +15,9 @@ POST {{PushIt_HostAddress}}/canvas/placeholder/quadros
 Content-Type: application/json
 
 {
-    "id":"IDhere",
-    "x":1,
-    "y":1,
+    "id":"IDhere3",
+    "x":1.0,
+    "y":1.0,
     "width":33,
     "height":1,
     "text":"placeholder",
