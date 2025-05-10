@@ -23,6 +23,7 @@ export function StickyNote({
 
     //Verificar estado de edição do quadro de anotações
     const [isEditing, setIsEditing] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
 
     //Efeito para desativar edição quando o quadro não estiver selecionado
     useEffect(() => {
@@ -33,13 +34,25 @@ export function StickyNote({
 
     // Mudança no estado de edição
     function toggleEdit() {
-        setIsEditing(!isEditing);
-        onTextClick(!isEditing);
+        if(!isDragging){
+            setIsEditing(!isEditing);
+            onTextClick(!isEditing);
+        }
+    }
+    //Função de começo de movimento que tambem sairá modo de edição quando ativado
+    function handleStartDragging() {
+        setIsDragging(true);
+        setIsEditing(false);
+    }
+    //Função de fim de movimento do quadro.
+    function handleStopDragging() {
+        setIsDragging(false);
     }
 
     // Formatação do Quadro de anotações agrupado em dois retangulos e um quadro de texto
     return(
-        <Group x={x} y={y}>
+        //Inicialização do agrupamento com parametros de movimentação
+        <Group x={x} y={y} draggable={true} onDragStart={handleStartDragging} onDragEnd={handleStopDragging}>
             {/*Retangulo visual*/}
             <Rect
                 x={20}
