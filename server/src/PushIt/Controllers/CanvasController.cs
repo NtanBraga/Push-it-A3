@@ -22,8 +22,8 @@ public class CanvasController : ControllerBase{
             return BadRequest();
         }
 
-        // Aqui salvaria na database ou lista em memória
-        if(!this._canvasService.CreateCanvas(canvas))
+        // Aqui salva na database ou lista em memória
+        if(!this._canvasService.TryCreateCanvas(canvas))
         {
             return BadRequest();
         }
@@ -41,13 +41,13 @@ public class CanvasController : ControllerBase{
     [HttpGet("/canvas/{name}")]
     public IActionResult GetCanvas(string name)
     {
-        Canvas? canvas = this._canvasService.GetCanvas(name);
-        if(canvas is null)
+        Canvas? canvas;
+        if(!this._canvasService.TryGetCanvas(name, out canvas))
         {
             return NotFound();
         }
-
-        CanvasResponse response = canvas.ToCanvasResponse();
+       
+        CanvasResponse response = canvas!.ToCanvasResponse();
         return Ok(response);
     }
 
@@ -56,7 +56,7 @@ public class CanvasController : ControllerBase{
     public IActionResult CreateQuadro(string name, CreateQuadroRequest request)
     {
         QuadroAnotacao quadro = request.ToQuadro();
-        if(!this._canvasService.CreateQuadro(name, quadro))
+        if(!this._canvasService.TryCreateQuadro(name, quadro))
         {
             return BadRequest();
         }
@@ -72,13 +72,13 @@ public class CanvasController : ControllerBase{
     [HttpGet("/canvas/{name}/quadros/{id}")]
     public IActionResult GetQuadro(string name, string id)
     {
-        QuadroAnotacao? quadro = this._canvasService.GetQuadro(name, id);
-        if(quadro is null)
+        QuadroAnotacao? quadro;
+        if(!this._canvasService.TryGetQuadro(name, id, out quadro))
         {
             return NotFound();
         }
 
-        QuadroResponse response = quadro.ToQuadroResponse();
+        QuadroResponse response = quadro!.ToQuadroResponse();
         return Ok(response);
     }
 
@@ -86,12 +86,12 @@ public class CanvasController : ControllerBase{
     [HttpGet("/canvas/{name}/quadros")]
     public IActionResult GetAllQuadros(string name)
     {
-        List<QuadroAnotacao> quadros = this._canvasService.GetAllQuadros(name);
-        if(quadros is null)
-        { 
-            return BadRequest(); 
-        }
-
+        List<QuadroAnotacao> quadros;
+        if(!this._canvasService.TryGetAllQuadros(name, out quadros))
+        {
+            return BadRequest();
+        } 
+             
         List<QuadroResponse> response = quadros.ConvertAll<QuadroResponse>( q => q.ToQuadroResponse() ); 
         return Ok(response);
     }
@@ -101,7 +101,7 @@ public class CanvasController : ControllerBase{
     public IActionResult UpdateQuadro(string name, string id, UpdateQuadroRequest request)
     {
          QuadroAnotacao quadro = request.ToQuadro(id);
-         if(!this._canvasService.UpdateQuadro(name, id, quadro))
+         if(!this._canvasService.TryUpdateQuadro(name, id, quadro))
          {
             return NotFound();
          }
@@ -109,12 +109,11 @@ public class CanvasController : ControllerBase{
          return NoContent();
     }
 
-
     //DELETE /canvas/nomecanvas/quadros/iddoquadro
     [HttpDelete("/canvas/{name}/quadros/{id}")]
     public IActionResult DeleteQuadro(string name, string id)
     {
-        if(!this._canvasService.DeleteQuadro(name, id))
+        if(!this._canvasService.TryDeleteQuadro(name, id))
         {
             return NotFound();
         }

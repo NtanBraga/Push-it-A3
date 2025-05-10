@@ -4,7 +4,7 @@ public static class CanvasMapping
     {
         return new Canvas(
             name: request.Name,
-            quadrosAnotacoes: request.QuadrosAnotacoes,
+            quadrosAnotacoes: request.QuadrosAnotacoes ?? new(),
             createdDateTime: request.CreatedDateTime,
             lastModification: DateTime.Now
         );
