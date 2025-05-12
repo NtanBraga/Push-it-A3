@@ -39,11 +39,13 @@ export async function canvasGet(name) {
         headers: { Accept: 'application/json'},
     });
 
+    //Sempre apresentará mensagem de erro quando criar um canvas novo.
+    /*
     if(!response.ok) {
         const text = await response.text();
         throw new Error(`Erro ao buscar canvas: ${response.status} - ${text}`);
     }
-
+    */
     return await response.json();
 }
 

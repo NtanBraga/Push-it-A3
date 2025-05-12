@@ -25,7 +25,7 @@ function CanvasPage(){
         setStickyNotes([...stickyNotes,newSticky])
     }
 
-
+    //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
     return(
         <main className="canvaspage_main">
