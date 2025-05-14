@@ -70,11 +70,15 @@ function CanvasPage(){
                         {...objectNode} // Passa todas as  propriedades do objeto de quadro de anotações
                         //Seleciona o stikynote clicado e deseleciona o restante
                         onClick={() => {
+                            if(deleteMode){
+                                deleteStickyNode(objectNode.id);
+                            }else{
                             setStickyNotes(
                                 stickyNotes.map(n =>
                                     n.id === objectNode.id ? { ...n, selected: !n.selected } : { ...n, selected: false }
                                 )
                             );
+                            }
                         }}
                         //Atualiza o texto no quadro selecionado
                         onTextChange={(value) => {
