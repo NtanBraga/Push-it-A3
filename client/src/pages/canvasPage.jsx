@@ -23,7 +23,24 @@ function CanvasPage(){
         };
         //Adiciona a nova sticky no array
         setStickyNotes([...stickyNotes,newSticky])
-    }
+    };
+
+    //Lógica para ativar o modo de exclusão através de um botão
+    //realizando a deleção de um stickynote especifico ao click
+    //Estado de exclusão
+    const [ deleteMode, setDeleteMode ] = useState(false);
+
+    //Alterar para modo de exclusão
+    function toggleDelete(){
+        setDeleteMode(!deleteMode);
+        setStickyNotes(stickyNotes.map(nodes => ({ ...nodes, selected: false})));
+    };
+
+    //Deletará um stickynode
+    const deleteStickyNode = (id) => {
+        setStickyNotes(stickyNotes.filter(node => node.id !== id));
+    };
+
 
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
