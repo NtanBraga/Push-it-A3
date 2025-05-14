@@ -47,7 +47,10 @@ function CanvasPage(){
     return(
         <main className="canvaspage_main">
             {/* Botão que adiciona novo sticky para renderizar*/}
-            <button className="canvaspage_button" onClick={addSticky}>Adicionar Quadro</button>
+            <div className="canvaspage_div_buttons">
+                <button className="canvaspage_button" onClick={addSticky}>Adicionar Quadro</button>
+                <button className="canvaspage_button" onClick={toggleDelete}>{deleteMode ? "Sair do modo de deleção" : "Excluir Quadro"}</button>
+            </div>
             <Stage 
                 width={window.innerWidth} 
                 height={window.innerHeight}
