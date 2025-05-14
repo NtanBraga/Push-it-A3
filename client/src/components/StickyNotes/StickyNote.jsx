@@ -30,6 +30,11 @@ export function StickyNote({
     const groupRef = useRef(null);
     const transformerRef = useRef(null);
 
+    //Inicialização dos tamanhos maximos dos quadros
+    const defaultMaxWidth = 1000;
+    const defaultMaxHeight = 900;
+
+
     //Efeito para desativar edição quando o quadro não estiver selecionado
     useEffect(() => {
         if(!selected && isEditing) {
@@ -38,6 +43,7 @@ export function StickyNote({
     }, [selected, isEditing]);
 
     //Efeito para Transformar um <Stickynote>
+    //Ele irá selecionar o agrupamento do framework do sticky e fara referencia ao Transformer
     useEffect(() => {
         if(selected && transformerRef.current && groupRef.current){
             transformerRef.current.nodes([groupRef.current]);
@@ -73,8 +79,8 @@ export function StickyNote({
         node.scaleY(1);
 
         //Calculo das novas dimensões do quadro
-        const newWidth = Math.max(100, width * scaleX);
-        const newHeight = Math.max(100, height * scaleY);
+        const newWidth = Math.max(100, Math.min(defaultMaxWidth, width * scaleX));
+        const newHeight = Math.max(100, Math.min(defaultMaxHeight, height * scaleY));
 
         //Callback com o dimensionamento novo
         onResize(newWidth, newHeight);
@@ -84,7 +90,7 @@ export function StickyNote({
     // Formatação do Quadro de anotações agrupado em dois retangulos e um quadro de texto
     return(
         <>
-            {/*Inicialização do agrupamento com parametros de movimentação*/}
+            {/*Inicialização do agrupamento com parametros de movimentação e click*/}
             <Group 
                 x={x} 
                 y={y} 
@@ -96,7 +102,7 @@ export function StickyNote({
                 ref={groupRef}
                 onTransform={handleTransform}
             >
-                {/*Retangulo visual*/}
+                {/*Retangulo visual 1*/}
                 <Rect
                     x={20}
                     y={20}
@@ -110,7 +116,7 @@ export function StickyNote({
                     shadowOpacity={0.6}
                     perfectDrawEnabled={false}
                 />
-                {/*Retangulo de interação*/}
+                {/*Retangulo visual 2*/}
                 <Rect
                     x={0}
                     y={0}
