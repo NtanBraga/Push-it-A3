@@ -19,7 +19,7 @@ export function StickyNote({
     selected, // Booleano
     onTextChange, // Estado
     onTextClick, // Estado
-    OnResize // Estado
+    onResize // Estado
 }) {
 
     //Verificar estado de edição do quadro de anotações
@@ -63,7 +63,7 @@ export function StickyNote({
     }
 
     //Função de redimensionamento dos quadros
-    function handleTransform(e) {
+    function handleTransform() {
         const node = groupRef.current;
         const scaleX = node.scaleX();
         const scaleY = node.scaleY();
@@ -77,7 +77,7 @@ export function StickyNote({
         const newHeight = Math.max(100, height * scaleY);
 
         //Callback com o dimensionamento novo
-        OnResize(newWidth, newHeight);
+        onResize(newWidth, newHeight);
 
     }
 
@@ -88,7 +88,7 @@ export function StickyNote({
             <Group 
                 x={x} 
                 y={y} 
-                draggable={true} 
+                draggable={!isEditing} 
                 onDragStart={handleStartDragging} 
                 onDragEnd={handleStopDragging}
                 onClick={onClick}
@@ -131,6 +131,8 @@ export function StickyNote({
                     onChange={onTextChange}
                 />
             </Group>
+
+            {/*Transformer de redimensionamento*/}
             {selected && !isEditing && (
                 <Transformer
                     ref={transformerRef}
@@ -138,7 +140,7 @@ export function StickyNote({
                         if(newBox.width < 100 || newBox.height < 100) {
                             return oldBox;
                         }
-                        return oldBox;
+                        return newBox;
                     }}
                 />
             )}

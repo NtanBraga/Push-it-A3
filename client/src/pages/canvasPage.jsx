@@ -73,9 +73,9 @@ function CanvasPage(){
                                 )
                             );
                         }}
-                        //Mantem o texto dentro do quadro de anotações 
-                        // no qual possa ter um texto fora do escopo da margem
-                        onTextResize={(newWidth, newHeight) => {
+                        //Este escopo possui o serviço de redimensionamento do
+                        // quadro de acordo com as preferencias do usuario
+                        onResize={(newWidth, newHeight) => {
                             setStickyNotes(
                                 stickyNotes.map(n =>
                                     n.id === objectNode.id ? { ...n, width: newWidth, height: newHeight } : n
