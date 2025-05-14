@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Group, Rect, Transformer } from "react-konva";
 import { EditText } from "./EditText";
 
@@ -37,8 +37,9 @@ export function StickyNote({
         }
     }, [selected, isEditing]);
 
+    //Efeito para Transformar um <Stickynote>
     useEffect(() => {
-        if(selected && tranformerRef.current && groupRef.current){
+        if(selected && transformerRef.current && groupRef.current){
             transformerRef.current.nodes([groupRef.current]);
             transformerRef.current.getLayer().batchDraw();
         }
@@ -61,19 +62,21 @@ export function StickyNote({
         setIsDragging(false);
     }
 
+    //Função de redimensionamento dos quadros
     function handleTransform(e) {
         const node = groupRef.current;
         const scaleX = node.scaleX();
         const scaleY = node.scaleY();
 
-
+        //Resetar escalas para evitar bugs
         node.scaleX(1);
         node.scaleY(1);
 
-        
+        //Calculo das novas dimensões do quadro
         const newWidth = Math.max(100, width * scaleX);
         const newHeight = Math.max(100, height * scaleY);
 
+        //Callback com o dimensionamento novo
         OnResize(newWidth, newHeight);
 
     }
