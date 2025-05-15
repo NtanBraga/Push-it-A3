@@ -8,8 +8,8 @@ function setStyle(width,height) {
     const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
     //Base para o estilo do textarea
     const baseStyle = {
-        width: `${width}px`,
-        height: `${height}px`,
+        width: `${width - 10}px`,
+        height: `${height - 10}px`,
         border: "none",
         padding: "5px",
         margin: "0px",

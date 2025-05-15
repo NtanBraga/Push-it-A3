@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Group, Rect } from "react-konva";
+import React, { useState, useEffect, useRef } from "react";
+import { Group, Rect, Transformer } from "react-konva";
 import { EditText } from "./EditText";
 
 
@@ -18,12 +18,22 @@ export function StickyNote({
     onClick, // Estado
     selected, // Booleano
     onTextChange, // Estado
-    onTextClick // Estado
+    onTextClick, // Estado
+    onResize // Estado
 }) {
 
     //Verificar estado de edição do quadro de anotações
     const [isEditing, setIsEditing] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+
+    //Variaveis de referencia para redimensionamento dos quadros
+    const groupRef = useRef(null);
+    const transformerRef = useRef(null);
+
+    //Inicialização dos tamanhos maximos dos quadros
+    const defaultMaxWidth = 1000;
+    const defaultMaxHeight = 900;
+
 
     //Efeito para desativar edição quando o quadro não estiver selecionado
     useEffect(() => {
@@ -31,6 +41,15 @@ export function StickyNote({
             setIsEditing(false);
         }
     }, [selected, isEditing]);
+
+    //Efeito para Transformar um <Stickynote>
+    //Ele irá selecionar o agrupamento do framework do sticky e fara referencia ao Transformer
+    useEffect(() => {
+        if(selected && transformerRef.current && groupRef.current){
+            transformerRef.current.nodes([groupRef.current]);
+            transformerRef.current.getLayer().batchDraw();
+        }
+    }, [selected])
 
     // Mudança no estado de edição
     function toggleEdit() {
@@ -49,46 +68,88 @@ export function StickyNote({
         setIsDragging(false);
     }
 
+    //Função de redimensionamento dos quadros
+    function handleTransform() {
+        const node = groupRef.current;
+        const scaleX = node.scaleX();
+        const scaleY = node.scaleY();
+
+        //Resetar escalas para evitar bugs
+        node.scaleX(1);
+        node.scaleY(1);
+
+        //Calculo das novas dimensões do quadro
+        const newWidth = Math.max(100, Math.min(defaultMaxWidth, width * scaleX));
+        const newHeight = Math.max(100, Math.min(defaultMaxHeight, height * scaleY));
+
+        //Callback com o dimensionamento novo
+        onResize(newWidth, newHeight);
+
+    }
+
     // Formatação do Quadro de anotações agrupado em dois retangulos e um quadro de texto
     return(
-        //Inicialização do agrupamento com parametros de movimentação
-        <Group x={x} y={y} draggable={true} onDragStart={handleStartDragging} onDragEnd={handleStopDragging}>
-            {/*Retangulo visual*/}
-            <Rect
-                x={20}
-                y={20}
-                width={width}
-                height={height + 40}
-                fill={colour}
-                shadowColor="black"
-                shadowOffsetX={0}
-                shadowOffsetY={10}
-                shadowBlur={30}
-                shadowOpacity={0.6}
-                perfectDrawEnabled={false}
-            />
-            {/*Retangulo de interação*/}
-            <Rect
-                x={0}
-                y={0}
-                width={width + 40}
-                height={height + 60}
-                fill={colour}
-                perfectDrawEnabled={false}
+        <>
+            {/*Inicialização do agrupamento com parametros de movimentação e click*/}
+            <Group 
+                x={x} 
+                y={y} 
+                draggable={!isEditing} 
+                onDragStart={handleStartDragging} 
+                onDragEnd={handleStopDragging}
                 onClick={onClick}
                 onTap={onClick}
-            />
-            {/*Componente para visualização,edição do texto*/}
-            <EditText
-                x={20}
-                y={20}
-                text={text}
-                width={width}
-                height={height + 40}
-                isEditing={isEditing}
-                onToggleEdit={toggleEdit}
-                onChange={onTextChange}
-            />
-        </Group>
-    )
+                ref={groupRef}
+                onTransform={handleTransform}
+            >
+                {/*Retangulo visual 1*/}
+                <Rect
+                    x={20}
+                    y={20}
+                    width={width}
+                    height={height + 40}
+                    fill={colour}
+                    shadowColor="black"
+                    shadowOffsetX={0}
+                    shadowOffsetY={10}
+                    shadowBlur={30}
+                    shadowOpacity={0.6}
+                    perfectDrawEnabled={false}
+                />
+                {/*Retangulo visual 2*/}
+                <Rect
+                    x={0}
+                    y={0}
+                    width={width + 40}
+                    height={height + 60}
+                    fill={colour}
+                    perfectDrawEnabled={false}
+                />
+                {/*Componente para visualização,edição do texto*/}
+                <EditText
+                    x={20}
+                    y={20}
+                    text={text}
+                    width={width}
+                    height={height + 40}
+                    isEditing={isEditing}
+                    onToggleEdit={toggleEdit}
+                    onChange={onTextChange}
+                />
+            </Group>
+
+            {/*Transformer de redimensionamento*/}
+            {selected && !isEditing && (
+                <Transformer
+                    ref={transformerRef}
+                    boundBoxFunc={(oldBox, newBox) => {
+                        if(newBox.width < 100 || newBox.height < 100) {
+                            return oldBox;
+                        }
+                        return newBox;
+                    }}
+                />
+            )}
+        </>
+    );
 }
