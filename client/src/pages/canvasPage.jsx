@@ -23,14 +23,34 @@ function CanvasPage(){
         };
         //Adiciona a nova sticky no array
         setStickyNotes([...stickyNotes,newSticky])
-    }
+    };
+
+    //Lógica para ativar o modo de exclusão através de um botão
+    //realizando a deleção de um stickynote especifico ao click
+    //Estado de exclusão
+    const [ deleteMode, setDeleteMode ] = useState(false);
+
+    //Alterar para modo de exclusão
+    function toggleDelete(){
+        setDeleteMode(!deleteMode);
+        setStickyNotes(stickyNotes.map(nodes => ({ ...nodes, selected: false})));
+    };
+
+    //Deletará um stickynode
+    const deleteStickyNode = (id) => {
+        setStickyNotes(stickyNotes.filter(node => node.id !== id));
+    };
+
 
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
     return(
         <main className="canvaspage_main">
             {/* Botão que adiciona novo sticky para renderizar*/}
-            <button className="canvaspage_button" onClick={addSticky}>Adicionar Quadro</button>
+            <div className="canvaspage_div_buttons">
+                <button className="canvaspage_button" onClick={addSticky}>Adicionar Quadro</button>
+                <button className="canvaspage_button" onClick={toggleDelete}>{deleteMode ? "Sair do modo de deleção" : "Excluir Quadro"}</button>
+            </div>
             <Stage 
                 width={window.innerWidth} 
                 height={window.innerHeight}
@@ -50,11 +70,15 @@ function CanvasPage(){
                         {...objectNode} // Passa todas as  propriedades do objeto de quadro de anotações
                         //Seleciona o stikynote clicado e deseleciona o restante
                         onClick={() => {
+                            if(deleteMode){
+                                deleteStickyNode(objectNode.id);
+                            }else{
                             setStickyNotes(
                                 stickyNotes.map(n =>
                                     n.id === objectNode.id ? { ...n, selected: !n.selected } : { ...n, selected: false }
                                 )
                             );
+                            }
                         }}
                         //Atualiza o texto no quadro selecionado
                         onTextChange={(value) => {
