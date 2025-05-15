@@ -26,7 +26,8 @@ export function StickyNote({
     const [isEditing, setIsEditing] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
 
-    //Variaveis de referencia para redimensionamento dos quadros
+
+        //Variaveis de referencia para redimensionamento dos quadros
     const groupRef = useRef(null);
     const transformerRef = useRef(null);
 
@@ -42,7 +43,7 @@ export function StickyNote({
         }
     }, [selected, isEditing]);
 
-    //Efeito para Transformar um <Stickynote>
+        //Efeito para Transformar um <Stickynote>
     //Ele irá selecionar o agrupamento do framework do sticky e fara referencia ao Transformer
     useEffect(() => {
         if(selected && transformerRef.current && groupRef.current){
@@ -68,7 +69,7 @@ export function StickyNote({
         setIsDragging(false);
     }
 
-    //Função de redimensionamento dos quadros
+        //Função de redimensionamento dos quadros
     function handleTransform() {
         const node = groupRef.current;
         const scaleX = node.scaleX();
@@ -103,42 +104,44 @@ export function StickyNote({
                 onTransform={handleTransform}
             >
                 {/*Retangulo visual 1*/}
-                <Rect
-                    x={20}
-                    y={20}
-                    width={width}
-                    height={height + 40}
-                    fill={colour}
-                    shadowColor="black"
-                    shadowOffsetX={0}
-                    shadowOffsetY={10}
-                    shadowBlur={30}
-                    shadowOpacity={0.6}
-                    perfectDrawEnabled={false}
-                />
-                {/*Retangulo visual 2*/}
-                <Rect
-                    x={0}
-                    y={0}
-                    width={width + 40}
-                    height={height + 60}
-                    fill={colour}
-                    perfectDrawEnabled={false}
-                />
-                {/*Componente para visualização,edição do texto*/}
-                <EditText
-                    x={20}
-                    y={20}
-                    text={text}
-                    width={width}
-                    height={height + 40}
-                    isEditing={isEditing}
-                    onToggleEdit={toggleEdit}
-                    onChange={onTextChange}
-                />
-            </Group>
+            <Rect
+                x={20}
+                y={20}
+                width={width}
+                height={height + 40}
+                fill={colour}
+                shadowColor="black"
+                shadowOffsetX={0}
+                shadowOffsetY={10}
+                shadowBlur={30}
+                shadowOpacity={0.6}
+                perfectDrawEnabled={false}
+            />
+            {/*Retangulo visual 2*/}
+            <Rect
+                x={0}
+                y={0}
+                width={width + 40}
+                height={height + 60}
+                fill={colour}
+                perfectDrawEnabled={false}
+                onClick={onClick}
+                onTap={onClick}
+            />
+            {/*Componente para visualização,edição do texto*/}
+            <EditText
+                x={20}
+                y={20}
+                text={text}
+                width={width}
+                height={height + 40}
+                isEditing={isEditing}
+                onToggleEdit={toggleEdit}
+                onChange={onTextChange}
+            />
+        </Group>
 
-            {/*Transformer de redimensionamento*/}
+                    {/*Transformer de redimensionamento*/}
             {selected && !isEditing && (
                 <Transformer
                     ref={transformerRef}
