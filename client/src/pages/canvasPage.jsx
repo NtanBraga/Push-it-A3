@@ -41,6 +41,31 @@ function CanvasPage(){
         setStickyNotes(stickyNotes.filter(node => node.id !== id));
     };
 
+    //Logica para mudança de cores de um quadro de anotações
+    //usando react-colorful para a melhor experiencia de usuario
+
+    //variavel terá 3 estados, no qual verá se a paleta está aberta, o id do sticky e a cor atual
+    const [ colorfulPick, setColorfulPick ] = useState({
+        PalletOpenned: false, stickyID: null, currentColour: "#FFFF00" 
+    });
+
+    const openPallet = (stickyID, currentColour) =>{
+        setColorfulPick({ PalletOpenned: true, stickyID, currentColour });
+    }
+
+    const closedPallet = () => {
+        setColorfulPick({ ...colorfulPick, PalletOpenned: false });
+    }
+
+    const updatePalletSticky = (id, newColour) => {
+        setStickyNotes(
+            stickyNotes.map(note => 
+                note.id === id ? { ...note, colour: newColour } : note
+            )
+        );
+        setColorfulPick({ ...colorfulPick, currentColour: newColour });
+    };
+
 
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
