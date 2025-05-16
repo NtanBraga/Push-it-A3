@@ -120,3 +120,21 @@ body {
   height: 40px;
   font-size: 16px;
 }
+/*Estilo para o Pallet dos stickynotes*/
+.colorful-model {
+  position: fixed;
+  top: 0;
+  left: 160px;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
+
+.colorful-content {
+  padding: 20px;
+  border-radius: 8px;
+  gap: 15px;
+  align-items: center;
+  max-width: 300px;
+  width: 100%;
+}

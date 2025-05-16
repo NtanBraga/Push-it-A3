@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Stage, Layer} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
+import { HexColorPicker } from "react-colorful"
 
 function CanvasPage(){
 
@@ -19,7 +20,7 @@ function CanvasPage(){
             height: 230, // Altura do sticky
             text: "Insira seu texto!!", // Texto default
             selected: false, // Estado de seleção inicial
-            colour: "Yellow" // Cor do sticky
+            colour: colorfulPick.currentColour // Cor do sticky de acordo com as funções de cores
         };
         //Adiciona a nova sticky no array
         setStickyNotes([...stickyNotes,newSticky])
@@ -46,26 +47,28 @@ function CanvasPage(){
 
     //variavel terá 3 estados, no qual verá se a paleta está aberta, o id do sticky e a cor atual
     const [ colorfulPick, setColorfulPick ] = useState({
-        PalletOpenned: false, stickyID: null, currentColour: "#FFFF00" 
+        PalletOpened: false, stickyID: null, currentColour: "#FFFF00" 
     });
 
-    const openPallet = (stickyID, currentColour) =>{
-        setColorfulPick({ PalletOpenned: true, stickyID, currentColour });
+    const togglePallet = (id,colour) => {
+        setColorfulPick({
+            PalletOpened: !colorfulPick.PalletOpened,
+            stickyID: id,
+            currentColour: colour
+        })
     }
 
-    const closedPallet = () => {
-        setColorfulPick({ ...colorfulPick, PalletOpenned: false });
-    }
-
+    //Atualiza para a nova cor das stickies 
     const updatePalletSticky = (id, newColour) => {
         setStickyNotes(
             stickyNotes.map(note => 
-                note.id === id ? { ...note, colour: newColour } : note
+                note.id === id ? { ...note, colour: newColour,selected: true } : note
             )
         );
         setColorfulPick({ ...colorfulPick, currentColour: newColour });
     };
 
+    const selectedSticky = stickyNotes.find(note => note.selected);
 
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
@@ -75,7 +78,30 @@ function CanvasPage(){
             <div className="canvaspage_div_buttons">
                 <button className="canvaspage_button" onClick={addSticky}>Adicionar Quadro</button>
                 <button className="canvaspage_button" onClick={toggleDelete}>{deleteMode ? "Sair do modo de deleção" : "Excluir Quadro"}</button>
+                {selectedSticky && !deleteMode && (
+                    <button 
+                        className="canvaspage-button"  
+                        onClick={() => togglePallet(selectedSticky.id, selectedSticky.colour)}
+                    >
+                        {colorfulPick.PalletOpened && colorfulPick.stickyID === selectedSticky.id
+                            ? "Fechar Paleta"
+                            : "Mudar de cor"
+                        }
+                    </button>
+                )}
             </div>
+            {/*Função de pagina para mudançade cor dos stickies*/}
+            {colorfulPick.PalletOpened && (
+                <div className="colorful-model">
+                    <div className="colorful-content">
+                        <h3>Escolha uma cor</h3>
+                        <HexColorPicker
+                            color={colorfulPick.currentColour}
+                            onChange={(newColour) => updatePalletSticky(colorfulPick.stickyID, newColour)}
+                        />
+                    </div>
+                </div>
+            )}
             <Stage 
                 width={window.innerWidth} 
                 height={window.innerHeight}
