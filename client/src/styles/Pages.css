@@ -114,6 +114,14 @@ body {
   gap: 10px;
   z-index: 10;
 }
+.canvaspage_h3{
+  font-family: "Coiny", system-ui;
+}
+.canvaspage_input{
+  text-align: center;
+  border-radius: 3vmin;
+  font-family: "Coiny", system-ui;
+}
 .canvaspage_button {
   position: relative;
   width: 120px;
@@ -129,7 +137,7 @@ body {
   height: 100%;
   z-index: 11;
   background-color: transparent;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .colorful-content {
@@ -140,4 +148,5 @@ body {
   max-width: 300px;
   width: 100%;
   z-index: 11;
+  pointer-events: auto;
 }

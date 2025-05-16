@@ -73,6 +73,7 @@ function CanvasPage(){
     const [ pressedShift, setPressedShift ] = useState(false);
 
     useEffect(() => {
+
         function handleShiftDown(e) {
             if(e.key === "Shift") {
                 setPressedShift(true);
@@ -89,10 +90,16 @@ function CanvasPage(){
             window.removeEventListener("keydown", handleShiftDown);
             window.removeEventListener("keyup", handleShiftUp);
         };
+
     }, []);
 
-
-
+    //Ajusta o bug no qual deixa a peleta aberta apos todos os quadros serem deselecionados usando o SHIFT
+    useEffect(() => {
+        const anySelectioned = stickyNotes.some(note => note.selected);
+        if(!anySelectioned && colorfulPick.PalletOpened){
+            setColorfulPick({ ...colorfulPick, PalletOpened: false })
+        }
+    },[colorfulPick,stickyNotes]);
 
     const selectedSticky = stickyNotes.find(note => note.selected);
 
@@ -120,12 +127,13 @@ function CanvasPage(){
             {colorfulPick.PalletOpened && (
                 <div className="colorful-model">
                     <div className="colorful-content" onClick={(e) => e.stopPropagation()}>
-                        <h3>Escolha uma cor</h3>
+                        <h3 className="canvaspage_h3">Escolha uma cor</h3>
                         <HexColorPicker
                             color={colorfulPick.currentColour}
                             onChange={(newColour) => updatePalletSticky(colorfulPick.stickyID, newColour)}
                         />
                         <input
+                        className="canvaspage_input"
                             type="text"
                             value={colorfulPick.currentColour}
                             onChange={(e) => {
