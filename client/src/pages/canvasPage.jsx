@@ -20,7 +20,7 @@ function CanvasPage(){
             height: 230, // Altura do sticky
             text: "Insira seu texto!!", // Texto default
             selected: false, // Estado de seleção inicial
-            colour: colorfulPick.currentColour // Cor do sticky de acordo com as funções de cores
+            colour: "#FFFF00" // Cor do sticky de acordo com as funções de cores
         };
         //Adiciona a nova sticky no array
         setStickyNotes([...stickyNotes,newSticky])
@@ -35,6 +35,7 @@ function CanvasPage(){
     function toggleDelete(){
         setDeleteMode(!deleteMode);
         setStickyNotes(stickyNotes.map(nodes => ({ ...nodes, selected: false})));
+        setColorfulPick({ ...colorfulPick, PalletOpened: false});
     };
 
     //Deletará um stickynode
@@ -47,7 +48,7 @@ function CanvasPage(){
 
     //variavel terá 3 estados, no qual verá se a paleta está aberta, o id do sticky e a cor atual
     const [ colorfulPick, setColorfulPick ] = useState({
-        PalletOpened: false, stickyID: null, currentColour: "#FFFF00" 
+        PalletOpened: false, stickyID: null, currentColour: stickyNotes.colour 
     });
 
     const togglePallet = (id,colour) => {
@@ -65,7 +66,6 @@ function CanvasPage(){
                 note.id === id ? { ...note, colour: newColour,selected: true } : note
             )
         );
-        setColorfulPick({ ...colorfulPick, currentColour: newColour });
     };
 
     const selectedSticky = stickyNotes.find(note => note.selected);
@@ -93,11 +93,21 @@ function CanvasPage(){
             {/*Função de pagina para mudançade cor dos stickies*/}
             {colorfulPick.PalletOpened && (
                 <div className="colorful-model">
-                    <div className="colorful-content">
+                    <div className="colorful-content" onClick={(e) => e.stopPropagation()}>
                         <h3>Escolha uma cor</h3>
                         <HexColorPicker
                             color={colorfulPick.currentColour}
                             onChange={(newColour) => updatePalletSticky(colorfulPick.stickyID, newColour)}
+                        />
+                        <input
+                            type="text"
+                            value={colorfulPick.currentColour}
+                            onChange={(e) => {
+                                const newColour = e.target.value;
+                                updatePalletSticky(colorfulPick.stickyID, newColour);
+                                setColorfulPick({ ...colorfulPick, currentColour: newColour});
+                            }}
+                            placeholder={colorfulPick.currentColour}
                         />
                     </div>
                 </div>
@@ -109,6 +119,7 @@ function CanvasPage(){
                 onClick={(e) => {
                     if(e.currentTarget._id ===  e.target._id){
                         setStickyNotes(stickyNotes.map(note => ({ ...note, selected: false})))
+                        setColorfulPick({ ...colorfulPick, PalletOpened: false });
                     }
                 }}
             >
