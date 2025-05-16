@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Stage, Layer} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
 import { HexColorPicker } from "react-colorful"
@@ -61,12 +61,38 @@ function CanvasPage(){
 
     //Atualiza para a nova cor das stickies 
     const updatePalletSticky = (id, newColour) => {
-        setStickyNotes(
-            stickyNotes.map(note => 
-                note.id === id ? { ...note, colour: newColour,selected: true } : note
+        setStickyNotes(prev =>
+            prev.map(note => 
+                note.selected ? { ...note, colour: newColour } : note
             )
         );
     };
+
+    //Função para selecionar mais de um stickynote quando pressionar o SHIFT
+
+    const [ pressedShift, setPressedShift ] = useState(false);
+
+    useEffect(() => {
+        function handleShiftDown(e) {
+            if(e.key === "Shift") {
+                setPressedShift(true);
+            }
+        }
+        function handleShiftUp(e) {
+            if(e.key === "Shift") {
+                setPressedShift(false);
+            }
+        }
+        window.addEventListener("keydown", handleShiftDown);
+        window.addEventListener("keyup", handleShiftUp);
+        return () => {
+            window.removeEventListener("keydown", handleShiftDown);
+            window.removeEventListener("keyup", handleShiftUp);
+        };
+    }, []);
+
+
+
 
     const selectedSticky = stickyNotes.find(note => note.selected);
 
@@ -135,11 +161,17 @@ function CanvasPage(){
                             if(deleteMode){
                                 deleteStickyNode(objectNode.id);
                             }else{
-                            setStickyNotes(
-                                stickyNotes.map(n =>
-                                    n.id === objectNode.id ? { ...n, selected: !n.selected } : { ...n, selected: false }
-                                )
-                            );
+                                setStickyNotes(prev =>
+                                    prev.map(node => {
+                                        if(node.id === objectNode.id) {
+                                            return { ...node, selected: !node.selected };
+                                        }else if(pressedShift){
+                                            return node;
+                                        }else{
+                                            return { ...node, selected: false};
+                                        }
+                                    })
+                                );
                             }
                         }}
                         //Atualiza o texto no quadro selecionado
