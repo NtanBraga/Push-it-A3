@@ -38,6 +38,7 @@ function CanvasPage(){
         setDeleteMode(!deleteMode);
         setStickyNotes(stickyNotes.map(nodes => ({ ...nodes, selected: false})));
         setColorfulPick({ ...colorfulPick, palledOpened: false});
+        setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false})
     };
 
     //Deletará um stickynode
@@ -60,6 +61,7 @@ function CanvasPage(){
             stickyID: id,
             currentColour: colour
         })
+        setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened:false });
     }
 
     //Atualiza para a nova cor das stickies selecionadas
@@ -86,6 +88,7 @@ function CanvasPage(){
             fontStickyID: id,
             fontCurrentColour: fontColour
         })
+        setColorfulPick({ ...colorfulPick, palledOpened:false });
     }
 
     //Atualiza para a nova cor da font das stickies selecionadas 
@@ -170,11 +173,14 @@ function CanvasPage(){
             {colorfulPick.palledOpened && (
                 <div className="colorful-model">
                     <div className="colorful-content" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="canvaspage_h3">Escolha uma cor</h3>
+                        <h3 className="canvaspage_h3">Cor para o Pushit</h3>
                         <HexColorPicker
                             className="colorful-palletpicker"
                             color={colorfulPick.currentColour}
-                            onChange={(newColour) => updatePalletSticky(newColour)}
+                            onChange={(newColour) => {
+                                setColorfulPick({ ...colorfulPick, currentColour: newColour});
+                                updatePalletSticky(newColour)
+                            }}
                         />
                         <input
                         className="canvaspage_input"
@@ -193,11 +199,14 @@ function CanvasPage(){
             {fontColorfulPick.fontPalletOpened && (
                 <div className="colorful-model">
                     <div className="colorful-content" onClick={(e) => e.stopPropagation}>
-                        <h3 className="canvaspage_h3">Escolha uma cor</h3>
+                        <h3 className="canvaspage_h3">Cor para a fonte</h3>
                         <HexColorPicker
                             className="colorful-palletpicker"
                             color={fontColorfulPick.fontCurrentColour}
-                            onChange={(changeFontColour) => updateFontPalletSticky(changeFontColour)}
+                            onChange={(changeFontColour) => {
+                                setFontColorfulPick({ ...fontColorfulPick, fontCurrentColour: changeFontColour});
+                                updateFontPalletSticky(changeFontColour)
+                            }}
                         />
                         <input
                             className="canvaspage_input"
