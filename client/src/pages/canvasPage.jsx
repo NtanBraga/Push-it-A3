@@ -26,6 +26,8 @@ function CanvasPage(){
         setStickyNotes([...stickyNotes,newSticky])
     };
 
+    const selectedSticky = stickyNotes.find(note => note.selected);
+
     //Lógica para ativar o modo de exclusão através de um botão
     //realizando a deleção de um stickynote especifico ao click
     //Estado de exclusão
@@ -35,7 +37,7 @@ function CanvasPage(){
     function toggleDelete(){
         setDeleteMode(!deleteMode);
         setStickyNotes(stickyNotes.map(nodes => ({ ...nodes, selected: false})));
-        setColorfulPick({ ...colorfulPick, PalletOpened: false});
+        setColorfulPick({ ...colorfulPick, palledOpened: false});
     };
 
     //Deletará um stickynode
@@ -43,30 +45,58 @@ function CanvasPage(){
         setStickyNotes(stickyNotes.filter(node => node.id !== id));
     };
 
+
     //Logica para mudança de cores de um quadro de anotações
     //usando react-colorful para a melhor experiencia de usuario
 
     //variavel terá 3 estados, no qual verá se a paleta está aberta, o id do sticky e a cor atual
     const [ colorfulPick, setColorfulPick ] = useState({
-        PalletOpened: false, stickyID: null, currentColour: stickyNotes.colour 
+        palledOpened: false, stickyID: null, currentColour: stickyNotes.colour 
     });
 
     const togglePallet = (id,colour) => {
         setColorfulPick({
-            PalletOpened: !colorfulPick.PalletOpened,
+            palledOpened: !colorfulPick.palledOpened,
             stickyID: id,
             currentColour: colour
         })
     }
 
-    //Atualiza para a nova cor das stickies 
-    const updatePalletSticky = (id, newColour) => {
+    //Atualiza para a nova cor das stickies selecionadas
+    const updatePalletSticky = (newColour) => {
         setStickyNotes(prev =>
             prev.map(note => 
                 note.selected ? { ...note, colour: newColour } : note
             )
         );
     };
+
+
+    //Logica para aplicar mudança de cor na fonte dos Quadros
+    //Terá que ser feita na mesma branch do RF010, 
+    // pois usuario poderá mudar para uma cor que não torne a fonte atual visivel
+
+    const [ fontColorfulPick, setFontColorfulPick ] = useState({
+        fontPalletOpened: false, fontStickyID: null, fontCurrentColour: "#000000"
+    });
+
+        const toggleFontPallet = (id,fontColour) => {
+        setFontColorfulPick({
+            fontPalletOpened: !fontColorfulPick.fontPalletOpened,
+            fontStickyID: id,
+            fontCurrentColour: fontColour
+        })
+    }
+
+    //Atualiza para a nova cor da font das stickies selecionadas 
+    const updateFontPalletSticky = (newFontColour) => {
+        setStickyNotes(prev =>
+            prev.map(note => 
+                note.selected ? { ...note, fontColour: newFontColour } : note
+            )
+        );
+    };
+
 
     //Função para selecionar mais de um stickynote quando pressionar o SHIFT
 
@@ -96,12 +126,12 @@ function CanvasPage(){
     //Ajusta o bug no qual deixa a peleta aberta apos todos os quadros serem deselecionados usando o SHIFT
     useEffect(() => {
         const anySelectioned = stickyNotes.some(note => note.selected);
-        if(!anySelectioned && colorfulPick.PalletOpened){
-            setColorfulPick({ ...colorfulPick, PalletOpened: false })
+        if(!anySelectioned && colorfulPick.palledOpened){
+            setColorfulPick({ ...colorfulPick, palledOpened: false })
         }
     },[colorfulPick,stickyNotes]);
 
-    const selectedSticky = stickyNotes.find(note => note.selected);
+    
 
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
@@ -112,25 +142,39 @@ function CanvasPage(){
                 <button className="canvaspage_button" onClick={addSticky}>Adicionar Quadro</button>
                 <button className="canvaspage_button" onClick={toggleDelete}>{deleteMode ? "Sair do modo de deleção" : "Excluir Quadro"}</button>
                 {selectedSticky && !deleteMode && (
+                    <>
                     <button 
-                        className="canvaspage-button"  
+                        className="canvaspage_button"  
                         onClick={() => togglePallet(selectedSticky.id, selectedSticky.colour)}
                     >
-                        {colorfulPick.PalletOpened && colorfulPick.stickyID === selectedSticky.id
+                        {colorfulPick.palledOpened && colorfulPick.stickyID === selectedSticky.id
                             ? "Fechar Paleta"
-                            : "Mudar de cor"
+                            : "Mudar de cor do quadro"
                         }
                     </button>
+                    <button
+                        className="canvaspage_button"
+                        onClick={() => toggleFontPallet(selectedSticky.id, selectedSticky.colour)}
+                    >
+                        {fontColorfulPick.fontPalletOpened && fontColorfulPick.fontStickyID === selectedSticky.id
+                            ? "Fechar Paleta"
+                            : "Mudar de cor da fonte"
+                        }
+                    </button>
+
+                    </>
                 )}
+
             </div>
-            {/*Função de pagina para mudançade cor dos stickies*/}
-            {colorfulPick.PalletOpened && (
+            {/*Função de pagina para mudança de cor dos stickies*/}
+            {colorfulPick.palledOpened && (
                 <div className="colorful-model">
                     <div className="colorful-content" onClick={(e) => e.stopPropagation()}>
                         <h3 className="canvaspage_h3">Escolha uma cor</h3>
                         <HexColorPicker
+                            className="colorful-palletpicker"
                             color={colorfulPick.currentColour}
-                            onChange={(newColour) => updatePalletSticky(colorfulPick.stickyID, newColour)}
+                            onChange={(newColour) => updatePalletSticky(newColour)}
                         />
                         <input
                         className="canvaspage_input"
@@ -138,10 +182,33 @@ function CanvasPage(){
                             value={colorfulPick.currentColour}
                             onChange={(e) => {
                                 const newColour = e.target.value;
-                                updatePalletSticky(colorfulPick.stickyID, newColour);
+                                updatePalletSticky(newColour);
                                 setColorfulPick({ ...colorfulPick, currentColour: newColour});
                             }}
                             placeholder={colorfulPick.currentColour}
+                        />
+                    </div>
+                </div>
+            )}
+            {fontColorfulPick.fontPalletOpened && (
+                <div className="colorful-model">
+                    <div className="colorful-content" onClick={(e) => e.stopPropagation}>
+                        <h3 className="canvaspage_h3">Escolha uma cor</h3>
+                        <HexColorPicker
+                            className="colorful-palletpicker"
+                            color={fontColorfulPick.fontCurrentColour}
+                            onChange={(changeFontColour) => updateFontPalletSticky(changeFontColour)}
+                        />
+                        <input
+                            className="canvaspage_input"
+                            type="text"
+                            value={fontColorfulPick.fontCurrentColour}
+                            onChange={(e) => {
+                                const inputNewFontColour = e.target.value;
+                                updateFontPalletSticky(fontColorfulPick.fontStickyID, inputNewFontColour)
+                                setFontColorfulPick({ ...fontColorfulPick, fontCurrentColour: inputNewFontColour});
+                            }}
+                            placeholder="#000000"
                         />
                     </div>
                 </div>
@@ -152,8 +219,9 @@ function CanvasPage(){
                 //Função evento para deseleciona todas stickynotes do canvas
                 onClick={(e) => {
                     if(e.currentTarget._id ===  e.target._id){
-                        setStickyNotes(stickyNotes.map(note => ({ ...note, selected: false})))
-                        setColorfulPick({ ...colorfulPick, PalletOpened: false });
+                        setStickyNotes(stickyNotes.map(note => ({ ...note, selected: false})));
+                        setColorfulPick({ ...colorfulPick, palledOpened: false });
+                        setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false});
                     }
                 }}
             >
