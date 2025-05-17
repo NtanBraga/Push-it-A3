@@ -8,6 +8,7 @@ export function ResizableText({
     x, // Posição
     y, // Posição
     text, // Texto
+    fontColour, // Cor do texto
     width, // Largura
     height, // Altura
     onDoubleClick // evento
@@ -19,7 +20,7 @@ export function ResizableText({
             x={x}
             y={y}
             text={text}
-            fill="black"
+            fill={fontColour}
             fontFamily="sans-serif"
             fontSize={24}
             perfectDrawEnabled={false}
