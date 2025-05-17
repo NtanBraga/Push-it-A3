@@ -16,6 +16,7 @@ export function EditText({
     onToggleEdit,
     onChange,
     text,
+    fontColour,
     width,
     height
 }) {
@@ -51,6 +52,7 @@ export function EditText({
         y={y}
         onDoubleClick={onToggleEdit}
         text={text}
+        fontColour={fontColour}
         width={width}
         height={height}
     />

@@ -9,8 +9,9 @@ import { EditText } from "./EditText";
 //PARAMETROS PARA A INICIALIZAÇÃO DO QUADRO DE ANOTAÇÃO
 export function StickyNote({
     id, // Identificação do sticky
-    text, // Eexto
+    text, // Texto
     colour, //Selecionar cor
+    fontColour,
     x, //Posição
     y, //Posição
     width, //Largura
@@ -27,7 +28,7 @@ export function StickyNote({
     const [isDragging, setIsDragging] = useState(false);
 
 
-        //Variaveis de referencia para redimensionamento dos quadros
+    //Variaveis de referencia para redimensionamento dos quadros
     const groupRef = useRef(null);
     const transformerRef = useRef(null);
 
@@ -103,7 +104,7 @@ export function StickyNote({
                 ref={groupRef}
                 onTransform={handleTransform}
             >
-                {/*Retangulo visual 1*/}
+            {/*Retangulo visual 1*/}
             <Rect
                 x={20}
                 y={20}
@@ -138,10 +139,11 @@ export function StickyNote({
                 isEditing={isEditing}
                 onToggleEdit={toggleEdit}
                 onChange={onTextChange}
+                fontColour={fontColour}
             />
         </Group>
 
-                    {/*Transformer de redimensionamento*/}
+            {/*Transformer de redimensionamento*/}
             {selected && !isEditing && (
                 <Transformer
                     ref={transformerRef}

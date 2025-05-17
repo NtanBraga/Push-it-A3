@@ -114,9 +114,55 @@ body {
   gap: 10px;
   z-index: 10;
 }
+.canvaspage_h3{
+  font-family: "Coiny", system-ui;
+}
+.canvaspage_input{
+  max-width: 200px;
+  text-align: center;
+  font-family: "Coiny", system-ui;
+  font-size: 16px;
+}
 .canvaspage_button {
   position: relative;
   width: 120px;
   height: 40px;
   font-size: 16px;
+}
+/*Estilo para o Pallet dos stickynotes*/
+.colorful-model {
+  position: fixed;
+  top: 100px;
+  left: 150px;
+  width: 100%;
+  height: 100%;
+  z-index: 11;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.colorful-content {
+  padding: 20px;
+  border-radius: 8px;
+  gap: 15px;
+  align-items: center;
+  max-width: 300px;
+  width: 100%;
+  z-index: 11;
+  pointer-events: auto;
+}
+
+.colorful-palletpicker {
+  width: 200px;
+  height: 200px;
+}
+
+.colorful-palletpicker  .react-colorful__hue {
+  height: 30px;
+  border-radius: 4px;
+}
+
+.colorful-palletpicker  .react-colorful__pointer {
+  width: 26px;
+  height: 26px;
 }
