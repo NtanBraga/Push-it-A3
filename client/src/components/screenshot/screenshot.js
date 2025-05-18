@@ -1,7 +1,13 @@
 import html2canvas from "html2canvas";
 
-export function takeScreenShot(div, nomeDoArquivoString) {
-    const element = document.getElementById(div);
+
+/**
+ * @param {string} id - O ID do elemento HTML que será capturado.
+ * @param {string} nomeDoArquivo - O nome do arquivo PNG que será salvo.
+ */
+
+export function takeScreenShot(id, nomeDoArquivo) {
+    const element = document.getElementById(id);
     if(!element) {
         console.log("Não foi possivel identificar o elemento.");
         return;
@@ -12,7 +18,7 @@ export function takeScreenShot(div, nomeDoArquivoString) {
         const dataURL = canvas.toDataURL("image/png");
         const link = document.createElement("a");
         link.href = dataURL;
-        link.download = nomeDoArquivoString;
+        link.download = nomeDoArquivo;
         link.click();
     });
 }

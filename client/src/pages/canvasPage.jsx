@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Stage, Layer} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
 import { HexColorPicker } from "react-colorful"
+import { takeScreenShot } from "../components/screenshot/screenshot";
 
 function CanvasPage(){
 
@@ -139,9 +140,10 @@ function CanvasPage(){
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
     return(
-        <main className="canvaspage_main">
+        <main className="canvaspage_main" id ="canvaspage_main">
             {/* Botão que adiciona novo sticky para renderizar*/}
             <div className="canvaspage_div_buttons">
+                <button className="canvaspage_button" onClick={() => takeScreenShot("canvaspage_main","canvasPrint.png")}>Tirar foto</button>
                 <button className="canvaspage_button" onClick={addSticky}>Adicionar Quadro</button>
                 <button className="canvaspage_button" onClick={toggleDelete}>{deleteMode ? "Sair do modo de deleção" : "Excluir Quadro"}</button>
                 {selectedSticky && !deleteMode && (
