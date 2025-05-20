@@ -1,5 +1,7 @@
 @PushIt_HostAddress = http://localhost:5176
 
+
+### Criar Canvas
 POST {{PushIt_HostAddress}}/canvas
 Content-Type: application/json
 
@@ -9,8 +11,8 @@ Content-Type: application/json
     "CreatedDateTime":"2025-04-22T15:00:00"
 }
 
-###
 
+### Criar Quadro de Anotações em um Canvas
 POST {{PushIt_HostAddress}}/canvas/placeholder/quadros
 Content-Type: application/json
 
@@ -24,8 +26,8 @@ Content-Type: application/json
     "colour":"#000000"  
 }
 
-###
 
+### Atualizar um Quadro de Anotações de um Canvas
 PUT {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
 Content-Type: application/json
 
@@ -35,27 +37,32 @@ Content-Type: application/json
     "width":33,
     "height":1,
     "text":"otherText",
-    "colour":"#01450"  
+    "colour":"#01450",  
+    "IDsConectados": ["ID1", "ID2", "ID3"]
 }
 
-###
 
+### Obter um Quadro de Anotações em específico de um Canvas
 GET {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
 Accept: application/json
 
-###
 
+### Obter TODOS os Quadros de Anotações existentes em um Canvas
 GET {{PushIt_HostAddress}}/canvas/placeholder/quadros
 Accept: application/json
 
-###
 
+### Deletar um Quadro de Anotações em específico de um Canvas
 DELETE {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
 
-###[{"TextoInterno":"texto1"},{"TextoInterno":"texto2"},{"TextoInterno":"texto3"}]
-###
 
+### Obter todos os Dados de um Canvas (incluindo seus Quadros de Anotações)
 GET {{PushIt_HostAddress}}/canvas/placeholder
+Accept: application/json
+
+
+### Obter todos os IDs de Quadros de Anotações que um Quadro de Anotações em específico aponta
+GET {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere/conexoes
 Accept: application/json
 
 ###

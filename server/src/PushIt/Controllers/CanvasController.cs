@@ -92,7 +92,9 @@ public class CanvasController : ControllerBase{
             return BadRequest();
         } 
              
-        List<QuadroResponse> response = quadros.ConvertAll<QuadroResponse>( q => q.ToQuadroResponse() ); 
+        List<QuadroResponse> quadrosConvertidos = quadros.ConvertAll<QuadroResponse>( q => q.ToQuadroResponse() ); 
+        GetAllQuadrosResponse response = new(quadrosConvertidos);
+        
         return Ok(response);
     }
 
@@ -130,7 +132,7 @@ public class CanvasController : ControllerBase{
             return NotFound();
         }
         
-        List<string> response = quadro!.IDsConectados ?? new();
+        GetAllQuadroConexoesResponse response = new(quadro!.IDsConectados ?? new());
         return Ok(response);
     }
 
