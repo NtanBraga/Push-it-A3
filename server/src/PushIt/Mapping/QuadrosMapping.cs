@@ -26,7 +26,7 @@ public static class QuadrosMapping
             height: request.height,
             text: request.text,
             colour: request.colour,
-            setasConexao: request.setasConexao,
+            setasConexao: request.IDsConectados,
 
             lastModification: DateTime.Now
         );
@@ -42,7 +42,7 @@ public static class QuadrosMapping
             height: quadroAnotacao.height, 
             text: quadroAnotacao.text,
             colour: quadroAnotacao.colour,
-            setasConexao: quadroAnotacao.setasConexao,
+            IDsConectados: quadroAnotacao.IDsConectados,
             lastModification: quadroAnotacao.LastModification
         );
     }

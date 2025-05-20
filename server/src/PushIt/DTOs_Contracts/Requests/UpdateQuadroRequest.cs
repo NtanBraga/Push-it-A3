@@ -6,5 +6,5 @@ public record UpdateQuadroRequest
      double height,
      string text,
      string colour,
-     List<string> setasConexao
+     List<string> IDsConectados
 );
