@@ -10,7 +10,7 @@ public static class QuadrosMapping
             height: request.height,
             text: QuadroAnotacao.defaultText,
             colour: QuadroAnotacao.defaultColour,
-            setasConexao: new(), //visto que quadros recém criados não tem como possuir conexoes
+            IDsConectados: new(), //visto que quadros recém criados não tem como possuir conexoes
             lastModification: DateTime.Now
         );
     }
@@ -26,7 +26,7 @@ public static class QuadrosMapping
             height: request.height,
             text: request.text,
             colour: request.colour,
-            setasConexao: request.IDsConectados,
+            IDsConectados: request.IDsConectados,
 
             lastModification: DateTime.Now
         );

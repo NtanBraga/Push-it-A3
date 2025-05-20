@@ -1,4 +1,7 @@
+###Variáveis para facilitar a estruturação de Requisições
 @PushIt_HostAddress = http://localhost:5176
+@NomeCanvas = Validação Teste
+@ID_Quadro = 1234
 
 
 ### Criar Canvas
@@ -6,18 +9,18 @@ POST {{PushIt_HostAddress}}/canvas
 Content-Type: application/json
 
 {
-    "Name":"placeholder",
+    "Name":"Validação Teste",
     "QuadrosAnotacoes": [ ],
     "CreatedDateTime":"2025-04-22T15:00:00"
 }
 
 
 ### Criar Quadro de Anotações em um Canvas
-POST {{PushIt_HostAddress}}/canvas/placeholder/quadros
+POST {{PushIt_HostAddress}}/canvas/{{NomeCanvas}}/quadros
 Content-Type: application/json
 
 {
-    "id":"IDhere3",
+    "id":"1234",
     "x":1.0,
     "y":1.0,
     "width":33,
@@ -28,7 +31,7 @@ Content-Type: application/json
 
 
 ### Atualizar um Quadro de Anotações de um Canvas
-PUT {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
+PUT {{PushIt_HostAddress}}/canvas/{{NomeCanvas}}/quadros/{{ID_Quadro}}
 Content-Type: application/json
 
 {
@@ -43,26 +46,26 @@ Content-Type: application/json
 
 
 ### Obter um Quadro de Anotações em específico de um Canvas
-GET {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
+GET {{PushIt_HostAddress}}/canvas/{{NomeCanvas}}/quadros/{{ID_Quadro}}
 Accept: application/json
 
 
 ### Obter TODOS os Quadros de Anotações existentes em um Canvas
-GET {{PushIt_HostAddress}}/canvas/placeholder/quadros
+GET {{PushIt_HostAddress}}/canvas/{{NomeCanvas}}/quadros
 Accept: application/json
 
 
 ### Deletar um Quadro de Anotações em específico de um Canvas
-DELETE {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere
+DELETE {{PushIt_HostAddress}}/canvas/{{NomeCanvas}}/quadros/{{ID_Quadro}}
 
 
 ### Obter todos os Dados de um Canvas (incluindo seus Quadros de Anotações)
-GET {{PushIt_HostAddress}}/canvas/placeholder
+GET {{PushIt_HostAddress}}/canvas/{{NomeCanvas}}
 Accept: application/json
 
 
 ### Obter todos os IDs de Quadros de Anotações que um Quadro de Anotações em específico aponta
-GET {{PushIt_HostAddress}}/canvas/placeholder/quadros/IDhere/conexoes
+GET {{PushIt_HostAddress}}/canvas/{{NomeCanvas}}/quadros/{{ID_Quadro}}/conexoes
 Accept: application/json
 
 ###
