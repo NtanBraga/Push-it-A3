@@ -92,7 +92,9 @@ public class CanvasController : ControllerBase{
             return BadRequest();
         } 
              
-        List<QuadroResponse> response = quadros.ConvertAll<QuadroResponse>( q => q.ToQuadroResponse() ); 
+        List<QuadroResponse> quadrosConvertidos = quadros.ConvertAll<QuadroResponse>( q => q.ToQuadroResponse() ); 
+        GetAllQuadrosResponse response = new(quadrosConvertidos);
+        
         return Ok(response);
     }
 
@@ -121,18 +123,17 @@ public class CanvasController : ControllerBase{
         return NoContent();
     }
 
-    //PUT /canvas/name
-    // [HttpPut("/canvas/{name}")]
-    // public IActionResult UpdateCanvas(string name, UpdateCanvasRequest request)
-    // {
-    //     return Ok(request);
-    // }
-
-    // //DELETE canvas/name
-    // [HttpDelete("/canvas/{name}")]
-    // public IActionResult DeleteCanvas(string name)
-    // {
-    //     return Ok(name);
-    // }
+    //GET /canvas/{nomecanvas}/quadros/{iddoquadro}/conexoes
+    [HttpGet("/canvas/{name}/quadros/{id}/conexoes")]
+    public IActionResult GetAllQuadroConexoes(string name, string id)
+    {
+        if(!_canvasService.TryGetQuadro(name, id, out QuadroAnotacao? quadro))
+        {
+            return NotFound();
+        }
+        
+        GetAllQuadroConexoesResponse response = new(quadro!.IDsConectados ?? new());
+        return Ok(response);
+    }
 
 }

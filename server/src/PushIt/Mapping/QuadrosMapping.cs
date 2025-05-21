@@ -10,6 +10,7 @@ public static class QuadrosMapping
             height: request.height,
             text: QuadroAnotacao.defaultText,
             colour: QuadroAnotacao.defaultColour,
+            IDsConectados: new(), //visto que quadros recém criados não tem como possuir conexoes
             lastModification: DateTime.Now
         );
     }
@@ -18,12 +19,15 @@ public static class QuadrosMapping
     {
         return new QuadroAnotacao(
             id: _id, 
+
             x: request.x,
             y: request.y,
             width: request.width,
             height: request.height,
             text: request.text,
             colour: request.colour,
+            IDsConectados: request.IDsConectados,
+
             lastModification: DateTime.Now
         );
     }
@@ -38,6 +42,7 @@ public static class QuadrosMapping
             height: quadroAnotacao.height, 
             text: quadroAnotacao.text,
             colour: quadroAnotacao.colour,
+            IDsConectados: quadroAnotacao.IDsConectados,
             lastModification: quadroAnotacao.LastModification
         );
     }

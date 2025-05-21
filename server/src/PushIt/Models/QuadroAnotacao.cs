@@ -10,10 +10,10 @@ public class QuadroAnotacao
     public double height { get; }
     public string text { get; }
     public string colour { get; }
-
+    public List<string> IDsConectados { get; }
     public DateTime LastModification { get; }
 
-    public QuadroAnotacao(string id, double x, double y, double width, double height, string text, string colour, DateTime lastModification)
+    public QuadroAnotacao(string id, double x, double y, double width, double height, string text, string colour, List<string> IDsConectados, DateTime lastModification)
     {
          this.id = id;
          this.x = x;
@@ -22,6 +22,7 @@ public class QuadroAnotacao
          this.height = height;
          this.text = text;
          this.colour = colour;
+         this.IDsConectados = IDsConectados;
          this.LastModification = lastModification;
     }
 }
