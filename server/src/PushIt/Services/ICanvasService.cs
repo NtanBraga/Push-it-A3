@@ -1,6 +1,6 @@
 public interface ICanvasService
 {
-    public bool TryCreateCanvas(Canvas canvasToCreate);
+    public Task<Canvas?> CreateCanvasAsync(Canvas canvasToCreate);
     public bool TryGetCanvas(string canvasName, out Canvas? canvas);
     public bool TryCreateQuadro(string canvasName, QuadroAnotacao quadro);
     public bool TryGetQuadro(string canvasName, string quadroId, out QuadroAnotacao? quadro);

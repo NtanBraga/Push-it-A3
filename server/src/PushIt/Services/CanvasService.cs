@@ -1,16 +1,27 @@
+using Microsoft.EntityFrameworkCore;
+
 public class CanvasService : ICanvasService 
 {
-    private readonly Dictionary<string, Canvas> canvasPseudoDatabase = new(); 
-    //Definindo no Program.cs como singleton se mantém salvo por todo o tempo de execução do server
-    public bool TryCreateCanvas(Canvas canvas)
+    private PushItContext dbContext { get; }
+    
+    public CanvasService(PushItContext dbContext)
     {
-        if(this.canvasPseudoDatabase.ContainsKey(canvas.Name))
-        {
-            return false;
-        }
+        this.dbContext = dbContext;
+    }
 
-        this.canvasPseudoDatabase.Add(canvas.Name, canvas);
-        return true;
+    private readonly Dictionary<string, Canvas> canvasPseudoDatabase = new();
+    //Definindo no Program.cs como singleton se mantém salvo por todo o tempo de execução do server
+
+    public async Task<Canvas?> CreateCanvasAsync(Canvas canvas)
+    {
+        CanvasEntity canvasEntity = canvas.ToCanvasEntity();
+
+        var queryResult = await dbContext.canvas.FirstAsync<CanvasEntity>(c => c.Name == canvasEntity.Name);
+        if (queryResult is not null) { return null; }
+
+        canvasEntity = (await dbContext.canvas.AddAsync(canvasEntity)).Entity;
+
+        return canvasEntity.ToCanvas(null);
     }
 
     public bool TryGetCanvas(string canvasName, out Canvas? canvas)

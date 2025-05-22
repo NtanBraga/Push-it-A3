@@ -33,4 +33,11 @@ public class CanvasEntity
         this.CreatedDateTime = createdDateTime;
         this.LastModification = lastModification;
     }
+
+    public CanvasEntity(string name, DateTime createdDateTime, DateTime lastModification)
+    {
+        this.Name = name;
+        this.CreatedDateTime = createdDateTime;
+        this.LastModification = lastModification;
+    }
 }

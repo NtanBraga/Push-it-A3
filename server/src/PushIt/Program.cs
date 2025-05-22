@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services.AddSingleton<ICanvasService, CanvasService>();
+builder.Services.AddScoped<CanvasService>();
+
+builder.Services.AddSingleton<ICanvasService, CanvasService>();//
 
 //Adicionada essa função devido a erros de requisição 'fetch' da porta do React com a API
 const string AllowAllPolicyName = "AllowAll";
@@ -23,7 +25,7 @@ builder.Services.AddDbContext<PushItContext>(options =>
     options.UseSqlite(connectionString);
 });
 
-var app = builder.Build();
+var app = builder.Build(); //"constrói" um server de acordo com as configurações definidas anteriormente na pipeline
 
 using (IServiceScope scope = app.Services.CreateScope()) //gera um service compatível com a keyword "using"
 {

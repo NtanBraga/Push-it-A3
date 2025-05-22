@@ -3,12 +3,11 @@ public class Canvas
     public const int MaxQuadrosAmount = 100;
     public const int MaxNameLength = 32;
 
-    public int Id { get; set; }
     public string Name { get; set; }
 
     //Obter Através de query "SELECT *" na tabela Canvas_Contem_Quadro
     public List<QuadroAnotacao> QuadrosAnotacoes { get; set; }
-    
+
     public DateTime CreatedDateTime { get; set; }
     public DateTime LastModification { get; set; }
 

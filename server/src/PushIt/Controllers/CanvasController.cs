@@ -14,17 +14,18 @@ public class CanvasController : ControllerBase
 
     //POST /canvas
     [HttpPost("/canvas")]
-    public IActionResult CreateCanvas(CreateCanvasRequest request)
+    public async Task<IActionResult> CreateCanvas(CreateCanvasRequest request)
     {
         //Converte request para formato interno do sistema
-        Canvas canvas = request.ToCanvas();
+        Canvas? canvas = request.ToCanvas();
         if (!canvas.IsValid())
         {
             return BadRequest();
         }
 
         // Aqui salva na database ou lista em memória
-        if (!this._canvasService.TryCreateCanvas(canvas))
+        canvas = await _canvasService.CreateCanvasAsync(canvas);
+        if(canvas is null)
         {
             return BadRequest();
         }
