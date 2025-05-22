@@ -1,11 +1,32 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+[Table("Canvas")]
 public class Canvas
 {
     public const int MaxQuadrosAmount = 100;
     public const int MaxNameLength = 32;
 
-    public string Name { get; }
-    public List<QuadroAnotacao> QuadrosAnotacoes { get; } = new();
-    public DateTime CreatedDateTime { get; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Required]
+    [Column("ID")]
+    public int Id { get; set; }
+
+    [Required]
+    [MaxLength(MaxNameLength)]
+    [Column("Name")]
+    public string Name { get; set; }
+
+    //Obter Através de query "SELECT *" na tabela Canvas_Contem_Quadro
+    public List<QuadroAnotacao> QuadrosAnotacoes { get; set; } = new();
+
+    [Required]
+    [Column("CreatedDateTime")]
+    public DateTime CreatedDateTime { get; set; }
+
+    [Required]
+    [Column("LastModification")]
     public DateTime LastModification { get; set; }
 
     public Canvas(string name, List<QuadroAnotacao> quadrosAnotacoes, DateTime createdDateTime, DateTime lastModification)
@@ -18,11 +39,11 @@ public class Canvas
 
     public bool IsValid()
     {
-        if(this.Name.Length <= 0 || this.Name.Length > MaxNameLength)
+        if (this.Name.Length <= 0 || this.Name.Length > MaxNameLength)
         {
             return false;
         }
-        if(this.QuadrosAnotacoes.Count > MaxQuadrosAmount)
+        if (this.QuadrosAnotacoes.Count > MaxQuadrosAmount)
         {
             return false;
         }
@@ -45,7 +66,7 @@ public class Canvas
             q => q.id == quadroId
         );
 
-        if(index < 0 ) { return false; }
+        if (index < 0) { return false; }
 
         this.QuadrosAnotacoes[index] = novoQuadro;
         this.LastModification = DateTime.Now;
@@ -59,7 +80,7 @@ public class Canvas
             q => q.id == quadroId
         );
 
-        if(index < 0 ) { return false; }
+        if (index < 0) { return false; }
 
         this.QuadrosAnotacoes.RemoveAt(index);
         this.LastModification = DateTime.Now;
