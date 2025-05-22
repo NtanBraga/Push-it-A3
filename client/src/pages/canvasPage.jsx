@@ -42,6 +42,7 @@ function CanvasPage(){
         setStickyNotes(stickyNotes.map(nodes => ({ ...nodes, selected: false})));
         setColorfulPick({ ...colorfulPick, palletOpened: false});
         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false})
+        setConnectMode(false)
     };
 
     //Deletará um stickynode
@@ -142,6 +143,8 @@ function CanvasPage(){
     // necessita que o começo da linha inicie no meio do quadro,e  o final no meio do segundo
 
     const [ connectMode, setConnectMode ] = useState(false);
+    const [ connections, setConnections ] = useState([]);
+    const [ selectMain, setSelectMain ] = useState(false);
     const arrowsLayer = useRef(null);
 
     const createArrowPos = (idMain, idSecond) => {
@@ -160,12 +163,47 @@ function CanvasPage(){
 
     const toggleConnect = () => {
         setConnectMode(!connectMode)
-        setDeleteMode(!deleteMode)
+        setDeleteMode(false)
         setStickyNotes(stickyNotes.map((node) => ({ ...node, selected:false })));
         setColorfulPick({ ...colorfulPick, palletOpened: false });
         setFontColorfulPick({ ...fontColorfulPick, fontCurrentColour: false});
     }
 
+    const handleSelectConnect = (id) => {
+        if(connectMode) {
+            if(!selectMain) {
+                setSelectMain(id);
+                setStickyNotes((prev) =>
+                    prev.map((node) =>
+                        node.id === id ? { ...node, selected: true } : { ...node, selected: false }
+                    )
+                );
+            } else if (selectMain !== id) {
+                setConnections([...connections, { fromId: selectMain, toId: id }]);
+                setSelectMain(null);
+                setStickyNotes((prev) =>
+                    prev.map((node) =>
+                        ({ ...node, selected: false})
+                    )
+                )
+                setConnectMode(false);
+            } else if(deleteMode) {
+                deleteStickyNode(id);
+            }else {
+                setStickyNotes((prev) => {
+                    prev.map((node) => {
+                        if(node.id === id) {
+                            return { ...node, selected: !node.selected };
+                        } else if(pressedShift) {
+                            return node;
+                        }else {
+                            return { ...node, selected: false };
+                        }   
+                    })
+                })
+            };
+        }
+    };
 
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
@@ -268,6 +306,22 @@ function CanvasPage(){
                     }
                 }}
             >
+                <Layer ref={arrowsLayer}>
+                    {connections.map((connectId, index) => {
+                        const intersect = createArrowPos(connectId.fromId, connectId.toId);
+                        return (
+                            <Arrow
+                                key={`arrow-${index}`}
+                                points={intersect}
+                                stroke={"#000000"}
+                                strokeWidth={2}
+                                pointerLength={10}
+                                pointerWidth={10}
+                            />
+                        );
+                        })
+                    }
+                </Layer>
                 <Layer>
                     {/*Coloca na tela os quadros de anotações armazenados no array*/}
                     {stickyNotes.map((objectNode) => (
@@ -276,23 +330,7 @@ function CanvasPage(){
                         id={objectNode.id} // Passa o ID do stickynode
                         {...objectNode} // Passa todas as  propriedades do objeto de quadro de anotações
                         //Seleciona o stikynote clicado e deseleciona o restante
-                        onClick={() => {
-                            if(deleteMode){
-                                deleteStickyNode(objectNode.id);
-                            }else{
-                                setStickyNotes(prev =>
-                                    prev.map(node => {
-                                        if(node.id === objectNode.id) {
-                                            return { ...node, selected: !node.selected };
-                                        }else if(pressedShift){
-                                            return node;
-                                        }else{
-                                            return { ...node, selected: false};
-                                        }
-                                    })
-                                );
-                            }
-                        }}
+                        onClick={() => handleSelectConnect(objectNode.id)}
                         //Atualiza o texto no quadro selecionado
                         onTextChange={(value) => {
                             setStickyNotes(
@@ -318,7 +356,23 @@ function CanvasPage(){
                                     n.id === objectNode.id ? { ...n, width: newWidth, height: newHeight } : n
                                 )
                             );
+                            if(arrowsLayer.current) {
+                                arrowsLayer.current.batchDraw();
+                            }
                         }}
+                        onDragMove={() => {
+                            if(arrowsLayer.current){
+                                arrowsLayer.current.batchDraw();
+                            }
+                        }}
+                        onDragEnd={(newX, newY) => {
+                            setStickyNotes(
+                                stickyNotes.map((n) => 
+                                    n.id === objectNode.id ? { ...n, x: newX, y: newY} : n
+                                )
+                            );
+                        }}
+                        
                     />
                     ))}
                 </Layer>
