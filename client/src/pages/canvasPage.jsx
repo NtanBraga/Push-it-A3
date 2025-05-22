@@ -1,5 +1,5 @@
 import React, { useEffect, useState,useRef } from "react";
-import { Stage, Layer, Arrow} from 'react-konva'
+import { Stage, Layer, Line} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
 import { HexColorPicker } from "react-colorful"
 import { takeScreenShot } from "../components/screenshot/screenshot";
@@ -310,7 +310,7 @@ function CanvasPage(){
                     {connections.map((connectId, index) => {
                         const intersect = createArrowPos(connectId.fromId, connectId.toId);
                         return (
-                            <Arrow
+                            <Line
                                 key={`arrow-${index}`}
                                 points={intersect}
                                 stroke={"#000000"}
