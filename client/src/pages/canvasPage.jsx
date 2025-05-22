@@ -21,8 +21,8 @@ function CanvasPage(){
             height: 230, // Altura do sticky
             text: "Insira seu texto!!", // Texto default
             selected: false, // Estado de seleção inicial
-            colour: "#FFFF00", // Cor do sticky de acordo com as funções de cores
-            fontColour: "#000000",
+            colour: colorfulPick.currentColour, // Cor do sticky de acordo com as funções de cores
+            fontColour: fontColorfulPick.fontCurrentColour,
             idConnect: [] // Array de conexões do sticky
         };
         //Adiciona a nova sticky no array
@@ -43,6 +43,7 @@ function CanvasPage(){
         setColorfulPick({ ...colorfulPick, palletOpened: false});
         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false})
         setConnectMode(false)
+        setSelectMain(null);
     };
 
     //Deletará um stickynode
@@ -56,25 +57,26 @@ function CanvasPage(){
 
     //variavel terá 3 estados, no qual verá se a paleta está aberta, o id do sticky e a cor atual
     const [ colorfulPick, setColorfulPick ] = useState({
-        palletOpened: false, stickyID: null, currentColour: stickyNotes.colour 
+        palletOpened: false, stickyID: null, currentColour: "#FFFF00"
     });
 
     const togglePallet = (id,colour) => {
         setColorfulPick({
             palletOpened: !colorfulPick.palletOpened,
             stickyID: id,
-            currentColour: colour
+            currentColour: colour || "#FFFF00"
         })
         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened:false });
     }
 
     //Atualiza para a nova cor das stickies selecionadas
     const updatePalletSticky = (newColour) => {
-        setStickyNotes(prev =>
-            prev.map(note => 
+        setStickyNotes((prev) =>
+            prev.map((note) =>
                 note.selected ? { ...note, colour: newColour } : note
             )
         );
+        setColorfulPick({ ...colorfulPick, currentColour: newColour });
     };
 
 
@@ -90,18 +92,20 @@ function CanvasPage(){
         setFontColorfulPick({
             fontPalletOpened: !fontColorfulPick.fontPalletOpened,
             fontStickyID: id,
-            fontCurrentColour: fontColour
+            fontCurrentColour: fontColour || "#000000"
         })
-        setColorfulPick({ ...colorfulPick, palletOpened:false });
+        setColorfulPick({ ...colorfulPick, palletOpened: false });
     }
 
     //Atualiza para a nova cor da font das stickies selecionadas 
     const updateFontPalletSticky = (newFontColour) => {
-        setStickyNotes(prev =>
-            prev.map(note => 
+        setStickyNotes((prev) =>
+            prev.map((note) =>
                 note.selected ? { ...note, fontColour: newFontColour } : note
             )
         );
+        setFontColorfulPick({...fontColorfulPick,fontCurrentColour: newFontColour,});
+        
     };
 
 
@@ -155,9 +159,10 @@ function CanvasPage(){
     const toggleConnect = () => {
         setConnectMode(!connectMode)
         setDeleteMode(false)
+        setSelectMain(null);
         setStickyNotes(stickyNotes.map((node) => ({ ...node, selected:false })));
         setColorfulPick({ ...colorfulPick, palletOpened: false });
-        setFontColorfulPick({ ...fontColorfulPick, fontCurrentColour: false});
+        setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false});
     }
 
     const handleSelectConnect = (id) => {
@@ -297,7 +302,7 @@ function CanvasPage(){
                 //Função evento para deseleciona todas stickynotes do canvas
                 onClick={(e) => {
                     if(e.currentTarget._id ===  e.target._id){
-                        setStickyNotes(stickyNotes.map(note => ({ ...note, selected: false})));
+                        setStickyNotes(stickyNotes.map((note) => ({ ...note, selected: false})));
                         setColorfulPick({ ...colorfulPick, palletOpened: false });
                         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false});
                         setConnectMode(false);
