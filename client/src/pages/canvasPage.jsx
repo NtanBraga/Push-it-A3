@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Stage, Layer} from 'react-konva'
+import React, { useEffect, useState,useRef } from "react";
+import { Stage, Layer, Arrow} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
 import { HexColorPicker } from "react-colorful"
 import { takeScreenShot } from "../components/screenshot/screenshot";
@@ -15,13 +15,15 @@ function CanvasPage(){
     const addSticky = () => {
         const newSticky = {
             id: Date.now(), // ID unico de criação
-            x: 20, //Posição aleatoria
-            y: 20, //Posição aleatoria
+            x: 20, //Posição fixa
+            y: 20, //Posição fixa
             width: 250, // Largura do sticky
             height: 230, // Altura do sticky
             text: "Insira seu texto!!", // Texto default
             selected: false, // Estado de seleção inicial
-            colour: "#FFFF00" // Cor do sticky de acordo com as funções de cores
+            colour: "#FFFF00", // Cor do sticky de acordo com as funções de cores
+            fontColour: "#000000",
+            idConnect: [] // Array de conexões do sticky
         };
         //Adiciona a nova sticky no array
         setStickyNotes([...stickyNotes,newSticky])
@@ -38,7 +40,7 @@ function CanvasPage(){
     function toggleDelete(){
         setDeleteMode(!deleteMode);
         setStickyNotes(stickyNotes.map(nodes => ({ ...nodes, selected: false})));
-        setColorfulPick({ ...colorfulPick, palledOpened: false});
+        setColorfulPick({ ...colorfulPick, palletOpened: false});
         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false})
     };
 
@@ -53,12 +55,12 @@ function CanvasPage(){
 
     //variavel terá 3 estados, no qual verá se a paleta está aberta, o id do sticky e a cor atual
     const [ colorfulPick, setColorfulPick ] = useState({
-        palledOpened: false, stickyID: null, currentColour: stickyNotes.colour 
+        palletOpened: false, stickyID: null, currentColour: stickyNotes.colour 
     });
 
     const togglePallet = (id,colour) => {
         setColorfulPick({
-            palledOpened: !colorfulPick.palledOpened,
+            palletOpened: !colorfulPick.palletOpened,
             stickyID: id,
             currentColour: colour
         })
@@ -89,7 +91,7 @@ function CanvasPage(){
             fontStickyID: id,
             fontCurrentColour: fontColour
         })
-        setColorfulPick({ ...colorfulPick, palledOpened:false });
+        setColorfulPick({ ...colorfulPick, palletOpened:false });
     }
 
     //Atualiza para a nova cor da font das stickies selecionadas 
@@ -130,12 +132,40 @@ function CanvasPage(){
     //Ajusta o bug no qual deixa a peleta aberta apos todos os quadros serem deselecionados usando o SHIFT
     useEffect(() => {
         const anySelectioned = stickyNotes.some(note => note.selected);
-        if(!anySelectioned && colorfulPick.palledOpened){
-            setColorfulPick({ ...colorfulPick, palledOpened: false })
+        if(!anySelectioned && colorfulPick.palletOpened){
+            setColorfulPick({ ...colorfulPick, palletOpened: false })
         }
     },[colorfulPick,stickyNotes]);
 
     
+    // Logica para implementação de conexões entre uma anotação e outra
+    // necessita que o começo da linha inicie no meio do quadro,e  o final no meio do segundo
+
+    const [ connectMode, setConnectMode ] = useState(false);
+    const arrowsLayer = useRef(null);
+
+    const createArrowPos = (idMain, idSecond) => {
+        const fromId = stickyNotes.find((node) => node.id === idMain);
+        const toId = stickyNotes.find((node) => node.id === idSecond);
+        if(!fromId || !toId) return[0,0,0,0];
+
+        const mainX = fromId.x + fromId.width / 2 + 20;
+        const mainY = fromId.y + fromId.height / 2 + 30;
+        const secondX = toId.x + toId.width / 2 + 20;
+        const secondY = toId.y + toId.height / 2 + 30;
+
+        return [mainX, mainY, secondX, secondY];
+
+    }
+
+    const toggleConnect = () => {
+        setConnectMode(!connectMode)
+        setDeleteMode(!deleteMode)
+        setStickyNotes(stickyNotes.map((node) => ({ ...node, selected:false })));
+        setColorfulPick({ ...colorfulPick, palletOpened: false });
+        setFontColorfulPick({ ...fontColorfulPick, fontCurrentColour: false});
+    }
+
 
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
@@ -146,13 +176,14 @@ function CanvasPage(){
                 <button className="canvaspage_button" onClick={() => takeScreenShot("canvaspage_main","canvasPrint.png")}>Tirar foto</button>
                 <button className="canvaspage_button" onClick={addSticky}>Adicionar Quadro</button>
                 <button className="canvaspage_button" onClick={toggleDelete}>{deleteMode ? "Sair do modo de deleção" : "Excluir Quadro"}</button>
+                <button className="canvaspage_button" onClick={toggleConnect}>{connectMode ? "Sair do modo de conexão" : "Conectar"}</button>
                 {selectedSticky && !deleteMode && (
                     <>
                     <button 
                         className="canvaspage_button"  
                         onClick={() => togglePallet(selectedSticky.id, selectedSticky.colour)}
                     >
-                        {colorfulPick.palledOpened && colorfulPick.stickyID === selectedSticky.id
+                        {colorfulPick.palletOpened && colorfulPick.stickyID === selectedSticky.id
                             ? "Fechar Paleta"
                             : "Mudar de cor do quadro"
                         }
@@ -172,7 +203,7 @@ function CanvasPage(){
 
             </div>
             {/*Função de pagina para mudança de cor dos stickies*/}
-            {colorfulPick.palledOpened && (
+            {colorfulPick.palletOpened && (
                 <div className="colorful-model">
                     <div className="colorful-content" onClick={(e) => e.stopPropagation()}>
                         <h3 className="canvaspage_h3">Cor para o Pushit</h3>
@@ -231,8 +262,9 @@ function CanvasPage(){
                 onClick={(e) => {
                     if(e.currentTarget._id ===  e.target._id){
                         setStickyNotes(stickyNotes.map(note => ({ ...note, selected: false})));
-                        setColorfulPick({ ...colorfulPick, palledOpened: false });
+                        setColorfulPick({ ...colorfulPick, palletOpened: false });
                         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false});
+                        setConnectMode(false);
                     }
                 }}
             >
