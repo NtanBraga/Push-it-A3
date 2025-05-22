@@ -16,12 +16,13 @@ public class CanvasService : ICanvasService
     {
         CanvasEntity canvasEntity = canvas.ToCanvasEntity();
 
-        var queryResult = await dbContext.canvas.FirstAsync<CanvasEntity>(c => c.Name == canvasEntity.Name);
+        var queryResult = await dbContext.canvas.FirstOrDefaultAsync<CanvasEntity>(c => c.Name == canvasEntity.Name);
         if (queryResult is not null) { return null; }
 
         canvasEntity = (await dbContext.canvas.AddAsync(canvasEntity)).Entity;
+        await dbContext.SaveChangesAsync();
 
-        return canvasEntity.ToCanvas(null);
+        return canvasEntity.ToCanvas(new List<QuadroAnotacao>());
     }
 
     public bool TryGetCanvas(string canvasName, out Canvas? canvas)

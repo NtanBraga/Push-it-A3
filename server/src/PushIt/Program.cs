@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services.AddScoped<CanvasService>();
 
-builder.Services.AddSingleton<ICanvasService, CanvasService>();//
+builder.Services.AddScoped<ICanvasService, CanvasService>();//
 
 //Adicionada essa função devido a erros de requisição 'fetch' da porta do React com a API
 const string AllowAllPolicyName = "AllowAll";
