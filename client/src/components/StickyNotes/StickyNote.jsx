@@ -59,8 +59,8 @@ export function StickyNote({
     // Mudança no estado de edição
     function toggleEdit() {
         if(!isDragging){
-            setIsEditing(!isEditing);
-            onTextClick(!isEditing);
+            setIsEditing(true);
+            onTextClick(true);
         }
     }
     //Função de começo de movimento que tambem sairá modo de edição quando ativado
