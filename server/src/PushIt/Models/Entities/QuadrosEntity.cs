@@ -11,38 +11,38 @@ public class QuadrosEntity
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Required]
     [Column("ID")]
-    public string id { get; }
+    public string id { get; set; }
 
     [Required]
     [Column("LocalID")]
-    public string localId { get; }
+    public string localId { get; set; }
 
     [Required]
     [Column("X")]
-    public double x { get; }
+    public double x { get; set; }
 
     [Required]
     [Column("Y")]
-    public double y { get; }
+    public double y { get; set; }
 
     [Required]
     [Column("Width")]
-    public double width { get; }
+    public double width { get; set; }
 
     [Required]
     [Column("Height")]
-    public double height { get; }
+    public double height { get; set; }
 
     [Column("Text")]
-    public string text { get; }
+    public string text { get; set; }
 
     [Required]
     [Column("Colour")]
-    public string colour { get; }
+    public string colour { get; set; }
 
     [Required]
     [Column("LastModification")]
-    public DateTime LastModification { get; }
+    public DateTime LastModification { get; set; }
 
     public QuadrosEntity(string id, string localId, double x, double y, double width, double height, string text, string colour, DateTime lastModification)
     {

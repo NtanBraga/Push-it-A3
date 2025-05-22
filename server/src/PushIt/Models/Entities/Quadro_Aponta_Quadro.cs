@@ -12,13 +12,13 @@ public class Quadro_Aponta_Quadro
 
     [Required]
     [Column("LocalIdComeco")]
-    public int idQuadroComeco { get; set; }
+    public string idQuadroComeco { get; set; }
 
     [Required]
     [Column("LocalIdDestino")]
     public string localIdQuadroDestino { get; set; }
 
-    public Quadro_Aponta_Quadro(int id, int idQuadroComeco, string localIdQuadroDestino)
+    public Quadro_Aponta_Quadro(int id, string idQuadroComeco, string localIdQuadroDestino)
     {
         this.id = id;
         this.idQuadroComeco = idQuadroComeco;

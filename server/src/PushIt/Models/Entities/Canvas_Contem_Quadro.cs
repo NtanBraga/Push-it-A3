@@ -17,10 +17,14 @@ public class Canvas_Contem_Quadro
     [ForeignKey("QuadroKey")]
     public QuadrosEntity quadro { get; init; }
 
-    public Canvas_Contem_Quadro(int id, string nomeCanvas, QuadrosEntity quadro)
+    public Canvas_Contem_Quadro(int id, string nomeCanvas, QuadrosEntity quadro) : this(id, nomeCanvas)
+    {
+        this.quadro = quadro;
+    }
+
+    private Canvas_Contem_Quadro(int id, string nomeCanvas) : base()
     {
         this.id = id;
         this.nomeCanvas = nomeCanvas;
-        this.quadro = quadro;
     }
 }
