@@ -146,6 +146,7 @@ function CanvasPage(){
     const [ selectMain, setSelectMain ] = useState(null);
     const arrowsLayer = useRef(null);
 
+    //Arranja as linhas para conexão
     const createArrowPos = (idMain, idSecond) => {
         const fromId = stickyNotes.find((node) => node.id === idMain);
         const toId = stickyNotes.find((node) => node.id === idSecond);
@@ -160,6 +161,7 @@ function CanvasPage(){
 
     }
 
+    //Ativa a o modo de conexão
     const toggleConnect = () => {
         setConnectMode(!connectMode)
         setDeleteMode(false)
@@ -169,6 +171,7 @@ function CanvasPage(){
         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false});
     }
 
+    //Seleciona as conexões escolidas pelo usuario
     const handleSelectConnect = (id) => {
         if(connectMode) {
             if(!selectMain) {
@@ -204,6 +207,7 @@ function CanvasPage(){
 
     // Logica para a remoção das conexões dentre os quadros
 
+    //Ao selecionar um quadro, todas as conexões com ele são removidas
     const removeConnectionAll = () => {
         if(selectedSticky.length === 0) return;
         const selectedId = selectedSticky.map((note) => note.id);
@@ -213,6 +217,7 @@ function CanvasPage(){
         }
     };
 
+    // Ao selecionar dois quadros, a conexão entre eles é removida
     const removeConnectionSpecific = () => {
         if (selectedSticky.length === 0) return;
 
