@@ -20,7 +20,10 @@ export function StickyNote({
     selected, // Booleano
     onTextChange, // Estado
     onTextClick, // Estado
-    onResize // Estado
+    onResize, // Estado
+    onDragEnd, // Estado
+    onDragMove, // Estado
+    idConnect // Vetor
 }) {
 
     //Verificar estado de edição do quadro de anotações
@@ -56,18 +59,19 @@ export function StickyNote({
     // Mudança no estado de edição
     function toggleEdit() {
         if(!isDragging){
-            setIsEditing(!isEditing);
-            onTextClick(!isEditing);
+            setIsEditing(true);
+            onTextClick(true);
         }
     }
     //Função de começo de movimento que tambem sairá modo de edição quando ativado
-    function handleStartDragging() {
+    const handleStartDragging = () => {
         setIsDragging(true);
         setIsEditing(false);
     }
     //Função de fim de movimento do quadro.
-    function handleStopDragging() {
+    const handleStopDragging = (e) => {
         setIsDragging(false);
+        onDragEnd(e.target.x(), e.target.y());
     }
 
         //Função de redimensionamento dos quadros
@@ -99,6 +103,9 @@ export function StickyNote({
                 draggable={!isEditing} 
                 onDragStart={handleStartDragging} 
                 onDragEnd={handleStopDragging}
+                onDragMove={(e) => {
+                    onDragMove?.(e);
+                }}
                 onClick={onClick}
                 onTap={onClick}
                 ref={groupRef}
