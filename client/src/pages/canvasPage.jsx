@@ -198,6 +198,28 @@ function CanvasPage(){
         }
     };
 
+    // Logica para a remoção das conexões dentre os quadros
+
+    const removeConnection = () => {
+        if (selectedSticky.length === 0) return;
+
+        const selectIds = selectedSticky.map((note) => note.id);
+        setConnections(
+            connections.filter(
+                (conn) => !selectIds.includes(conn.fromId) && !selectIds.includes(conn.toId)
+            )
+        );
+        if(arrowsLayer.current){
+            arrowsLayer.current.batchDraw();
+        }
+    };
+
+    //Verifica se tem conexão os quadros selecionados
+
+    const verifyConn = selectedSticky.some((note) =>
+        connections.some((conn) => conn.fromId === note.id || conn.toId === note.id)
+    );
+
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
     
@@ -238,7 +260,9 @@ function CanvasPage(){
                             : "Mudar de cor da fonte"
                         }
                     </button>
-
+                    {verifyConn && (
+                        <button className="canvaspage_button" onClick={removeConnection}>Remover Conexão</button>
+                    )}
                     </>
                 )}
 
