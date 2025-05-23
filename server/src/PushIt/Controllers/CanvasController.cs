@@ -55,10 +55,12 @@ public class CanvasController : ControllerBase
 
     //POST /canvas/nomedocanvas/quadros
     [HttpPost("/canvas/{name}/quadros")]
-    public IActionResult CreateQuadro(string name, CreateQuadroRequest request)
+    public async Task<IActionResult> CreateQuadro(string name, CreateQuadroRequest request)
     {
-        QuadroAnotacao quadro = request.ToQuadro();
-        if (!this._canvasService.TryCreateQuadro(name, quadro))
+        QuadroAnotacao? quadro = request.ToQuadro();
+        
+        quadro = await _canvasService.CreateQuadroAsync(name, quadro);
+        if (quadro is null)
         {
             return BadRequest();
         }

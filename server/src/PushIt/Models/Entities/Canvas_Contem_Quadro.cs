@@ -27,4 +27,13 @@ public class Canvas_Contem_Quadro
         this.id = id;
         this.nomeCanvas = nomeCanvas;
     }
+
+    public Canvas_Contem_Quadro(string nomeCanvas, QuadrosEntity quadro) : this(nomeCanvas)
+    {
+        this.quadro = quadro;
+    }
+    private Canvas_Contem_Quadro(string nomeCanvas) : base()
+    {
+        this.nomeCanvas = nomeCanvas;
+    }
 }

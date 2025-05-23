@@ -30,14 +30,37 @@ public class CanvasService : ICanvasService
         return this.canvasPseudoDatabase.TryGetValue(canvasName, out canvas);
     }
 
-    public bool TryCreateQuadro(string canvasName, QuadroAnotacao quadro)
+    public async Task<QuadroAnotacao?> CreateQuadroAsync(string canvasName, QuadroAnotacao quadro)
     {
-        if(!this.canvasPseudoDatabase.ContainsKey(canvasName)){ return false; }
-        if(this.canvasPseudoDatabase[canvasName].HasQuadro(quadro.id, out _)){ return false; }
-        if(this.canvasPseudoDatabase[canvasName].QuadrosAnotacoes.Count >= Canvas.MaxQuadrosAmount){ return false; }
+        //Verific se o Canvas Existe
+        CanvasEntity? canvasEntity = await dbContext.canvas.FirstOrDefaultAsync<CanvasEntity>(c => c.Name == canvasName);
+        if (canvasEntity is null) { return null; }
 
-        this.canvasPseudoDatabase[canvasName].QuadrosAnotacoes.Add(quadro);
-        return true;
+
+        //Verifica se o Canvas já atingiu quantidade máaxima de Push-its/Quadros 
+        if (await dbContext.canvasQuadros.CountAsync<Canvas_Contem_Quadro>(entry => entry.nomeCanvas == canvasName) >= Canvas.MaxQuadrosAmount)
+        { return null; }
+
+        //verifica se o Quadro a ser criado já existe
+        if (await dbContext.canvasQuadros.FirstOrDefaultAsync<Canvas_Contem_Quadro>
+                                        (entry => entry.nomeCanvas == canvasName &&
+                                         entry.quadro.localId == quadro.id) is not null)
+        {
+            return null;
+        }
+
+
+        //adiciona o quadro no banco de dados
+        QuadrosEntity quadroEntity = quadro.ToQuadroEntity();
+        quadroEntity = (await dbContext.quadros.AddAsync(quadroEntity)).Entity;
+
+        //vincula o quadro criado a um canvas
+        var canvasQuadroEntity = new Canvas_Contem_Quadro(canvasName, quadroEntity);
+        await dbContext.canvasQuadros.AddAsync(canvasQuadroEntity);
+
+        await dbContext.SaveChangesAsync();
+
+        return quadro;
     }
 
     public bool TryGetQuadro(string canvasName, string quadroId, out QuadroAnotacao? quadro)

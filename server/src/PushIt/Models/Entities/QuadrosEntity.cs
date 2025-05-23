@@ -11,7 +11,7 @@ public class QuadrosEntity
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Required]
     [Column("ID")]
-    public string id { get; set; }
+    public int id { get; set; }
 
     [Required]
     [Column("LocalID")]
@@ -44,9 +44,21 @@ public class QuadrosEntity
     [Column("LastModification")]
     public DateTime LastModification { get; set; }
 
-    public QuadrosEntity(string id, string localId, double x, double y, double width, double height, string text, string colour, DateTime lastModification)
+    public QuadrosEntity(int id, string localId, double x, double y, double width, double height, string text, string colour, DateTime lastModification)
     {
         this.id = id;
+        this.localId = localId;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.text = text;
+        this.colour = colour;
+        this.LastModification = lastModification;
+    }
+
+    public QuadrosEntity(string localId, double x, double y, double width, double height, string text, string colour, DateTime lastModification)
+    {
         this.localId = localId;
         this.x = x;
         this.y = y;
