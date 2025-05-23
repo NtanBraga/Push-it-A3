@@ -48,7 +48,11 @@ function CanvasPage(){
 
     //Deletará um stickynode
     const deleteStickyNode = (id) => {
+        setConnections(connections.filter((conn) => conn.fromId !== id && conn.toId !== id));
         setStickyNotes(stickyNotes.filter(node => node.id !== id));
+        if(arrowsLayer.current){
+            arrowsLayer.current.batchDraw();
+        }
     };
 
 
@@ -200,13 +204,24 @@ function CanvasPage(){
 
     // Logica para a remoção das conexões dentre os quadros
 
-    const removeConnection = () => {
+    const removeConnectionAll = () => {
+        if(selectedSticky.length === 0) return;
+        const selectedId = selectedSticky.map((note) => note.id);
+        setConnections(connections.filter((conn) => !selectedId.includes(conn.fromId) && !selectedId.includes(conn.toId)))
+        if(arrowsLayer.current){
+            arrowsLayer.current.batchDraw();
+        }
+    };
+
+    const removeConnectionSpecific = () => {
         if (selectedSticky.length === 0) return;
 
-        const selectIds = selectedSticky.map((note) => note.id);
+        const [idFirst, idSecond] = selectedSticky.map((note) => note.id);
         setConnections(
             connections.filter(
-                (conn) => !selectIds.includes(conn.fromId) && !selectIds.includes(conn.toId)
+                (conn) => !((conn.fromId === idFirst && conn.toId === idSecond) || 
+                            (conn.fromId === idSecond && conn.toId === idFirst)
+                           )
             )
         );
         if(arrowsLayer.current){
@@ -216,9 +231,17 @@ function CanvasPage(){
 
     //Verifica se tem conexão os quadros selecionados
 
-    const verifyConn = selectedSticky.some((note) =>
+    const verifyConnAny = selectedSticky.length > 0 && selectedSticky.some((note) =>
         connections.some((conn) => conn.fromId === note.id || conn.toId === note.id)
     );
+
+    const verifyConnTwo = selectedSticky.length === 2 && (() => {
+        const [ firstId,secondId ] = selectedSticky.map((note) => note.id);
+        return connections.some(
+            (conn) =>
+                (conn.fromId === firstId && conn.toId === secondId) || (conn.fromId === secondId && conn.toId === firstId)
+        );
+    })();
 
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
@@ -260,8 +283,11 @@ function CanvasPage(){
                             : "Mudar de cor da fonte"
                         }
                     </button>
-                    {verifyConn && (
-                        <button className="canvaspage_button" onClick={removeConnection}>Remover Conexão</button>
+                    {verifyConnTwo && (
+                        <button className="canvaspage_button" onClick={removeConnectionSpecific}>Remover Duas Conexão</button>
+                    )}
+                    {verifyConnAny && (
+                        <button className="canvaspage_button" onClick={removeConnectionAll}>Remover Todas Conexões</button>
                     )}
                     </>
                 )}
