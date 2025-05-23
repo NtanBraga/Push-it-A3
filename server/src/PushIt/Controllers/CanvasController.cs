@@ -14,7 +14,7 @@ public class CanvasController : ControllerBase
 
     //POST /canvas
     [HttpPost("/canvas")]
-    public async Task<IActionResult> CreateCanvas(CreateCanvasRequest request)
+    public async Task<IActionResult> CreateCanvasAsync(CreateCanvasRequest request)
     {
         //Converte request para formato interno do sistema
         Canvas? canvas = request.ToCanvas();
@@ -55,10 +55,10 @@ public class CanvasController : ControllerBase
 
     //POST /canvas/nomedocanvas/quadros
     [HttpPost("/canvas/{name}/quadros")]
-    public async Task<IActionResult> CreateQuadro(string name, CreateQuadroRequest request)
+    public async Task<IActionResult> CreateQuadroAsync(string name, CreateQuadroRequest request)
     {
         QuadroAnotacao? quadro = request.ToQuadro();
-        
+
         quadro = await _canvasService.CreateQuadroAsync(name, quadro);
         if (quadro is null)
         {
@@ -67,17 +67,17 @@ public class CanvasController : ControllerBase
 
         QuadroResponse response = quadro.ToQuadroResponse();
         return CreatedAtAction(
-            nameof(GetQuadro),
+            nameof(GetQuadroAsync),
             new { name = name, id = quadro.id },
             response);
     }
 
     //GET /canvas/nomecanvas/quadros/iddoquadro
-    [HttpGet("/canvas/{name}/quadros/{id}")]
-    public IActionResult GetQuadro(string name, string id)
+    [HttpGet("/canvas/{name}/quadros/{LocalId}")]
+    public async Task<IActionResult> GetQuadroAsync(string name, string LocalId)
     {
-        QuadroAnotacao? quadro;
-        if (!this._canvasService.TryGetQuadro(name, id, out quadro))
+        QuadroAnotacao? quadro = await this._canvasService.GetQuadroAsync(name, LocalId);
+        if(quadro is null)
         {
             return NotFound();
         }
@@ -128,15 +128,14 @@ public class CanvasController : ControllerBase
     }
 
     //GET /canvas/{nomecanvas}/quadros/{iddoquadro}/conexoes
-    [HttpGet("/canvas/{name}/quadros/{id}/conexoes")]
-    public IActionResult GetAllQuadroConexoes(string name, string id)
+    [HttpGet("/canvas/{name}/quadros/{LocalId}/conexoes")]
+    public async Task<IActionResult> GetAllQuadroConexoesAsync(string name, string LocalId)
     {
-        if (!_canvasService.TryGetQuadro(name, id, out QuadroAnotacao? quadro))
-        {
-            return NotFound();
-        }
+        QuadroAnotacao? quadro = await this._canvasService.GetQuadroAsync(name, LocalId);
 
-        GetAllQuadroConexoesResponse response = new(quadro!.IDsConectados ?? new());
+        if(quadro is null){ return NotFound(); }
+
+        GetAllQuadroConexoesResponse response = new(quadro.IDsConectados ?? new());
         return Ok(response);
     }
 

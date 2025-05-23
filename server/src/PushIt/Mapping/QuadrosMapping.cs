@@ -32,6 +32,24 @@ public static class QuadrosMapping
         );
     }
 
+    public static QuadroAnotacao ToQuadro(this QuadrosEntity entity, List<string> _IDsConectados)
+    {
+        return new QuadroAnotacao(
+            id: entity.localId,
+
+            x: entity.x,
+            y: entity.y,
+            width: entity.width,
+            height: entity.height,
+            text: entity.text,
+            colour: entity.colour,
+
+            IDsConectados: _IDsConectados,
+
+            lastModification: entity.LastModification
+        );
+    }
+
     public static QuadroResponse ToQuadroResponse(this QuadroAnotacao quadroAnotacao)
     {
         return new QuadroResponse(

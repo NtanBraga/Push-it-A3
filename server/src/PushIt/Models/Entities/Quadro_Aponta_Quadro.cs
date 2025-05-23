@@ -10,18 +10,21 @@ public class Quadro_Aponta_Quadro
     [Column("ID")]
     public int id { get; set; }
 
-    [Required]
-    [Column("LocalIdComeco")]
-    public string idQuadroComeco { get; set; }
+    [ForeignKey("QuadroComecoKey")]
+    public QuadrosEntity QuadroComeco { get; init; }
 
     [Required]
     [Column("LocalIdDestino")]
     public string localIdQuadroDestino { get; set; }
 
-    public Quadro_Aponta_Quadro(int id, string idQuadroComeco, string localIdQuadroDestino)
+    public Quadro_Aponta_Quadro(int id, QuadrosEntity quadroComeco, string localIdQuadroDestino) : this(id, localIdQuadroDestino)
+    {
+        this.QuadroComeco = quadroComeco;
+    }
+
+    private Quadro_Aponta_Quadro(int id, string localIdQuadroDestino) : base()
     {
         this.id = id;
-        this.idQuadroComeco = idQuadroComeco;
         this.localIdQuadroDestino = localIdQuadroDestino;
     }
 

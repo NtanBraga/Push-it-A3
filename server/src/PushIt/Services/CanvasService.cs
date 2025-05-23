@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 
 public class CanvasService : ICanvasService 
@@ -63,15 +64,25 @@ public class CanvasService : ICanvasService
         return quadro;
     }
 
-    public bool TryGetQuadro(string canvasName, string quadroId, out QuadroAnotacao? quadro)
+    public async Task<QuadroAnotacao?> GetQuadroAsync(string canvasName, string quadroLocalId)
     {
-        quadro = default;
-        if(!this.canvasPseudoDatabase.TryGetValue(canvasName, out Canvas? canvas))
-        { 
-            return false; 
-        }
+        Canvas_Contem_Quadro? queryResult = await dbContext.canvasQuadros.Include("quadro") //"quadro" é o nome da propriedade (variável) que linka com a tabela QuadrosEntity
+                                                                         .FirstOrDefaultAsync<Canvas_Contem_Quadro>
+                                                                             (entry => entry.nomeCanvas == canvasName &&
+                                                                              entry.quadro.localId == quadroLocalId);
 
-        return canvas.HasQuadro(quadroId, out quadro);
+        if (queryResult is null) { return null; }
+
+        var idsConectadosQueryResult =  from entry in dbContext.conexoes
+                                        where entry.QuadroComeco.localId == quadroLocalId
+                                        select entry.localIdQuadroDestino;
+
+        QuadrosEntity quadrosEntity = queryResult.quadro;
+        List<string> idsConectados = idsConectadosQueryResult is null ?
+                                                                new() :
+                                                                await idsConectadosQueryResult.ToListAsync();
+
+        return quadrosEntity.ToQuadro(idsConectados);
     }
 
     public bool TryGetAllQuadros(string canvasName, out List<QuadroAnotacao> quadros)

@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<ICanvasService, CanvasService>();//
+builder.Services.AddScoped<ICanvasService, CanvasService>();
 
 //Adicionada essa função devido a erros de requisição 'fetch' da porta do React com a API
 const string AllowAllPolicyName = "AllowAll";
@@ -28,7 +28,7 @@ var app = builder.Build(); //"constrói" um server de acordo com as configuraç�
 
 using (IServiceScope scope = app.Services.CreateScope()) //gera um service compatível com a keyword "using"
 {
-    PushItContext dbContext = scope.ServiceProvider.GetRequiredService<PushItContext>(); // Verifica se está caastrado internamente para funções de Dependcy Injection
+    PushItContext dbContext = scope.ServiceProvider.GetRequiredService<PushItContext>(); // Verifica se está cadastrado internamente para funções de Dependency Injection
     dbContext.Database.EnsureCreated(); // Garante que a Databse Existe
 }
 
