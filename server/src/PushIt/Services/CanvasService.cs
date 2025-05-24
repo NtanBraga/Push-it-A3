@@ -27,9 +27,14 @@ public class CanvasService : ICanvasService
         return canvasEntity.ToCanvas(new List<QuadroAnotacao>());
     }
 
-    public bool TryGetCanvas(string canvasName, out Canvas? canvas)
+    public async Task<Canvas?> GetCanvasAsync(string canvasName)
     {
-        return this.canvasPseudoDatabase.TryGetValue(canvasName, out canvas);
+        CanvasEntity? canvasEntity = await dbContext.canvas.FirstOrDefaultAsync<CanvasEntity>(c => c.Name == canvasName);
+        if (canvasEntity is null) { return null; }
+
+        List<QuadroAnotacao>? quadros = await GetAllQuadrosAsync(canvasName);
+
+        return canvasEntity.ToCanvas(quadros);
     }
 
     public async Task<QuadroAnotacao?> CreateQuadroAsync(string canvasName, QuadroAnotacao quadro)
@@ -126,7 +131,7 @@ public class CanvasService : ICanvasService
         return this.canvasPseudoDatabase[canvasName].UpdateQuadro(quadro!.id, novoQuadro);
     }
 
-    public async Task<bool> TryDeleteQuadro(string canvasName, string quadroLocalId)
+    public async Task<bool> TryDeleteQuadroAsync(string canvasName, string quadroLocalId)
     {
         CanvasEntity? canvasQuery = await dbContext.canvas.FirstOrDefaultAsync<CanvasEntity>(c => c.Name == canvasName);
         if (canvasQuery is null) { return false; }

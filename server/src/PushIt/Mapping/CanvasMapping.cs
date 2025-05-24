@@ -10,7 +10,7 @@ public static class CanvasMapping
         );
     }
 
-    public static Canvas ToCanvas(this CanvasEntity entity, List<QuadroAnotacao> quadros)
+    public static Canvas ToCanvas(this CanvasEntity entity, List<QuadroAnotacao>? quadros)
     {
         return new Canvas(
             name: entity.Name,

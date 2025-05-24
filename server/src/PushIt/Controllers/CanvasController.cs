@@ -24,7 +24,7 @@ public class CanvasController : ControllerBase
         }
 
         // Aqui salva na database ou lista em memória
-        canvas = await _canvasService.CreateCanvasAsync(canvas);
+        canvas = await this._canvasService.CreateCanvasAsync(canvas);
         if(canvas is null)
         {
             return BadRequest();
@@ -34,17 +34,17 @@ public class CanvasController : ControllerBase
         CanvasResponse response = canvas.ToCanvasResponse();
 
         return CreatedAtAction(
-            nameof(GetCanvas),
+            "GetCanvas", //DotNet identifica que o endpoint contém o termo "Async" e remove do nome da rota criada no background
             new { name = canvas.Name },
             response);
     }
 
     //GET /canvas/name
     [HttpGet("/canvas/{name}")]
-    public IActionResult GetCanvas(string name)
+    public async Task<IActionResult> GetCanvasAsync(string name)
     {
-        Canvas? canvas;
-        if (!this._canvasService.TryGetCanvas(name, out canvas))
+        Canvas? canvas = await this._canvasService.GetCanvasAsync(name);
+        if (canvas is null)
         {
             return NotFound();
         }
@@ -59,7 +59,7 @@ public class CanvasController : ControllerBase
     {
         QuadroAnotacao? quadro = request.ToQuadro();
 
-        quadro = await _canvasService.CreateQuadroAsync(name, quadro);
+        quadro = await this._canvasService.CreateQuadroAsync(name, quadro);
         if (quadro is null)
         {
             return BadRequest();
@@ -119,8 +119,8 @@ public class CanvasController : ControllerBase
     [HttpDelete("/canvas/{name}/quadros/{id}")]
     public async Task<IActionResult> DeleteQuadro(string name, string id)
     {
-        bool successful = await _canvasService.TryDeleteQuadro(name, id);
-        
+        bool successful = await this._canvasService.TryDeleteQuadroAsync(name, id);
+
         if (!successful)
         {
             return NotFound();
