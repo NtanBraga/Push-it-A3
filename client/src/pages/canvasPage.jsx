@@ -1,4 +1,5 @@
 import React, { useEffect, useState,useRef } from "react";
+import { useNavigate } from 'react-router-dom'
 import { PageThemeButton } from "../components/accessibility/pageThemeButton";
 import { Stage, Layer, Line} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
@@ -6,6 +7,9 @@ import { HexColorPicker } from "react-colorful"
 import { takeScreenShot } from "../components/screenshot/screenshot";
 
 function CanvasPage(){
+
+    //Voltar para pagina anterior
+    const navigate = useNavigate();
 
     //Lógica para gerar Quadro de anotações em volta do canvas
     //E fazer as suas edições de texto dentro dos retangulos
@@ -314,6 +318,9 @@ function CanvasPage(){
     return(
         <main className="canvaspage_main" id ="canvaspage_main">
             <PageThemeButton/>
+            <button className="canvaspage_back_button" onClick={() => navigate(-1)}>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>
+            </button>
             {/* Botão que adiciona novo sticky para renderizar*/}
             <div className="canvaspage_div_buttons">
                 <button className="canvaspage_button" onClick={zoomIn}>Aumentar zoom</button>

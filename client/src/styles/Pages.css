@@ -161,6 +161,26 @@ body {
 
 /*CANVASPAGE ESTILOS*/
 
+.canvaspage_back_button {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  height: 45px;
+  width: 45px;
+  padding: 0;
+  border-radius: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--theme-button-color);
+  z-index: 100;
+  cursor: pointer;
+}
+
+.canvaspage_back_button svg {
+  fill: var(--second-color);
+}
+
 .canvaspage_main{
   position: relative;
 }
