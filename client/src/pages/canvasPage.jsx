@@ -427,9 +427,9 @@ function CanvasPage(){
                                 key={`arrow-${connectId.fromId}-${connectId.toId}-${index}`}
                                 points={intersect}
                                 stroke={"#000000"}
-                                strokeWidth={2}
-                                pointerLength={10}
-                                pointerWidth={10}
+                                strokeWidth={2 / zoomPage}
+                                pointerLength={10/ zoomPage}
+                                pointerWidth={10/ zoomPage}
                             />
                         );
                         })
