@@ -18,6 +18,16 @@ builder.Services.AddCors(options =>
     });
 });
 
+//garante que o diretório e a Database existam/serão criados
+const string DatabaseDirectory = @".\Database\";
+const string DatabaseFile = @"PushItDatabase.db";
+if (!Directory.Exists(DatabaseDirectory) || !File.Exists(DatabaseDirectory + DatabaseFile))
+{
+    Directory.CreateDirectory(DatabaseDirectory);
+    File.Create(DatabaseDirectory + DatabaseFile).Close();
+}
+
+
 builder.Services.AddDbContext<PushItContext>(options =>
 {
     const string connectionString = @"Data Source=.\Database\PushItDatabase.db;";
