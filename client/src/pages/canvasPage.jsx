@@ -152,6 +152,7 @@ function CanvasPage(){
         const toId = stickyNotes.find((node) => node.id === idSecond);
         if(!fromId || !toId) return[0,0,0,0];
 
+        //Calculo do posicionamento da seta
         const mainX = fromId.x + fromId.width / 2 + 20;
         const mainY = fromId.y + fromId.height / 2 + 30;
         const secondX = toId.x + toId.width / 2 + 20;
@@ -236,10 +237,12 @@ function CanvasPage(){
 
     //Verifica se tem conexão os quadros selecionados
 
+    //Verifica em todos
     const verifyConnAny = selectedSticky.length > 0 && selectedSticky.some((note) =>
         connections.some((conn) => conn.fromId === note.id || conn.toId === note.id)
     );
 
+    //Verifica em conexões de 2 quadros em especifico
     const verifyConnTwo = selectedSticky.length === 2 && (() => {
         const [ firstId,secondId ] = selectedSticky.map((note) => note.id);
         return connections.some(
