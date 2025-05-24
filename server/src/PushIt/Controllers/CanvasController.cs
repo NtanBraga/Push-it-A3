@@ -67,16 +67,16 @@ public class CanvasController : ControllerBase
 
         QuadroResponse response = quadro.ToQuadroResponse();
         return CreatedAtAction(
-            nameof(GetQuadroAsync),
+            "GetQuadro", //DotNet identifica que o endpoint contém o termo "Async" e remove do nome da rota criada no background
             new { name = name, id = quadro.id },
             response);
     }
 
     //GET /canvas/nomecanvas/quadros/iddoquadro
-    [HttpGet("/canvas/{name}/quadros/{LocalId}")]
-    public async Task<IActionResult> GetQuadroAsync(string name, string LocalId)
+    [HttpGet("/canvas/{name}/quadros/{id}")]
+    public async Task<IActionResult> GetQuadroAsync(string name, string id)
     {
-        QuadroAnotacao? quadro = await this._canvasService.GetQuadroAsync(name, LocalId);
+        QuadroAnotacao? quadro = await this._canvasService.GetQuadroAsync(name, id);
         if(quadro is null)
         {
             return NotFound();
@@ -88,10 +88,10 @@ public class CanvasController : ControllerBase
 
     //GET /canvas/nomedocanvas/quadros
     [HttpGet("/canvas/{name}/quadros")]
-    public IActionResult GetAllQuadros(string name)
+    public async Task<IActionResult> GetAllQuadrosAsync(string name)
     {
-        List<QuadroAnotacao> quadros;
-        if (!this._canvasService.TryGetAllQuadros(name, out quadros))
+        List<QuadroAnotacao>? quadros = await this._canvasService.GetAllQuadrosAsync(name);
+        if (quadros is null)
         {
             return BadRequest();
         }

@@ -1,6 +1,6 @@
 ###Variáveis para facilitar a estruturação de Requisições
 @PushIt_HostAddress = http://localhost:5176
-@NomeCanvas = Validação Teste
+@NomeCanvas = ValidacaoTesteA
 @ID_Quadro = 1234
 
 
@@ -9,7 +9,7 @@ POST {{PushIt_HostAddress}}/canvas
 Content-Type: application/json
 
 {
-    "Name":"Validação Teste",
+    "Name":"ValidacaoTesteA",
     "QuadrosAnotacoes": [ ],
     "CreatedDateTime":"2025-04-22T15:00:00"
 }

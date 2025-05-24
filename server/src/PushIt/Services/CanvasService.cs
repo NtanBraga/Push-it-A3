@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 
 public class CanvasService : ICanvasService 
@@ -85,14 +86,36 @@ public class CanvasService : ICanvasService
         return quadrosEntity.ToQuadro(idsConectados);
     }
 
-    public bool TryGetAllQuadros(string canvasName, out List<QuadroAnotacao> quadros)
+    public async Task<List<QuadroAnotacao>?> GetAllQuadrosAsync(string canvasName)
     {
-        quadros = new();
+        //verifica se o canvas existe
+        if (await dbContext.canvas.FirstOrDefaultAsync(c => c.Name == canvasName) is null) { return null; }
 
-        if(!this.canvasPseudoDatabase.ContainsKey(canvasName)){ return false; }
+        //obtém todos os quadros do canvas (sem incluir as setas de conexão)
+        var quadrosEntitiesQueryResult = from entry in dbContext.canvasQuadros.Include("quadro")
+                                         where entry.nomeCanvas == canvasName
+                                         select entry.quadro;
 
-        quadros = this.canvasPseudoDatabase[canvasName].QuadrosAnotacoes;
-        return true;
+        if (quadrosEntitiesQueryResult is null) { return new(); }
+
+        List<QuadroAnotacao> Quadros = new();
+
+        //para cada quadro do canvas, obter e vincular suas setas de conexão
+        //adicionando a lista de QuadrAnotações que será retornada
+        foreach (QuadrosEntity quadroEntity in quadrosEntitiesQueryResult)
+        {
+            var idsConectadosQueryResult = from entry in dbContext.conexoes
+                                           where entry.QuadroComeco.localId == quadroEntity.localId
+                                           select entry.localIdQuadroDestino;
+
+            List<string> idsConectados = idsConectadosQueryResult is null ?
+                                                                    new() :
+                                                                    await idsConectadosQueryResult.ToListAsync();
+
+            Quadros.Add(quadroEntity.ToQuadro(idsConectados));
+        }
+
+        return Quadros;
     }
 
     public bool TryUpdateQuadro(string canvasName, string quadroId, QuadroAnotacao novoQuadro)
