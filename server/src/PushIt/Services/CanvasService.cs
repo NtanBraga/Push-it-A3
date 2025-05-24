@@ -34,7 +34,7 @@ public class CanvasService : ICanvasService
 
     public async Task<QuadroAnotacao?> CreateQuadroAsync(string canvasName, QuadroAnotacao quadro)
     {
-        //Verific se o Canvas Existe
+        //Verifica se o Canvas Existe
         CanvasEntity? canvasEntity = await dbContext.canvas.FirstOrDefaultAsync<CanvasEntity>(c => c.Name == canvasName);
         if (canvasEntity is null) { return null; }
 
@@ -126,11 +126,22 @@ public class CanvasService : ICanvasService
         return this.canvasPseudoDatabase[canvasName].UpdateQuadro(quadro!.id, novoQuadro);
     }
 
-    public bool TryDeleteQuadro(string canvasName, string quadroId)
+    public async Task<bool> TryDeleteQuadro(string canvasName, string quadroLocalId)
     {
-        if(!this.canvasPseudoDatabase.ContainsKey(canvasName)){ return false; }
-        if(!this.canvasPseudoDatabase[canvasName].HasQuadro(quadroId, out _)){ return false; }
+        CanvasEntity? canvasQuery = await dbContext.canvas.FirstOrDefaultAsync<CanvasEntity>(c => c.Name == canvasName);
+        if (canvasQuery is null) { return false; }
 
-        return this.canvasPseudoDatabase[canvasName].DeleteQuadro(quadroId);
+        Canvas_Contem_Quadro? quadroQuery = await dbContext.canvasQuadros.Include("quadro")
+                                                                         .FirstOrDefaultAsync<Canvas_Contem_Quadro>
+                                                                              (entry => entry.nomeCanvas == canvasName &&
+                                                                               entry.quadro.localId == quadroLocalId);
+
+        if (quadroQuery is null) { return false; }
+
+        await dbContext.quadros.Where<QuadrosEntity>(q => q.id == quadroQuery.quadro.id).ExecuteDeleteAsync();
+        await dbContext.canvasQuadros.Where<Canvas_Contem_Quadro>(entry => entry.quadro.id == quadroQuery.quadro.id).ExecuteDeleteAsync();
+        await dbContext.conexoes.Where<Quadro_Aponta_Quadro>(q => q.QuadroComeco.id == quadroQuery.quadro.id).ExecuteDeleteAsync();
+
+        return true;
     }
 }

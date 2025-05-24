@@ -117,9 +117,11 @@ public class CanvasController : ControllerBase
 
     //DELETE /canvas/nomecanvas/quadros/iddoquadro
     [HttpDelete("/canvas/{name}/quadros/{id}")]
-    public IActionResult DeleteQuadro(string name, string id)
+    public async Task<IActionResult> DeleteQuadro(string name, string id)
     {
-        if (!this._canvasService.TryDeleteQuadro(name, id))
+        bool successful = await _canvasService.TryDeleteQuadro(name, id);
+        
+        if (!successful)
         {
             return NotFound();
         }
