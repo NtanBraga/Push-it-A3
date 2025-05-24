@@ -28,4 +28,15 @@ public class Quadro_Aponta_Quadro
         this.localIdQuadroDestino = localIdQuadroDestino;
     }
 
+    public Quadro_Aponta_Quadro(QuadrosEntity quadroComeco, string localIdQuadroDestino) : this(localIdQuadroDestino)
+    {
+        this.QuadroComeco = quadroComeco;
+    }
+
+    private Quadro_Aponta_Quadro(string localIdQuadroDestino) : base()
+    {
+        this.localIdQuadroDestino = localIdQuadroDestino;
+    }
+
+
 }

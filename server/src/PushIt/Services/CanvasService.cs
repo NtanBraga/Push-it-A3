@@ -123,12 +123,44 @@ public class CanvasService : ICanvasService
         return Quadros;
     }
 
-    public bool TryUpdateQuadro(string canvasName, string quadroId, QuadroAnotacao novoQuadro)
+    public async Task<bool> TryUpdateQuadroAsync(string canvasName, string quadroLocalId, QuadroAnotacao novoQuadro)
     {
-        if(!this.canvasPseudoDatabase.ContainsKey(canvasName)){ return false; }
-        if(!this.canvasPseudoDatabase[canvasName].HasQuadro(quadroId, out QuadroAnotacao? quadro)){ return false; }
-         
-        return this.canvasPseudoDatabase[canvasName].UpdateQuadro(quadro!.id, novoQuadro);
+        //verifica se o Canvas existe
+        if (await dbContext.canvas.FirstOrDefaultAsync(c => c.Name == canvasName) is null) { return false; }
+
+        //verifica se o Quadro existe no Canvas
+        Canvas_Contem_Quadro? canvasQuadro = await dbContext.canvasQuadros.Include("quadro")
+                                                                          .FirstOrDefaultAsync(cq =>
+                                                                            cq.nomeCanvas == canvasName &&
+                                                                            cq.quadro.localId == quadroLocalId);
+        if (canvasQuadro is null) { return false; }
+
+        //atualiza a entrada da Tabela Quadros
+        QuadrosEntity? quadroEntity = await dbContext.quadros.FindAsync(canvasQuadro.quadro.id);
+            quadroEntity!.x = novoQuadro.x;
+            quadroEntity.y = novoQuadro.y;
+            quadroEntity.width = novoQuadro.width;
+            quadroEntity.height = novoQuadro.height;
+            quadroEntity.text = novoQuadro.text;
+            quadroEntity.colour = novoQuadro.colour;
+            quadroEntity.LastModification = novoQuadro.LastModification;
+        await dbContext.SaveChangesAsync();
+
+        quadroEntity = await dbContext.quadros.FindAsync(canvasQuadro.quadro.id);
+
+        //deleta todas as entradas de conexão relacionadas ao Quadro a ser Atualizado na tabela Quadro_Aponta_Quadro
+        await dbContext.conexoes.Where(c => c.QuadroComeco.id == canvasQuadro.quadro.id).ExecuteDeleteAsync();
+
+        //Adiciona todas as conexões novamente de acordo com o estado atual do Quadro
+        foreach (string IDConectado in novoQuadro.IDsConectados)
+        {
+            var quadroApontaQuadroEntity = new Quadro_Aponta_Quadro(quadroEntity!, IDConectado);
+            await dbContext.conexoes.AddAsync(quadroApontaQuadroEntity);
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        return true;
     }
 
     public async Task<bool> TryDeleteQuadroAsync(string canvasName, string quadroLocalId)

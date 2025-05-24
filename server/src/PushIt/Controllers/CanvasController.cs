@@ -104,10 +104,12 @@ public class CanvasController : ControllerBase
 
     //PUT /canvas/nomecanvas/quadros/iddoquadro
     [HttpPut("/canvas/{name}/quadros/{id}")]
-    public IActionResult UpdateQuadro(string name, string id, UpdateQuadroRequest request)
+    public async Task<IActionResult> UpdateQuadroAsync(string name, string id, UpdateQuadroRequest request)
     {
         QuadroAnotacao quadro = request.ToQuadro(id);
-        if (!this._canvasService.TryUpdateQuadro(name, id, quadro))
+        bool successful = await this._canvasService.TryUpdateQuadroAsync(name, id, quadro);
+        
+        if (!successful)
         {
             return NotFound();
         }
