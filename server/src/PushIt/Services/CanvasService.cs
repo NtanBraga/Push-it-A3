@@ -11,9 +11,6 @@ public class CanvasService : ICanvasService
         this.dbContext = dbContext;
     }
 
-    private readonly Dictionary<string, Canvas> canvasPseudoDatabase = new();
-    //Definindo no Program.cs como singleton se mantém salvo por todo o tempo de execução do server
-
     public async Task<Canvas?> CreateCanvasAsync(Canvas canvas)
     {
         CanvasEntity canvasEntity = canvas.ToCanvasEntity();
