@@ -8,95 +8,155 @@ Para a organização dos estilos das paginas:
 */
 
 :root {
-    padding: 0;
-    margin: 0;
-  }
+  --base-color: white;
+  --text-color: black;
+  --second-color: rgb(197, 193, 193);
+  --button-color: white;
+  --theme-button-color: rgb(51, 53, 58);
+  --input-color: rgb(204, 201, 201);
+}
   
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+.darkmode {
+  --base-color: #171922;
+  --text-color: rgb(226, 219, 219);
+  --second-color: rgb(61, 60, 55);
+  --button-color: rgb(73, 71, 71);
+  --theme-button-color: rgb(170, 171, 194);
+  --input-color: rgb(90, 89, 89);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 html,
 body {
-    scroll-behavior: smooth;
-    box-sizing: border-box;
-    font-family: "Coiny", system-ui;
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+  font-family: "Coiny", system-ui;
+  background-color: var(--base-color);
+  color: var(--text-color);
 }
 
+/*DARKTHEME*/
+
+.theme_button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  height: 45px;
+  width: 45px;
+  padding: 0;
+  border-radius: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--theme-button-color);
+  z-index: 100;
+  cursor: pointer;
+}
+
+#theme_mode svg {
+  fill: var(--second-color);
+}
+
+#theme_mode svg:last-child {
+  display: none;
+}
+
+.darkmode #theme_mode svg:first-child {
+  display: none;
+}
+
+.darkmode #theme_mode svg:last-child {
+  display: block;
+}
 /*LANDINGPAGE ESTILOS*/
+.mainpage_main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .mainpage_h1 {
-    text-align: center;
-    margin-top: 26vmin;
-    font-size: 8vmin;
-    margin-bottom: 0.2vh;
-  }
+  text-align: center;
+  margin-top: 26vmin;
+  font-size: 8vmin;
+  margin-bottom: 0.2vh;
+}
 
 .mainpage_h3{
-    text-align: center;
-    font-weight: bold;
-    text-decoration: underline;
-    margin-top: 1.2vw;
+  text-align: center;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-top: 1.2vw;
 }
 .mainpage_form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; 
-     
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
 }
 
 .mainpage_input {
-    width: 100%;
-    max-width: 500px;
-    min-width: 250px;
-    height: 3rem;
-    box-sizing: border-box;
-    padding: .8vmin .6vmin .8vmin .1vmin;
-    font-size: 22px;
-    text-align: center;
-    border-radius: 3vmin;
-    font-weight: bold;
-    font-family: "Coiny", system-ui;
+  width: 100%;
+  max-width: 500px;
+  min-width: 250px;
+  height: 3rem;
+  box-sizing: border-box;
+  padding: .8vmin .6vmin .8vmin .1vmin;
+  font-size: 22px;
+  text-align: center;
+  border-radius: 3vmin;
+  font-weight: bold;
+  font-family: "Coiny", system-ui;
+  background-color: var(--input-color);
+  color: var(--text-color);
 }
 
 .mainpage_button {
-    line-height: 2.6vmin;
-    margin-top: 1.2vw;
-    width: 100%;
-    max-width: 200px;
-    height: 3rem;
-    border-radius: 3vmin;
-    font-size: 20px;
-    font-weight: bold;
-    font-family: "Coiny", system-ui;
-    cursor: pointer;
+  line-height: 2.6vmin;
+  margin-top: 1.2vw;
+  width: 100%;
+  max-width: 200px;
+  height: 3rem;
+  border-radius: 3vmin;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Coiny", system-ui;
+  cursor: pointer;
+  background-color: var(--button-color);
+  color: var(--text-color);
 }
 
 .mainpage_button:hover {
-    background-color: gray;
-    transform: translateY(-2px);
+  background-color: gray;
+  transform: translateY(-2px);
 }
 
 @media (max-width: 600px) {
-    .mainpage_h1 {
-      margin-top: 10vmin;
-      font-size: clamp(2rem, 8vmin, 3rem);
-    }
-  
-    .mainpage_input {
-      min-width: 200px;
-      height: 2.5rem;
-      font-size: 0.9rem;
-    }
-  
-    .mainpage_button {
-      max-width: 150px;
-      height: 2.5rem;
-      font-size: 0.9rem;
-    }
+  .mainpage_main {
+    min-height: 100vh;
   }
+  .mainpage_h1 {
+    margin-top: 10vmin;
+    font-size: clamp(2rem, 8vmin, 3rem);
+  }
+
+  .mainpage_input {
+    min-width: 200px;
+    height: 2.5rem;
+    font-size: 0.9rem;
+  }
+
+  .mainpage_button {
+    max-width: 150px;
+    height: 2.5rem;
+    font-size: 0.9rem;
+  }
+}
 
 
 /*CANVASPAGE ESTILOS*/
@@ -109,7 +169,7 @@ body {
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 10px;
+  top: 200px;
   left: 10px;
   gap: 10px;
   z-index: 10;
@@ -128,6 +188,7 @@ body {
   width: 120px;
   height: 40px;
   font-size: 16px;
+  cursor: pointer;
 }
 /*Estilo para o Pallet dos stickynotes*/
 .colorful-model {

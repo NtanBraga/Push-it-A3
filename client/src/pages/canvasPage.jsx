@@ -1,4 +1,5 @@
 import React, { useEffect, useState,useRef } from "react";
+import { PageThemeButton } from "../components/accessibility/pageThemeButton";
 import { Stage, Layer, Line} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
 import { HexColorPicker } from "react-colorful"
@@ -312,6 +313,7 @@ function CanvasPage(){
     
     return(
         <main className="canvaspage_main" id ="canvaspage_main">
+            <PageThemeButton/>
             {/* Botão que adiciona novo sticky para renderizar*/}
             <div className="canvaspage_div_buttons">
                 <button className="canvaspage_button" onClick={zoomIn}>Aumentar zoom</button>

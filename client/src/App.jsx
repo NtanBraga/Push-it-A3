@@ -2,6 +2,7 @@ import './styles/Pages.css';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
 import { canvasGet,canvasPost } from './components/api/ApiHandler';
+import { PageThemeButton } from './components/accessibility/pageThemeButton';
 
 function App() {
 
@@ -48,6 +49,7 @@ function App() {
 
   return (
     <>
+      <PageThemeButton/>
       <main className='mainpage_main'>
         <h1 className='mainpage_h1'>
           Push-IT
