@@ -253,7 +253,35 @@ function CanvasPage(){
 
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
-    
+    const [ canvaSize, setCanvaSize ] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
+
+    const upgradeCanvaSize = () => {
+        setCanvaSize({
+            width: window.innerWidth,
+            height: window.innerHeight
+        })
+        if(arrowsLayer.current) {
+            arrowsLayer.current.batchDraw();
+        }
+    };
+
+    useEffect(() =>  {
+        let timer;
+        const handleResize = () => {
+            clearTimeout(timer);
+            timer = setTimeout(upgradeCanvaSize, 100);
+        }
+        window.addEventListener("resize", handleResize);
+        upgradeCanvaSize();
+        return () => {
+            window.addEventListener("resize", handleResize);
+            clearTimeout(timer);
+        };
+    }, []);
+
     //Ajusta o bug no qual deixa a peleta aberta apos todos os quadros serem deselecionados usando o SHIFT
     useEffect(() => {
         const anySelectioned = stickyNotes.some((note) => note.selected);
@@ -355,8 +383,8 @@ function CanvasPage(){
                 </div>
             )}
             <Stage 
-                width={window.innerWidth} 
-                height={window.innerHeight}
+                width={canvaSize.width} 
+                height={canvaSize.height}
                 //Função evento para deseleciona todas stickynotes do canvas
                 onClick={(e) => {
                     if(e.currentTarget._id ===  e.target._id){
