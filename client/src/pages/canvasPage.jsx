@@ -48,7 +48,11 @@ function CanvasPage(){
 
     //Deletará um stickynode
     const deleteStickyNode = (id) => {
+        setConnections(connections.filter((conn) => conn.fromId !== id && conn.toId !== id));
         setStickyNotes(stickyNotes.filter(node => node.id !== id));
+        if(arrowsLayer.current){
+            arrowsLayer.current.batchDraw();
+        }
     };
 
 
@@ -142,11 +146,13 @@ function CanvasPage(){
     const [ selectMain, setSelectMain ] = useState(null);
     const arrowsLayer = useRef(null);
 
+    //Arranja as linhas para conexão
     const createArrowPos = (idMain, idSecond) => {
         const fromId = stickyNotes.find((node) => node.id === idMain);
         const toId = stickyNotes.find((node) => node.id === idSecond);
         if(!fromId || !toId) return[0,0,0,0];
 
+        //Calculo do posicionamento da seta
         const mainX = fromId.x + fromId.width / 2 + 20;
         const mainY = fromId.y + fromId.height / 2 + 30;
         const secondX = toId.x + toId.width / 2 + 20;
@@ -156,6 +162,7 @@ function CanvasPage(){
 
     }
 
+    //Ativa a o modo de conexão
     const toggleConnect = () => {
         setConnectMode(!connectMode)
         setDeleteMode(false)
@@ -165,6 +172,7 @@ function CanvasPage(){
         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false});
     }
 
+    //Seleciona as conexões escolidas pelo usuario
     const handleSelectConnect = (id) => {
         if(connectMode) {
             if(!selectMain) {
@@ -197,6 +205,51 @@ function CanvasPage(){
             );
         }
     };
+
+    // Logica para a remoção das conexões dentre os quadros
+
+    //Ao selecionar um quadro, todas as conexões com ele são removidas
+    const removeConnectionAll = () => {
+        if(selectedSticky.length === 0) return;
+        const selectedId = selectedSticky.map((note) => note.id);
+        setConnections(connections.filter((conn) => !selectedId.includes(conn.fromId) && !selectedId.includes(conn.toId)))
+        if(arrowsLayer.current){
+            arrowsLayer.current.batchDraw();
+        }
+    };
+
+    // Ao selecionar dois quadros, a conexão entre eles é removida
+    const removeConnectionSpecific = () => {
+        if (selectedSticky.length === 0) return;
+
+        const [idFirst, idSecond] = selectedSticky.map((note) => note.id);
+        setConnections(
+            connections.filter(
+                (conn) => !((conn.fromId === idFirst && conn.toId === idSecond) || 
+                            (conn.fromId === idSecond && conn.toId === idFirst)
+                           )
+            )
+        );
+        if(arrowsLayer.current){
+            arrowsLayer.current.batchDraw();
+        }
+    };
+
+    //Verifica se tem conexão os quadros selecionados
+
+    //Verifica em todos
+    const verifyConnAny = selectedSticky.length > 0 && selectedSticky.some((note) =>
+        connections.some((conn) => conn.fromId === note.id || conn.toId === note.id)
+    );
+
+    //Verifica em conexões de 2 quadros em especifico
+    const verifyConnTwo = selectedSticky.length === 2 && (() => {
+        const [ firstId,secondId ] = selectedSticky.map((note) => note.id);
+        return connections.some(
+            (conn) =>
+                (conn.fromId === firstId && conn.toId === secondId) || (conn.fromId === secondId && conn.toId === firstId)
+        );
+    })();
 
     //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
@@ -238,7 +291,12 @@ function CanvasPage(){
                             : "Mudar de cor da fonte"
                         }
                     </button>
-
+                    {verifyConnTwo && (
+                        <button className="canvaspage_button" onClick={removeConnectionSpecific}>Remover Duas Conexão</button>
+                    )}
+                    {verifyConnAny && (
+                        <button className="canvaspage_button" onClick={removeConnectionAll}>Remover Todas Conexões</button>
+                    )}
                     </>
                 )}
 
