@@ -251,9 +251,56 @@ function CanvasPage(){
         );
     })();
 
-    //TODO: Redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
+    //Logica para redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
-    
+    const [ canvaSize, setCanvaSize ] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
+
+    const upgradeCanvaSize = () => {
+        setCanvaSize({
+            width: window.innerWidth,
+            height: window.innerHeight
+        })
+        if(arrowsLayer.current) {
+            arrowsLayer.current.batchDraw();
+        }
+    };
+
+    useEffect(() =>  {
+        let timer;
+        const handleResize = () => {
+            clearTimeout(timer);
+            timer = setTimeout(upgradeCanvaSize, 100);
+        }
+        window.addEventListener("resize", handleResize);
+        upgradeCanvaSize();
+        return () => {
+            window.addEventListener("resize", handleResize);
+            clearTimeout(timer);
+        };
+    }, []);
+
+    //Aplicação da logica de zoom no canvas
+
+    const [zoomPage, setZoomPage ] = useState(1);
+
+    //Função que aproximará a camera
+    const zoomIn = () => {
+        setZoomPage((prev) => Math.min(prev + 0.1, 2));
+        if(arrowsLayer.current) {
+            arrowsLayer.current.batchDraw();
+        }
+    }
+    //Função que afastará a camera
+    const zoomOut = () => {
+        setZoomPage((prev) => Math.max(prev - 0.1, 0.3));
+        if(arrowsLayer.current) {
+            arrowsLayer.current.batchDraw();
+        }
+    }
+
     //Ajusta o bug no qual deixa a peleta aberta apos todos os quadros serem deselecionados usando o SHIFT
     useEffect(() => {
         const anySelectioned = stickyNotes.some((note) => note.selected);
@@ -267,6 +314,8 @@ function CanvasPage(){
         <main className="canvaspage_main" id ="canvaspage_main">
             {/* Botão que adiciona novo sticky para renderizar*/}
             <div className="canvaspage_div_buttons">
+                <button className="canvaspage_button" onClick={zoomIn}>Aumentar zoom</button>
+                <button className="canvaspage_button" onClick={zoomOut}>Diminuir zoom</button>
                 <button className="canvaspage_button" onClick={() => takeScreenShot("canvaspage_main","canvasPrint.png")}>Tirar foto</button>
                 <button className="canvaspage_button" onClick={addSticky}>Adicionar Quadro</button>
                 <button className="canvaspage_button" onClick={toggleDelete}>{deleteMode ? "Sair do modo de deleção" : "Excluir Quadro"}</button>
@@ -355,8 +404,10 @@ function CanvasPage(){
                 </div>
             )}
             <Stage 
-                width={window.innerWidth} 
-                height={window.innerHeight}
+                width={canvaSize.width} 
+                height={canvaSize.height}
+                scaleX={zoomPage}
+                scaleY={zoomPage}
                 //Função evento para deseleciona todas stickynotes do canvas
                 onClick={(e) => {
                     if(e.currentTarget._id ===  e.target._id){
@@ -376,9 +427,9 @@ function CanvasPage(){
                                 key={`arrow-${connectId.fromId}-${connectId.toId}-${index}`}
                                 points={intersect}
                                 stroke={"#000000"}
-                                strokeWidth={2}
-                                pointerLength={10}
-                                pointerWidth={10}
+                                strokeWidth={2 / zoomPage}
+                                pointerLength={10/ zoomPage}
+                                pointerWidth={10/ zoomPage}
                             />
                         );
                         })
