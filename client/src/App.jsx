@@ -29,7 +29,7 @@ useEffect(() => {
 
   //SUBMIT DO POST E GET
   const handleSubmit = async (event) => {
-    
+  
     event.preventDefault();
     setError('');
 
@@ -39,6 +39,10 @@ useEffect(() => {
       return;
     }
      
+    if(inputSearch.trim().length > 32) {
+      setError('O nome não pode conter mais de 32 caracteres.');
+      return;
+    }
 
     try{ // Se canvas existe, ele ira tentar procura-lo
 
@@ -50,10 +54,6 @@ useEffect(() => {
     }catch(e){
       setError(e.message|| 'Canvas não encontrado. Tentando criar um novo...');
       try{ // Se canvas não existe, ele cria um novo do zero
-        
-
-        //TODO - Passar condicionais para não estourar variaveis
-
 
         await canvasPost({ //Parametros usados pela API para a criação do JSON
           Name: inputSearch, //String
