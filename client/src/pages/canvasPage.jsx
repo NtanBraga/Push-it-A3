@@ -26,8 +26,8 @@ function CanvasPage(){
             height: 230, // Altura do sticky
             text: "Insira seu texto!!", // Texto default
             selected: false, // Estado de seleção inicial
-            colour: colorfulPick.currentColour, // Cor do sticky de acordo com as funções de cores
-            fontColour: fontColorfulPick.fontCurrentColour,
+            colour: "#FFFF00", // Cor do sticky de acordo com as funções de cores
+            fontColour: "#000000",
             idConnect: [] // Array de conexões do sticky
         };
         //Adiciona a nova sticky no array
@@ -73,7 +73,7 @@ function CanvasPage(){
         setColorfulPick({
             palletOpened: !colorfulPick.palletOpened,
             stickyID: id,
-            currentColour: colour || "#FFFF00"
+            currentColour: colour
         })
         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened:false });
     }
@@ -101,7 +101,7 @@ function CanvasPage(){
         setFontColorfulPick({
             fontPalletOpened: !fontColorfulPick.fontPalletOpened,
             fontStickyID: id,
-            fontCurrentColour: fontColour || "#000000"
+            fontCurrentColour: fontColour
         })
         setColorfulPick({ ...colorfulPick, palletOpened: false });
     }
@@ -150,6 +150,7 @@ function CanvasPage(){
     const [ connections, setConnections ] = useState([]);
     const [ selectMain, setSelectMain ] = useState(null);
     const arrowsLayer = useRef(null);
+    
     const lineColorTheme = document.documentElement.classList.contains('darkmode') ? "#FFFFFF" : "#000000" 
 
     //Arranja as linhas para conexão
@@ -283,7 +284,7 @@ function CanvasPage(){
         window.addEventListener("resize", handleResize);
         upgradeCanvaSize();
         return () => {
-            window.addEventListener("resize", handleResize);
+            window.removeEventListener("resize", handleResize);
             clearTimeout(timer);
         };
     }, []);

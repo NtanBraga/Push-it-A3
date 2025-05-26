@@ -1,21 +1,44 @@
 import './styles/Pages.css';
-import { useNavigate } from 'react-router-dom';
-import React from 'react';
+import { useNavigate,useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { canvasGet,canvasPost } from './components/api/ApiHandler';
 import { PageThemeButton } from './components/accessibility/pageThemeButton';
 
 function App() {
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [ inputSearch, setInputSearch ] = React.useState('');
   const [ error, setError ] = React.useState('');
 
+//Efeito que evita bug de loop infinito no canvasPage forçando o usuario ficar na App.jsx
+useEffect(() => {
+
+  // Prende o usuario no App.jsx
+  const handlePopState = () => {
+    window.history.pushState(null, '', '/');
+  };
+
+  window.addEventListener('popstate', handlePopState);
+  window.history.pushState(null, '', '/');
+
+  return () => {
+    window.removeEventListener('popstate', handlePopState);
+  };
+}, [location, navigate]);
 
   //SUBMIT DO POST E GET
   const handleSubmit = async (event) => {
     
     event.preventDefault();
     setError('');
+
+    //Obrigatório ter algo no input antes de prosseguir
+    if(!inputSearch.trim()) {
+      setError("Insira um nome no canvas para prosseguir!!")
+      return;
+    }
+     
 
     try{ // Se canvas existe, ele ira tentar procura-lo
 
