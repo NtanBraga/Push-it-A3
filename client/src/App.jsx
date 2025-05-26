@@ -38,7 +38,8 @@ useEffect(() => {
       setError("Insira um nome no canvas para prosseguir!!")
       return;
     }
-     
+
+    // Limita os caracteres para 32 
     if(inputSearch.trim().length > 32) {
       setError('O nome não pode conter mais de 32 caracteres.');
       return;

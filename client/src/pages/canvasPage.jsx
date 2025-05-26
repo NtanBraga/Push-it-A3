@@ -11,6 +11,12 @@ function CanvasPage(){
     //Voltar para pagina anterior
     const navigate = useNavigate();
 
+
+
+
+
+
+
     //Lógica para gerar Quadro de anotações em volta do canvas
     //E fazer as suas edições de texto dentro dos retangulos
 
@@ -36,6 +42,12 @@ function CanvasPage(){
 
     const selectedSticky = stickyNotes.filter((note) => note.selected);
 
+
+
+
+
+
+
     //Lógica para ativar o modo de exclusão através de um botão
     //realizando a deleção de um stickynote especifico ao click
     //Estado de exclusão
@@ -59,6 +71,12 @@ function CanvasPage(){
             arrowsLayer.current.batchDraw();
         }
     };
+
+
+
+
+
+
 
 
     //Logica para mudança de cores de um quadro de anotações
@@ -87,6 +105,11 @@ function CanvasPage(){
         );
         setColorfulPick({ ...colorfulPick, currentColour: newColour });
     };
+
+    
+
+
+
 
 
     //Logica para aplicar mudança de cor na fonte dos Quadros
@@ -143,6 +166,12 @@ function CanvasPage(){
 
     }, []);
     
+
+
+
+
+
+
     // Logica para implementação de conexões entre uma anotação e outra
     // necessita que o começo da linha inicie no meio do quadro,e  o final no meio do segundo
 
@@ -213,6 +242,13 @@ function CanvasPage(){
         }
     };
 
+
+
+
+
+
+
+
     // Logica para a remoção das conexões dentre os quadros
 
     //Ao selecionar um quadro, todas as conexões com ele são removidas
@@ -258,6 +294,12 @@ function CanvasPage(){
         );
     })();
 
+
+
+
+
+
+
     //Logica para redimensionar o <Stage> automaticamente com o React para evitar bug de resolução
 
     const [ canvaSize, setCanvaSize ] = useState({
@@ -275,6 +317,7 @@ function CanvasPage(){
         }
     };
 
+    //Efeito para fazer o resize automatico
     useEffect(() =>  {
         let timer;
         const handleResize = () => {
@@ -308,6 +351,11 @@ function CanvasPage(){
         }
     }
 
+
+
+
+
+
     //Ajusta o bug no qual deixa a peleta aberta apos todos os quadros serem deselecionados usando o SHIFT
     useEffect(() => {
         const anySelectioned = stickyNotes.some((note) => note.selected);
@@ -317,6 +365,12 @@ function CanvasPage(){
         }
     },[connectMode,fontColorfulPick,colorfulPick,stickyNotes]);
     
+
+
+
+
+
+
     return(
         <main className="canvaspage_main" id ="canvaspage_main">
             <PageThemeButton/>
