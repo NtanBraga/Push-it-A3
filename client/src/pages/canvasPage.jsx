@@ -150,6 +150,7 @@ function CanvasPage(){
     const [ connections, setConnections ] = useState([]);
     const [ selectMain, setSelectMain ] = useState(null);
     const arrowsLayer = useRef(null);
+    const lineColorTheme = document.documentElement.classList.contains('darkmode') ? "#FFFFFF" : "#000000" 
 
     //Arranja as linhas para conexão
     const createArrowPos = (idMain, idSecond) => {
@@ -318,43 +319,69 @@ function CanvasPage(){
     return(
         <main className="canvaspage_main" id ="canvaspage_main">
             <PageThemeButton/>
-            <button className="canvaspage_back_button" onClick={() => navigate(-1)}>
+            <button className="canvaspage_back_button" onClick={() => navigate(-1)} aria-label="Voltar para a pagina anterior" title="Voltar para a pagina anterior">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>
             </button>
             {/* Botão que adiciona novo sticky para renderizar*/}
             <div className="canvaspage_div_buttons">
-                <button className="canvaspage_button" onClick={zoomIn}>Aumentar zoom</button>
-                <button className="canvaspage_button" onClick={zoomOut}>Diminuir zoom</button>
-                <button className="canvaspage_button" onClick={() => takeScreenShot("canvaspage_main","canvasPrint.png")}>Tirar foto</button>
-                <button className="canvaspage_button" onClick={addSticky}>Adicionar Quadro</button>
-                <button className="canvaspage_button" onClick={toggleDelete}>{deleteMode ? "Sair do modo de deleção" : "Excluir Quadro"}</button>
-                <button className="canvaspage_button" onClick={toggleConnect}>{connectMode ? "Sair do modo de conexão" : "Conectar"}</button>
+                <button className="canvaspage_button" onClick={zoomIn} aria-label="Aumentar zoom" title="Aumentar zoom">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Zm-40-60v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg>
+                </button>
+                <button className="canvaspage_button" onClick={zoomOut} aria-label="Diminuir zoom" title="Diminuir zoom">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400ZM280-540v-80h200v80H280Z"/></svg>
+                </button>
+                <button className="canvaspage_button" onClick={() => takeScreenShot("canvaspage_main","canvasPrint.png")} aria-label="Tirar foto do canva" title="Tirar foto do canva">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M440-440ZM120-120q-33 0-56.5-23.5T40-200v-480q0-33 23.5-56.5T120-760h126l74-80h240v80H355l-73 80H120v480h640v-360h80v360q0 33-23.5 56.5T760-120H120Zm640-560v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80ZM440-260q75 0 127.5-52.5T620-440q0-75-52.5-127.5T440-620q-75 0-127.5 52.5T260-440q0 75 52.5 127.5T440-260Zm0-80q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29Z"/></svg>
+                </button>
+                <button className="canvaspage_button" onClick={addSticky} aria-label="Adicionar quadro de anotações" title="Adicionar quadro de anotações">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/></svg>
+                </button>
+                <button className={`canvaspage_button ${deleteMode ? 'canvaspage_button_cancel' : ''}`} onClick={toggleDelete} aria-label="Deletar quadro de anotações" title="Deletar quadro de anotações">
+                    {deleteMode 
+                        ? <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                        : <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m376-300 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 180q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Z"/></svg>
+                    }
+                </button>
+                <button className={`canvaspage_button ${connectMode ? 'canvaspage_button_cancel' : ''}`} onClick={toggleConnect} aria-label="Conectar quadros de anotações" title="Conectar quadros de anotações">
+                    {connectMode 
+                        ? <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                        : <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M600-80v-100L320-320H120v-240h172l108-124v-196h240v240H468L360-516v126l240 120v-50h240v240H600ZM480-720h80v-80h-80v80ZM200-400h80v-80h-80v80Zm480 240h80v-80h-80v80ZM520-760ZM240-440Zm480 240Z"/></svg>
+                    }
+                </button>
                 {selectedSticky.length > 0 && !deleteMode && !connectMode &&(
                     <>
+                    {verifyConnAny && (
+                        <button className="canvaspage_button" onClick={removeConnectionAll} aria-label="Remove todas as conexões de um quadro" title="Remove todas as conexões de um quadro">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M680-160q17 0 28.5-11.5T720-200q0-17-11.5-28.5T680-240q-17 0-28.5 11.5T640-200q0 17 11.5 28.5T680-160Zm0-560q17 0 28.5-11.5T720-760q0-17-11.5-28.5T680-800q-17 0-28.5 11.5T640-760q0 17 11.5 28.5T680-720ZM80-470v-10q0-50 35-85t85-35q24 0 45 8.5t37 23.5l281-164q-2-7-2.5-13.5T560-760q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35q-24 0-45-8.5T598-672L318-509q-19-5-38.5-8t-39.5-3q-45 0-85.5 13T80-470ZM680-80q-50 0-85-35t-35-85q0-6 3-28l-43-26q-2-24-7-46.5T499-345l99 57q16-15 37-23.5t45-8.5q50 0 85 35t35 85q0 50-35 85t-85 35ZM240-40q-83 0-141.5-58.5T40-240q0-83 58.5-141.5T240-440q83 0 141.5 58.5T440-240q0 83-58.5 141.5T240-40Zm0-172 70 71 29-28-71-71 71-71-28-28-71 71-71-71-28 28 71 71-71 71 28 28 71-71Zm440 12Zm0-560Z"/></svg>
+                        </button>
+                    )}
+                    {verifyConnTwo && (
+                        <button className="canvaspage_button" onClick={removeConnectionSpecific} aria-label="Remove conexão especifica entre dois quadros de anotações" title="Remove conexão especifica entre dois quadros de anotações">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m770-302-60-62q40-11 65-42.5t25-73.5q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 57-29.5 105T770-302ZM634-440l-80-80h86v80h-6ZM792-56 56-792l56-56 736 736-56 56ZM440-280H280q-83 0-141.5-58.5T80-480q0-69 42-123t108-71l74 74h-24q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h65l79 80H320Z"/></svg>
+                        </button>
+                    )}
                     <button 
-                        className="canvaspage_button"  
+                        className={`canvaspage_button ${colorfulPick.palletOpened ? 'canvaspage_button_cancel' : ''}`} 
                         onClick={() => togglePallet(selectedSticky[0].id, selectedSticky[0].colour)}
+                        aria-label="Colorir quadro de anotações"
+                        title="Colorir quadro de anotações"
                     >
                         {colorfulPick.palletOpened && selectedSticky.some((select) => select.id === colorfulPick.stickyID)
-                            ? "Fechar Paleta"
-                            : "Mudar de cor do quadro"
+                            ? <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                            : <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m247-904 57-56 343 343q23 23 23 57t-23 57L457-313q-23 23-57 23t-57-23L153-503q-23-23-23-57t23-57l190-191-96-96Zm153 153L209-560h382L400-751Zm360 471q-33 0-56.5-23.5T680-360q0-21 12.5-45t27.5-45q9-12 19-25t21-25q11 12 21 25t19 25q15 21 27.5 45t12.5 45q0 33-23.5 56.5T760-280ZM80 0v-160h800V0H80Z"/></svg>
                         }
                     </button>
                     <button
-                        className="canvaspage_button"
+                        className={`canvaspage_button ${fontColorfulPick.fontPalletOpened ? 'canvaspage_button_cancel' : ''}`} 
                         onClick={() => toggleFontPallet(selectedSticky[0].id, selectedSticky[0].fontColour)}
+                        aria-label="Colorir fonte do quadro de anotações"
+                        title="Colorir fonte do quadro de anotações"
                     >
                         {fontColorfulPick.fontPalletOpened && selectedSticky.some((select) => select.id === fontColorfulPick.fontStickyID)
-                            ? "Fechar Paleta"
-                            : "Mudar de cor da fonte"
+                            ? <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                            : <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M80 0v-160h800V0H80Zm140-280 210-560h100l210 560h-96l-50-144H368l-52 144h-96Zm176-224h168l-82-232h-4l-82 232Z"/></svg>
                         }
                     </button>
-                    {verifyConnTwo && (
-                        <button className="canvaspage_button" onClick={removeConnectionSpecific}>Remover Duas Conexão</button>
-                    )}
-                    {verifyConnAny && (
-                        <button className="canvaspage_button" onClick={removeConnectionAll}>Remover Todas Conexões</button>
-                    )}
                     </>
                 )}
 
@@ -435,7 +462,7 @@ function CanvasPage(){
                             <Line
                                 key={`arrow-${connectId.fromId}-${connectId.toId}-${index}`}
                                 points={intersect}
-                                stroke={"#000000"}
+                                stroke={lineColorTheme}
                                 strokeWidth={2 / zoomPage}
                                 pointerLength={10/ zoomPage}
                                 pointerWidth={10/ zoomPage}

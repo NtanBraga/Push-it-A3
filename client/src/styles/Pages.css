@@ -10,9 +10,9 @@ Para a organização dos estilos das paginas:
 :root {
   --base-color: white;
   --text-color: black;
-  --second-color: rgb(197, 193, 193);
+  --second-color: rgb(22, 21, 21);
   --button-color: white;
-  --theme-button-color: rgb(51, 53, 58);
+  --theme-button-color: rgb(235, 238, 245);
   --input-color: rgb(204, 201, 201);
 }
   
@@ -189,7 +189,7 @@ body {
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 200px;
+  top: 80px;
   left: 10px;
   gap: 10px;
   z-index: 10;
@@ -205,11 +205,22 @@ body {
 }
 .canvaspage_button {
   position: relative;
-  width: 120px;
-  height: 40px;
+  height: 60px;
+  width: 60px;
   font-size: 16px;
   cursor: pointer;
+  border-radius: 25%;
+  background-color: var(--theme-button-color);
 }
+
+.canvaspage_button svg{
+  fill: black;
+}
+
+.canvaspage_button_cancel {
+  background-color: red;
+}
+
 /*Estilo para o Pallet dos stickynotes*/
 .colorful-model {
   position: fixed;
