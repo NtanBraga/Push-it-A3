@@ -473,7 +473,20 @@ function CanvasPage(){
                 </Layer>
                 <Layer>
                     {/*Coloca na tela os quadros de anotações armazenados no array*/}
-                    {stickyNotes.map((objectNode) => (
+                    {stickyNotes.map((objectNode) => {
+                        const updatePos = (e) => {
+                            if(e.target && typeof e.target.x === 'function') {
+                                setStickyNotes((prev) =>
+                                    prev.map((n) => (
+                                        n.id === objectNode.id ? { ...n, x: e.target.x(),y: e.target.y() } : n
+                                    ))
+                                )
+                                if(arrowsLayer.current) {
+                                    arrowsLayer.current.batchDraw();
+                                }
+                            }   
+                        }
+                    return (
                     <StickyNote
                         key={objectNode.id} // Chave unica
                         id={objectNode.id} // Passa o ID do stickynode
@@ -509,21 +522,11 @@ function CanvasPage(){
                                 arrowsLayer.current.batchDraw();
                             }
                         }}
-                        onDragMove={() => {
-                            if(arrowsLayer.current){
-                                arrowsLayer.current.batchDraw();
-                            }
-                        }}
-                        onDragEnd={(newX, newY) => {
-                            setStickyNotes(
-                                stickyNotes.map((n) => 
-                                    n.id === objectNode.id ? { ...n, x: newX, y: newY} : n
-                                )
-                            );
-                        }}
-                        
+                        onDragMove={updatePos}
+                        onDragEnd={updatePos}
                     />
-                    ))}
+                    );
+                    })}
                 </Layer>
             </Stage>
         </main>
