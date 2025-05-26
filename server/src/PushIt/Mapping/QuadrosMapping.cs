@@ -3,7 +3,7 @@ public static class QuadrosMapping
     public static QuadroAnotacao ToQuadro(this CreateQuadroRequest request)
     {
         return new QuadroAnotacao(
-            id: request.id, 
+            id: request.id,
             x: request.x,
             y: request.y,
             width: request.width,
@@ -18,7 +18,7 @@ public static class QuadrosMapping
     public static QuadroAnotacao ToQuadro(this UpdateQuadroRequest request, string _id)
     {
         return new QuadroAnotacao(
-            id: _id, 
+            id: _id,
 
             x: request.x,
             y: request.y,
@@ -32,6 +32,24 @@ public static class QuadrosMapping
         );
     }
 
+    public static QuadroAnotacao ToQuadro(this QuadrosEntity entity, List<string> _IDsConectados)
+    {
+        return new QuadroAnotacao(
+            id: entity.localId,
+
+            x: entity.x,
+            y: entity.y,
+            width: entity.width,
+            height: entity.height,
+            text: entity.text,
+            colour: entity.colour,
+
+            IDsConectados: _IDsConectados,
+
+            lastModification: entity.LastModification
+        );
+    }
+
     public static QuadroResponse ToQuadroResponse(this QuadroAnotacao quadroAnotacao)
     {
         return new QuadroResponse(
@@ -39,10 +57,24 @@ public static class QuadrosMapping
             x: quadroAnotacao.x,
             y: quadroAnotacao.y,
             width: quadroAnotacao.width,
-            height: quadroAnotacao.height, 
+            height: quadroAnotacao.height,
             text: quadroAnotacao.text,
             colour: quadroAnotacao.colour,
             IDsConectados: quadroAnotacao.IDsConectados,
+            lastModification: quadroAnotacao.LastModification
+        );
+    }
+
+    public static QuadrosEntity ToQuadroEntity(this QuadroAnotacao quadroAnotacao)
+    {
+        return new QuadrosEntity(
+            localId: quadroAnotacao.id,
+            x: quadroAnotacao.x,
+            y: quadroAnotacao.y,
+            width: quadroAnotacao.width,
+            height: quadroAnotacao.height,
+            text: quadroAnotacao.text,
+            colour: quadroAnotacao.colour,
             lastModification: quadroAnotacao.LastModification
         );
     }
