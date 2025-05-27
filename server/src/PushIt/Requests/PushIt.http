@@ -3,6 +3,8 @@
 @NomeCanvas = Validação Teste
 @ID_Quadro = 12
 
+@IdQuadroDestino = 123
+
 
 ### Criar Canvas
 POST {{PushIt_HostAddress}}/canvas
@@ -10,7 +12,6 @@ Content-Type: application/json
 
 {
     "Name":"Validação Teste",
-    "QuadrosAnotacoes": [ ],
     "CreatedDateTime":"2025-04-22T15:00:00"
 }
 
@@ -41,7 +42,6 @@ Content-Type: application/json
     "height":66,
     "text":"66",
     "colour":"#01450",  
-    "IDsConectados": []
 }
 
 
@@ -68,4 +68,15 @@ Accept: application/json
 GET {{PushIt_HostAddress}}/canvas/{{NomeCanvas}}/quadros/{{ID_Quadro}}/conexoes
 Accept: application/json
 
-###
+### Criar uma Seta de conexão entre dois quadros de um Canvas
+### Inserir no URI o ID do Quadro de onde começa a seta, e inserir no JSON da request o ID para onde a Seta Aponta
+POST {{PushIt_HostAddress}}/canvas/{{NomeCanvas}}/quadros/{{ID_Quadro}}/conexoes
+Content-Type: application/json
+
+{
+    "IdQuadroDestino":"123456"  
+}
+
+
+### Deletar uma Seta de conexão
+DELETE {{PushIt_HostAddress}}/canvas/{{NomeCanvas}}/quadros/{{ID_Quadro}}/conexoes/{{IdQuadroDestino}}
