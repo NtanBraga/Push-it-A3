@@ -182,6 +182,11 @@ public class CanvasService : ICanvasService
                                                                     entry.localIdQuadroDestino == localIdQuadroDestino);
         if (conexaoQuery is not null) { return null; }
 
+        //Cria uma nova entry e adiciona na Database
+        Quadro_Aponta_Quadro novaConexao = new(quadroQuery.quadro, localIdQuadroDestino);
+        await dbContext.conexoes.AddAsync(novaConexao);
+        await dbContext.SaveChangesAsync();
+
         List<string> IDsConectados = await (from entry in dbContext.conexoes
                                             where entry.QuadroComeco.id == quadroQuery.quadro.id
                                             select entry.localIdQuadroDestino)

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 [ApiController]
 //[Route("canvas")]
@@ -132,7 +133,7 @@ public class CanvasController : ControllerBase
     }
 
     //POST /canvas/{CanvasName}/quadros/{LocalId}/conexoes
-    [HttpPost("/CanvasName/{CanvasName}/quadros/{LocalId}/conexoes")]
+    [HttpPost("/canvas/{CanvasName}/quadros/{LocalId}/conexoes")]
     public async Task<IActionResult> CreateQuadroConexaoAsync(string CanvasName, string LocalId, CreateQuadroConexaoRequest request)
     {
         List<string>? IDsConectados = await this._canvasService.CreateQuadroConexaoAsync(CanvasName, LocalId, request.IdQuadroDestino);
@@ -140,16 +141,17 @@ public class CanvasController : ControllerBase
         if (IDsConectados is null) { return BadRequest(); }
 
         GetAllQuadroConexoesResponse response = new(IDsConectados);
+
         return CreatedAtAction("GetAllQuadroConexoes",
-                                new {name = CanvasName, LocalId = LocalId},
+                                new { CanvasName = CanvasName, LocalId = LocalId },
                                 response);
     }
 
     //GET /canvas/{nomecanvas}/quadros/{iddoquadro}/conexoes
-    [HttpGet("/canvas/{name}/quadros/{LocalId}/conexoes")]
-    public async Task<IActionResult> GetAllQuadroConexoesAsync(string name, string LocalId)
+    [HttpGet("/canvas/{CanvasName}/quadros/{LocalId}/conexoes")]
+    public async Task<IActionResult> GetAllQuadroConexoesAsync(string CanvasName, string LocalId)
     {
-        QuadroAnotacao? quadro = await this._canvasService.GetQuadroAsync(name, LocalId);
+        QuadroAnotacao? quadro = await this._canvasService.GetQuadroAsync(CanvasName, LocalId);
 
         if (quadro is null) { return NotFound(); }
 
