@@ -1,6 +1,6 @@
 public record CreateCanvasRequest
 (
     string Name,
-    List<QuadroAnotacao> QuadrosAnotacoes,
+    //List<QuadroAnotacao> QuadrosAnotacoes,
     DateTime CreatedDateTime
 );
