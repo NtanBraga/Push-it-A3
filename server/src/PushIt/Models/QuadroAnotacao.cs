@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("QuadroAnotacao")]
 public class QuadroAnotacao
 {
     public const string defaultText = "";
@@ -16,12 +15,11 @@ public class QuadroAnotacao
     public string colour { get; }
 
     //Obter Através de query "SELECT *" na tabela Quadro_Aponta_Quadro
-    [Column("QuadrosApontados'")]
-    public List<string> IDsConectados { get; }
+    public List<string>? IDsConectados { get; }
 
     public DateTime LastModification { get; }
     
-    public QuadroAnotacao(string id, double x, double y, double width, double height, string text, string colour, List<string> IDsConectados, DateTime lastModification)
+    public QuadroAnotacao(string id, double x, double y, double width, double height, string text, string colour, List<string>? IDsConectados, DateTime lastModification)
     {
         this.id = id;
         this.x = x;

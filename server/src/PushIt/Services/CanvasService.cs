@@ -134,27 +134,13 @@ public class CanvasService : ICanvasService
 
         //atualiza a entrada da Tabela Quadros
         QuadrosEntity? quadroEntity = await dbContext.quadros.FindAsync(canvasQuadro.quadro.id);
-        quadroEntity!.x = novoQuadro.x;
-        quadroEntity.y = novoQuadro.y;
-        quadroEntity.width = novoQuadro.width;
-        quadroEntity.height = novoQuadro.height;
-        quadroEntity.text = novoQuadro.text;
-        quadroEntity.colour = novoQuadro.colour;
-        quadroEntity.LastModification = novoQuadro.LastModification;
-        await dbContext.SaveChangesAsync();
-
-        quadroEntity = await dbContext.quadros.FindAsync(canvasQuadro.quadro.id);
-
-        //deleta todas as entradas de conexão relacionadas ao Quadro a ser Atualizado na tabela Quadro_Aponta_Quadro
-        await dbContext.conexoes.Where(c => c.QuadroComeco.id == canvasQuadro.quadro.id).ExecuteDeleteAsync();
-
-        //Adiciona todas as conexões novamente de acordo com o estado atual do Quadro
-        foreach (string IDConectado in novoQuadro.IDsConectados)
-        {
-            var quadroApontaQuadroEntity = new Quadro_Aponta_Quadro(quadroEntity!, IDConectado);
-            await dbContext.conexoes.AddAsync(quadroApontaQuadroEntity);
-        }
-
+            quadroEntity!.x = novoQuadro.x;
+            quadroEntity.y = novoQuadro.y;
+            quadroEntity.width = novoQuadro.width;
+            quadroEntity.height = novoQuadro.height;
+            quadroEntity.text = novoQuadro.text;
+            quadroEntity.colour = novoQuadro.colour;
+            quadroEntity.LastModification = novoQuadro.LastModification;
         await dbContext.SaveChangesAsync();
 
         return true;
@@ -216,7 +202,8 @@ public class CanvasService : ICanvasService
         if (quadroQuery is null) { return false; }
 
         await dbContext.conexoes.Where(entry => entry.QuadroComeco.id == quadroQuery!.quadro.id &&
-                                       entry.localIdQuadroDestino == idConexao).ExecuteDeleteAsync();
+                                       entry.localIdQuadroDestino == idConexao)
+                                       .ExecuteDeleteAsync();
 
 
         return true;
