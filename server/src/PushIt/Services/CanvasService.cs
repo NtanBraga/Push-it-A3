@@ -2,10 +2,10 @@ using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 
-public class CanvasService : ICanvasService 
+public class CanvasService : ICanvasService
 {
     private PushItContext dbContext { get; }
-    
+
     public CanvasService(PushItContext dbContext)
     {
         this.dbContext = dbContext;
@@ -76,9 +76,9 @@ public class CanvasService : ICanvasService
 
         if (queryResult is null) { return null; }
 
-        var idsConectadosQueryResult =  from entry in dbContext.conexoes
-                                        where entry.QuadroComeco.localId == quadroLocalId
-                                        select entry.localIdQuadroDestino;
+        var idsConectadosQueryResult = from entry in dbContext.conexoes
+                                       where entry.QuadroComeco.localId == quadroLocalId
+                                       select entry.localIdQuadroDestino;
 
         QuadrosEntity quadrosEntity = queryResult.quadro;
         List<string> idsConectados = idsConectadosQueryResult is null ?
@@ -134,13 +134,13 @@ public class CanvasService : ICanvasService
 
         //atualiza a entrada da Tabela Quadros
         QuadrosEntity? quadroEntity = await dbContext.quadros.FindAsync(canvasQuadro.quadro.id);
-            quadroEntity!.x = novoQuadro.x;
-            quadroEntity.y = novoQuadro.y;
-            quadroEntity.width = novoQuadro.width;
-            quadroEntity.height = novoQuadro.height;
-            quadroEntity.text = novoQuadro.text;
-            quadroEntity.colour = novoQuadro.colour;
-            quadroEntity.LastModification = novoQuadro.LastModification;
+        quadroEntity!.x = novoQuadro.x;
+        quadroEntity.y = novoQuadro.y;
+        quadroEntity.width = novoQuadro.width;
+        quadroEntity.height = novoQuadro.height;
+        quadroEntity.text = novoQuadro.text;
+        quadroEntity.colour = novoQuadro.colour;
+        quadroEntity.LastModification = novoQuadro.LastModification;
         await dbContext.SaveChangesAsync();
 
         quadroEntity = await dbContext.quadros.FindAsync(canvasQuadro.quadro.id);
@@ -178,4 +178,23 @@ public class CanvasService : ICanvasService
 
         return true;
     }
+
+    public async Task<bool> TryDeleteQuadroConexaoAsync(string canvasName, string localId, string idConexao)
+    {
+        CanvasEntity? canvasQuery = await dbContext.canvas.FirstOrDefaultAsync(c => c.Name == canvasName);
+        if(canvasQuery == null){ return false; }
+
+        Canvas_Contem_Quadro? quadroQuery = await dbContext.canvasQuadros.Include("quadro")
+                                                                         .FirstOrDefaultAsync<Canvas_Contem_Quadro>
+                                                                            (entry => entry.nomeCanvas == canvasName &&
+                                                                            entry.quadro.localId == localId);
+        if (quadroQuery is null) { return false; }
+
+        await dbContext.conexoes.Where(entry => entry.QuadroComeco.id == quadroQuery!.quadro.id &&
+                                       entry.localIdQuadroDestino == idConexao).ExecuteDeleteAsync();
+
+
+        return true;
+    }
+
 }

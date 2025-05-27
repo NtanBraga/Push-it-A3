@@ -25,7 +25,7 @@ public class CanvasController : ControllerBase
 
         // Aqui salva na database ou lista em memória
         canvas = await this._canvasService.CreateCanvasAsync(canvas);
-        if(canvas is null)
+        if (canvas is null)
         {
             return BadRequest();
         }
@@ -77,7 +77,7 @@ public class CanvasController : ControllerBase
     public async Task<IActionResult> GetQuadroAsync(string name, string id)
     {
         QuadroAnotacao? quadro = await this._canvasService.GetQuadroAsync(name, id);
-        if(quadro is null)
+        if (quadro is null)
         {
             return NotFound();
         }
@@ -108,7 +108,7 @@ public class CanvasController : ControllerBase
     {
         QuadroAnotacao quadro = request.ToQuadro(id);
         bool successful = await this._canvasService.TryUpdateQuadroAsync(name, id, quadro);
-        
+
         if (!successful)
         {
             return NotFound();
@@ -137,16 +137,21 @@ public class CanvasController : ControllerBase
     {
         QuadroAnotacao? quadro = await this._canvasService.GetQuadroAsync(name, LocalId);
 
-        if(quadro is null){ return NotFound(); }
+        if (quadro is null) { return NotFound(); }
 
         GetAllQuadroConexoesResponse response = new(quadro.IDsConectados ?? new());
         return Ok(response);
     }
+    
+    //GET /canvas/{CanvasName}/quadros/{LocalId}/conexoes/{IdConexao}
+    [HttpDelete("/canvas/{CanvasName}/quadros/{LocalId}/conexoes/{IdConexao}")]
+    public async Task<IActionResult> DeleteQuadroConexaoAsync(string CanvasName, string LocalId, string IdConexao)
+    {
+        bool successful = await this._canvasService.TryDeleteQuadroConexaoAsync(CanvasName, LocalId, IdConexao);
 
-    // [HttpDelete("/canvas/{name}/quadros/{id}/conexoes/{IdDeletar}")]
-    // public IActionResult DeleteConexao(string name, string id, string IdDeletar)
-    // {
-    //     return Ok();
-    // }
+        if(!successful){ return NotFound(); }
+
+        return NoContent();
+    }
 
 }

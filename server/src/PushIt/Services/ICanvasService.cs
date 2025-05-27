@@ -7,4 +7,5 @@ public interface ICanvasService
     public Task<List<QuadroAnotacao>?> GetAllQuadrosAsync(string canvasName);
     public Task<bool> TryUpdateQuadroAsync(string canvasName, string quadroLocalId, QuadroAnotacao novoQuadro);
     public Task<bool> TryDeleteQuadroAsync(string canvasName, string quadroId);
+    public Task<bool> TryDeleteQuadroConexaoAsync(string canvasName, string localId, string idConexao);
 }
