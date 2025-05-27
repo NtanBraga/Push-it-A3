@@ -104,7 +104,9 @@ export function StickyNote({
                 onDragStart={handleStartDragging} 
                 onDragEnd={handleStopDragging}
                 onDragMove={(e) => {
-                    onDragMove?.(e);
+                    if(onDragMove){
+                        onDragMove(e);
+                    }
                 }}
                 onClick={onClick}
                 onTap={onClick}

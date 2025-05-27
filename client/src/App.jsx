@@ -1,20 +1,49 @@
 import './styles/Pages.css';
-import { useNavigate } from 'react-router-dom';
-import React from 'react';
+import { useNavigate,useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { canvasGet,canvasPost } from './components/api/ApiHandler';
+import { PageThemeButton } from './components/accessibility/pageThemeButton';
 
 function App() {
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [ inputSearch, setInputSearch ] = React.useState('');
   const [ error, setError ] = React.useState('');
 
+//Efeito que evita bug de loop infinito no canvasPage forçando o usuario ficar na App.jsx
+useEffect(() => {
+
+  // Prende o usuario no App.jsx
+  const handlePopState = () => {
+    window.history.pushState(null, '', '/');
+  };
+
+  window.addEventListener('popstate', handlePopState);
+  window.history.pushState(null, '', '/');
+
+  return () => {
+    window.removeEventListener('popstate', handlePopState);
+  };
+}, [location, navigate]);
 
   //SUBMIT DO POST E GET
   const handleSubmit = async (event) => {
-    
+  
     event.preventDefault();
     setError('');
+
+    //Obrigatório ter algo no input antes de prosseguir
+    if(!inputSearch.trim()) {
+      setError("Insira um nome no canvas para prosseguir!!")
+      return;
+    }
+
+    // Limita os caracteres para 32 
+    if(inputSearch.trim().length > 32) {
+      setError('O nome não pode conter mais de 32 caracteres.');
+      return;
+    }
 
     try{ // Se canvas existe, ele ira tentar procura-lo
 
@@ -26,10 +55,6 @@ function App() {
     }catch(e){
       setError(e.message|| 'Canvas não encontrado. Tentando criar um novo...');
       try{ // Se canvas não existe, ele cria um novo do zero
-        
-
-        //TODO - Passar condicionais para não estourar variaveis
-
 
         await canvasPost({ //Parametros usados pela API para a criação do JSON
           Name: inputSearch, //String
@@ -48,6 +73,7 @@ function App() {
 
   return (
     <>
+      <PageThemeButton/>
       <main className='mainpage_main'>
         <h1 className='mainpage_h1'>
           Push-IT
