@@ -131,6 +131,20 @@ public class CanvasController : ControllerBase
         return NoContent();
     }
 
+    //POST /canvas/{CanvasName}/quadros/{LocalId}/conexoes
+    [HttpPost("/CanvasName/{CanvasName}/quadros/{LocalId}/conexoes")]
+    public async Task<IActionResult> CreateQuadroConexaoAsync(string CanvasName, string LocalId, CreateQuadroConexaoRequest request)
+    {
+        List<string>? IDsConectados = await this._canvasService.CreateQuadroConexaoAsync(CanvasName, LocalId, request.IdQuadroDestino);
+
+        if (IDsConectados is null) { return BadRequest(); }
+
+        GetAllQuadroConexoesResponse response = new(IDsConectados);
+        return CreatedAtAction("GetAllQuadroConexoes",
+                                new {name = CanvasName, LocalId = LocalId},
+                                response);
+    }
+
     //GET /canvas/{nomecanvas}/quadros/{iddoquadro}/conexoes
     [HttpGet("/canvas/{name}/quadros/{LocalId}/conexoes")]
     public async Task<IActionResult> GetAllQuadroConexoesAsync(string name, string LocalId)
@@ -143,7 +157,7 @@ public class CanvasController : ControllerBase
         return Ok(response);
     }
     
-    //GET /canvas/{CanvasName}/quadros/{LocalId}/conexoes/{IdConexao}
+    //DELETE /canvas/{CanvasName}/quadros/{LocalId}/conexoes/{IdConexao}
     [HttpDelete("/canvas/{CanvasName}/quadros/{LocalId}/conexoes/{IdConexao}")]
     public async Task<IActionResult> DeleteQuadroConexaoAsync(string CanvasName, string LocalId, string IdConexao)
     {
