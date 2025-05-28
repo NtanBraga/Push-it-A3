@@ -32,25 +32,45 @@ export async function canvasPost(loadParam) {
 
 
 //função GET que procurará o canvas pelo nome via memoria local.
-export async function canvasGet(name) {
-
+export async function canvasGet(canvasName) {
+    try{
     //Estabelece comunicação do com canvas salvo
-    const response = await fetch(`${APILOCAL}/${name}`, {
-        headers: { Accept: 'application/json'},
-    });
+        const response = await fetch(`${APILOCAL}/${encodeURIComponent(canvasName)}`, {
+            headers: { Accept: 'application/json'},
+        });
 
-    //Sempre apresentará mensagem de erro quando criar um canvas novo.
-    /*
-    if(!response.ok) {
-        const text = await response.text();
-        throw new Error(`Erro ao buscar canvas: ${response.status} - ${text}`);
+        if(!response.ok) {
+            const text = await response.text();
+            throw new Error(`Erro ao buscar canvas: ${response.status} - ${text}`);
+        }
+        
+        return await response.json();
+    }catch(e) {
+        throw new Error(e.message || "Canvas não encontrado.");
     }
-    */
-    return await response.json();
 }
 
+//Adicionar os quadros no armazenamento do quadro
+export async function addStickyNote(canvasName, stickynote) {
+    try{
+        const response = await fetch(`${APILOCAL}/${encodeURIComponent(canvasName)}/quadros`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(stickynote),
+        });
+        if(!response.ok) {
+            const text = await response.text();
+            throw new Error(`Erro ao buscar canvas: ${response.status} - ${text}`);
+        }
+
+        return await response.json();
+    }catch(e) {
+        throw new Error(e.message || "Não foi possivel criar o quadro.");
+    }
+}
 
 //função de DELETE do canvas -- NÃO IMPLEMENTADA
+/*
 export async function canvasDelete(name) {
 
     const response = await fetch(`${APILOCAL}/${name}`, {
@@ -64,3 +84,4 @@ export async function canvasDelete(name) {
 
     return await response.text();
 }
+    */
