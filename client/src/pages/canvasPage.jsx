@@ -360,10 +360,14 @@ function CanvasPage(){
     useEffect(() => {
         const anySelectioned = stickyNotes.some((note) => note.selected);
         if(!anySelectioned && !connectMode){
-            setColorfulPick({ ...colorfulPick, palletOpened: false })
-            setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false})
+            if(colorfulPick.palletOpened) {
+                setColorfulPick(prev => ({ ...prev, palletOpened:false }));
+            }
+            if(fontColorfulPick.fontPalletOpened) {
+                setFontColorfulPick(prev => ({ ...prev, fontPalletOpened: false}));
+            }
         }
-    },[connectMode,fontColorfulPick,colorfulPick,stickyNotes]);
+    },[connectMode,stickyNotes,colorfulPick.palletOpened,fontColorfulPick.fontPalletOpened]);
     
 
 
