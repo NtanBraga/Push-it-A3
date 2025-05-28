@@ -2,10 +2,10 @@ using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 
-public class CanvasService : ICanvasService 
+public class CanvasService : ICanvasService
 {
     private PushItContext dbContext { get; }
-    
+
     public CanvasService(PushItContext dbContext)
     {
         this.dbContext = dbContext;
@@ -76,9 +76,9 @@ public class CanvasService : ICanvasService
 
         if (queryResult is null) { return null; }
 
-        var idsConectadosQueryResult =  from entry in dbContext.conexoes
-                                        where entry.QuadroComeco.localId == quadroLocalId
-                                        select entry.localIdQuadroDestino;
+        var idsConectadosQueryResult = from entry in dbContext.conexoes
+                                       where entry.QuadroComeco.localId == quadroLocalId
+                                       select entry.localIdQuadroDestino;
 
         QuadrosEntity quadrosEntity = queryResult.quadro;
         List<string> idsConectados = idsConectadosQueryResult is null ?
@@ -143,20 +143,6 @@ public class CanvasService : ICanvasService
             quadroEntity.LastModification = novoQuadro.LastModification;
         await dbContext.SaveChangesAsync();
 
-        quadroEntity = await dbContext.quadros.FindAsync(canvasQuadro.quadro.id);
-
-        //deleta todas as entradas de conexão relacionadas ao Quadro a ser Atualizado na tabela Quadro_Aponta_Quadro
-        await dbContext.conexoes.Where(c => c.QuadroComeco.id == canvasQuadro.quadro.id).ExecuteDeleteAsync();
-
-        //Adiciona todas as conexões novamente de acordo com o estado atual do Quadro
-        foreach (string IDConectado in novoQuadro.IDsConectados)
-        {
-            var quadroApontaQuadroEntity = new Quadro_Aponta_Quadro(quadroEntity!, IDConectado);
-            await dbContext.conexoes.AddAsync(quadroApontaQuadroEntity);
-        }
-
-        await dbContext.SaveChangesAsync();
-
         return true;
     }
 
@@ -178,4 +164,54 @@ public class CanvasService : ICanvasService
 
         return true;
     }
+
+    public async Task<List<string>?> CreateQuadroConexaoAsync(string canvasName, string quadroLocalId, string localIdQuadroDestino)
+    {
+        CanvasEntity? canvasQuery = await dbContext.canvas.FirstOrDefaultAsync<CanvasEntity>(c => c.Name == canvasName);
+        if (canvasQuery is null) { return null; }
+
+        Canvas_Contem_Quadro? quadroQuery = await dbContext.canvasQuadros.Include("quadro")
+                                                                         .FirstOrDefaultAsync<Canvas_Contem_Quadro>
+                                                                              (entry => entry.nomeCanvas == canvasName &&
+                                                                               entry.quadro.localId == quadroLocalId);
+        if (quadroQuery is null) { return null; }
+
+        //Verifica se a Conexão/Seta já existe
+        Quadro_Aponta_Quadro? conexaoQuery = await dbContext.conexoes.FirstOrDefaultAsync(
+                                                                    entry => entry.QuadroComeco.id == quadroQuery.quadro.id &&
+                                                                    entry.localIdQuadroDestino == localIdQuadroDestino);
+        if (conexaoQuery is not null) { return null; }
+
+        //Cria uma nova entry e adiciona na Database
+        Quadro_Aponta_Quadro novaConexao = new(quadroQuery.quadro, localIdQuadroDestino);
+        await dbContext.conexoes.AddAsync(novaConexao);
+        await dbContext.SaveChangesAsync();
+
+        List<string> IDsConectados = await (from entry in dbContext.conexoes
+                                            where entry.QuadroComeco.id == quadroQuery.quadro.id
+                                            select entry.localIdQuadroDestino)
+                                            .ToListAsync();
+
+        return IDsConectados;
+    }
+
+    public async Task<bool> TryDeleteQuadroConexaoAsync(string canvasName, string localId, string idConexao)
+    {
+        CanvasEntity? canvasQuery = await dbContext.canvas.FirstOrDefaultAsync(c => c.Name == canvasName);
+        if (canvasQuery == null) { return false; }
+
+        Canvas_Contem_Quadro? quadroQuery = await dbContext.canvasQuadros.Include("quadro")
+                                                                         .FirstOrDefaultAsync<Canvas_Contem_Quadro>
+                                                                            (entry => entry.nomeCanvas == canvasName &&
+                                                                             entry.quadro.localId == localId);
+        if (quadroQuery is null) { return false; }
+
+        await dbContext.conexoes.Where(entry => entry.QuadroComeco.id == quadroQuery!.quadro.id &&
+                                       entry.localIdQuadroDestino == idConexao)
+                                       .ExecuteDeleteAsync();
+
+
+        return true;
+    }
+
 }
