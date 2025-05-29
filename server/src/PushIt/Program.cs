@@ -34,6 +34,8 @@ builder.Services.AddDbContext<PushItContext>(options =>
     options.UseSqlite(connectionString);
 });
 
+builder.Services.AddHostedService<AutoDeleteCanvasService>();
+
 var app = builder.Build(); //"constrói" um server de acordo com as configurações definidas anteriormente na pipeline
 
 using (IServiceScope scope = app.Services.CreateScope()) //gera um service compatível com a keyword "using"
