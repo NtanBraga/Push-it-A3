@@ -69,6 +69,23 @@ export async function addStickyNote(canvasName, stickynote) {
     }
 }
 
+//Função para pegar todos pegar todos os quadros do canvas
+
+export async function getStickys(canvasName) {
+    try{
+        const response = await fetch(`${APILOCAL}/${encodeURIComponent(canvasName)}/quadros`, {
+            headers: { Accept: 'application/json' },
+        });
+
+        if(!response.ok) {
+            const text = await response.text();
+            throw new Error(`Erro ao buscar os quadros: ${response.status} - ${text}`);
+        }
+    }catch(e) {
+        throw new Error(e.message || 'Não foi possivel pegar os quadros.');
+    }
+}
+
 //função de DELETE do canvas -- NÃO IMPLEMENTADA
 /*
 export async function canvasDelete(name) {

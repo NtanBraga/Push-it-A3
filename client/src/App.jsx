@@ -30,39 +30,39 @@ useEffect(() => {
   //SUBMIT DO POST E GET
   const handleSubmit = async (event) => {
   
+    const formatInput = inputSearch.trim();
+
     event.preventDefault();
     setError('');
 
     //Obrigatório ter algo no input antes de prosseguir
-    if(!inputSearch.trim()) {
+    if(!formatInput) {
       setError("Insira um nome no canvas para prosseguir!!")
       return;
     }
 
     // Limita os caracteres para 32 
-    if(inputSearch.trim().length > 32) {
+    if(formatInput.length > 32) {
       setError('O nome não pode conter mais de 32 caracteres.');
       return;
     }
 
     try{ // Se canvas existe, ele ira tentar procura-lo
 
-      await canvasGet(inputSearch);
-
-      navigate('/canvas', { state: { code: inputSearch}});
-      
+      const canvasData = await canvasGet(formatInput);
+      navigate('/canvas', { state: { code: formatInput, canvasData}});
 
     }catch(e){
       setError(e.message|| 'Canvas não encontrado. Tentando criar um novo...');
       try{ // Se canvas não existe, ele cria um novo do zero
 
-        await canvasPost({ //Parametros usados pela API para a criação do JSON
-          Name: inputSearch, //String
+        const createCanvas = await canvasPost({ //Parametros usados pela API para a criação do JSON
+          Name: formatInput, //String
           QuadrosAnotacoes: [], //Lista
           CreatedDateTime: new Date().toISOString() //DateTime
         });
 
-        navigate('/canvas', { state: { code: inputSearch}});
+        navigate('/canvas', { state: { code: formatInput, canvasData: createCanvas }});
 
       }catch(e){
         setError(e.message || 'Erro ao criar canvas.');
