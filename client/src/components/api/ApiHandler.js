@@ -87,6 +87,27 @@ export async function getStickys(canvasName) {
     }
 }
 
+//Função para atualizar um quadro no canvas
+
+export async function updateSticky(canvasName, id, sticky) {
+    try{
+        const response = await fetch(`${APILOCAL}/${encodeURIComponent(canvasName)}/quadros/${encodeURIComponent(id)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(sticky),
+        });
+
+        if(!response.ok) {
+            const text = await response.text();
+            throw new Error(`Erro ao atualizar quadro: ${response.status} - ${text}`);
+        }
+
+        return true;
+    }catch(e){
+        throw new Error(e.message || 'Não foi possivel atualizar o quadro.');
+    }
+}
+
 //função de DELETE do canvas -- NÃO IMPLEMENTADA
 /*
 export async function canvasDelete(name) {

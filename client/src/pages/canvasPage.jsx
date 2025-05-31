@@ -5,7 +5,7 @@ import { Stage, Layer, Line} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
 import { HexColorPicker } from "react-colorful"
 import { takeScreenShot } from "../components/screenshot/screenshot";
-import { addStickyNote, getStickys } from "../components/api/ApiHandler";
+import { addStickyNote, getStickys, updateSticky } from "../components/api/ApiHandler";
 
 
 function CanvasPage(){
@@ -92,6 +92,35 @@ function CanvasPage(){
         }
     };
 
+    const updateModSticky = async (id, changes) => {
+        try{
+            const note = stickyNotes.find((n) => n.id === id);
+            
+            if(!note) return;
+            
+            const modifiedNote = { ...note, ...changes };
+            await updateSticky(getCanvaName, id, {
+                x: modifiedNote.x,
+                y: modifiedNote.y,
+                width: modifiedNote.width,
+                height: modifiedNote.height,
+                text: modifiedNote.text,
+                colour: modifiedNote.colour,
+                fontColour: modifiedNote.fontColour,
+            });
+            setStickyNotes(stickyNotes.map((n) => (n.id === id ? modifiedNote: n)));
+
+        }catch(e) {
+            console.error('Erro ao atualizar o quadro:', e.message);
+        }
+    }
+
+    //Limitar as chamadas para a API
+
+    //const throttleCallsApi = useRef(lodash.throttle((id,pos) => {
+    //    updateModSticky(id, pos);
+    //}, 500, { leading: true, trailing: true })).current
+
     const selectedSticky = stickyNotes.filter((note) => note.selected);
 
 
@@ -156,6 +185,7 @@ function CanvasPage(){
             )
         );
         setColorfulPick({ ...colorfulPick, currentColour: newColour });
+        selectedSticky.forEach((note) => updateModSticky(note.id, { colour: newColour }));
     };
 
     
@@ -189,6 +219,7 @@ function CanvasPage(){
             )
         );
         setFontColorfulPick({...fontColorfulPick,fontCurrentColour: newFontColour,});
+        selectedSticky.forEach((note) => updateModSticky(note.id, { fontColour: newFontColour }));
         
     };
 
@@ -592,6 +623,7 @@ function CanvasPage(){
                                         n.id === objectNode.id ? { ...n, x: e.target.x(),y: e.target.y() } : n
                                     ))
                                 )
+
                                 if(arrowsLayer.current) {
                                     arrowsLayer.current.batchDraw();
                                 }
@@ -634,7 +666,9 @@ function CanvasPage(){
                             }
                         }}
                         onDragMove={updatePos}
-                        onDragEnd={updatePos}
+                        onDragEnd={(x, y) => {
+                            updateModSticky(objectNode.id, { x, y});
+                        }}
                     />
                     );
                     })}
