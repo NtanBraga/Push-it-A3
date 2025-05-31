@@ -115,11 +115,6 @@ function CanvasPage(){
         }
     }
 
-    //Limitar as chamadas para a API
-
-    //const throttleCallsApi = useRef(lodash.throttle((id,pos) => {
-    //    updateModSticky(id, pos);
-    //}, 500, { leading: true, trailing: true })).current
 
     const selectedSticky = stickyNotes.filter((note) => note.selected);
 
@@ -623,7 +618,6 @@ function CanvasPage(){
                                         n.id === objectNode.id ? { ...n, x: e.target.x(),y: e.target.y() } : n
                                     ))
                                 )
-
                                 if(arrowsLayer.current) {
                                     arrowsLayer.current.batchDraw();
                                 }
@@ -643,6 +637,7 @@ function CanvasPage(){
                                     n.id === objectNode.id ? { ...n, text: value } : n
                                 )
                             );
+                            updateModSticky(objectNode.id, {text: value})
                         }}
                         //Atualiza o estado de seleção para a edição de texto
                         // (sair e entrar no modo de edição do quadro)
