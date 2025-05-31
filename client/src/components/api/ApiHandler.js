@@ -81,6 +81,7 @@ export async function getStickys(canvasName) {
             const text = await response.text();
             throw new Error(`Erro ao buscar os quadros: ${response.status} - ${text}`);
         }
+        return await response.json();
     }catch(e) {
         throw new Error(e.message || 'Não foi possivel pegar os quadros.');
     }

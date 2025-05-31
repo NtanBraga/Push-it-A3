@@ -1,20 +1,58 @@
 import React, { useEffect, useState,useRef } from "react";
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { PageThemeButton } from "../components/accessibility/pageThemeButton";
 import { Stage, Layer, Line} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
 import { HexColorPicker } from "react-colorful"
 import { takeScreenShot } from "../components/screenshot/screenshot";
+import { addStickyNote, getStickys } from "../components/api/ApiHandler";
+
 
 function CanvasPage(){
 
     //Voltar para pagina anterior
     const navigate = useNavigate();
+    const location = useLocation();
 
 
+    //Logica para carregar o canvas através da API
 
+    const getCanvaName = location.state?.code || '';
 
+    useEffect(() => {
+        const loadCanva = async () => {
+            try{
+                const stickyData = await getStickys(getCanvaName);
+                const loadStickies = stickyData.quadros || [];
+                const loadedStickies = loadStickies.map((note) => ({
+                    id: note.id,
+                    x: note.x,
+                    y: note.y,
+                    width: note.width,
+                    height: note.height,
+                    text: note.text,
+                    colour: note.colour,
+                    fontColour: note.fontColour || "#000000",
+                    selected: false,
+                    idConnect: note.iDsConectados || [],
+                }));
+                setStickyNotes(loadedStickies);
 
+                const loadedConnect = [];
+                for(const sticky of loadStickies) {
+                    if(sticky.iDsConectados) {
+                        for(const toId of sticky.iDsConectados) {
+                            loadedConnect.push({ fromId: sticky.id, toId });
+                        }
+                    }
+                }
+                setConnections(loadedConnect);
+            }catch(e) {
+                console.error('Erro ao carregar o canvas: ', e.message);
+            }
+        };
+        loadCanva();
+    },[getCanvaName]);
 
 
     //Lógica para gerar Quadro de anotações em volta do canvas
@@ -23,9 +61,9 @@ function CanvasPage(){
     //Armazena os stickynotes
     const [ stickyNotes, setStickyNotes ] = useState([])
 
-    const addSticky = () => {
+    const addSticky = async () => {
         const newSticky = {
-            id: Date.now(), // ID unico de criação
+            id: Date.now().toString(), // ID unico de criação
             x: 20, //Posição fixa
             y: 20, //Posição fixa
             width: 250, // Largura do sticky
@@ -36,8 +74,22 @@ function CanvasPage(){
             fontColour: "#000000",
             idConnect: [] // Array de conexões do sticky
         };
-        //Adiciona a nova sticky no array
-        setStickyNotes([...stickyNotes,newSticky])
+
+        try {
+            await addStickyNote(getCanvaName, {
+                id: newSticky.id,
+                x: newSticky.x,
+                y: newSticky.y,
+                width:newSticky.width,
+                height: newSticky.height,
+                text: newSticky.text,
+                colour: newSticky.colour,
+                fontColour: newSticky.fontColour,
+            });
+            setStickyNotes([...stickyNotes, newSticky]);
+        }catch(e) {
+            console.error('Erro criando o quadro:', e.message);
+        }
     };
 
     const selectedSticky = stickyNotes.filter((note) => note.selected);
