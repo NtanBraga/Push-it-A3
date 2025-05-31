@@ -656,6 +656,7 @@ function CanvasPage(){
                                     n.id === objectNode.id ? { ...n, width: newWidth, height: newHeight } : n
                                 )
                             );
+                            updateModSticky(objectNode.id, {width: newWidth, height: newHeight})
                             if(arrowsLayer.current) {
                                 arrowsLayer.current.batchDraw();
                             }
