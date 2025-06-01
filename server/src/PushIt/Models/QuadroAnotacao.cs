@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class QuadroAnotacao
 {
-    public const string defaultText = "";
-    public const string defaultColour = "#FFE338";
+    public const string defaultText = "Insira o texto aqui!";
+    public const string defaultQuadroColour = "#FFE338";
+    public const string defaultFontColour = "#000000";
 
     public string id { get; }
     public double x { get; }

@@ -9,8 +9,8 @@ public static class QuadrosMapping
             width: request.width,
             height: request.height,
             text: QuadroAnotacao.defaultText,
-            colour: QuadroAnotacao.defaultColour,
-            fontColour: QuadroAnotacao.defaultColour,
+            colour: QuadroAnotacao.defaultQuadroColour,
+            fontColour: QuadroAnotacao.defaultFontColour,
             IDsConectados: new(), //visto que quadros recém criados não tem como possuir conexoes
             lastModification: DateTime.Now
         );
