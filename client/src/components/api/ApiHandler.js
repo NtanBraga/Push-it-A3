@@ -1,5 +1,5 @@
 
-const APILOCAL = 'http://localhost:5176/canvas' //Direcionamento local do canvas
+const APILOCAL = 'http://localhost:5176/canvas' //Direcionamento da porta do canvas
 
 
 //função POST que fará a criação do canvas
@@ -31,7 +31,7 @@ export async function canvasPost(loadParam) {
 }
 
 
-//função GET que procurará o canvas pelo nome via memoria local.
+//função GET que procurará o canvas pelo nome.
 export async function canvasGet(canvasName) {
     try{
     //Estabelece comunicação do com canvas salvo
@@ -39,10 +39,15 @@ export async function canvasGet(canvasName) {
             headers: { Accept: 'application/json'},
         });
 
+        
         if(!response.ok) {
+
+            
+
             const text = await response.text();
             throw new Error(`Erro ao buscar canvas: ${response.status} - ${text}`);
         }
+        
         
         return await response.json();
     }catch(e) {

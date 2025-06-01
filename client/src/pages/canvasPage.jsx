@@ -17,8 +17,11 @@ function CanvasPage(){
 
     //Logica para carregar o canvas através da API
 
+    // Obtenção do nome do canvas a partir da locação do Router
     const getCanvaName = location.state?.code || '';
 
+
+    // Efeito que carregará os dados do canvas de formaça assincrona e as suaas conexões
     useEffect(() => {
         const loadCanva = async () => {
             try{
@@ -86,12 +89,15 @@ function CanvasPage(){
                 colour: newSticky.colour,
                 fontColour: newSticky.fontColour,
             });
+
+
             setStickyNotes([...stickyNotes, newSticky]);
         }catch(e) {
             console.error('Erro criando o quadro:', e.message);
         }
     };
 
+    //Função que aplicará mudanças das stickies e enviara elas para a API(cor da pallet da fonte e quadro, text,resize e posição)
     const updateModSticky = useCallback(async (id, changes) => {
         try{
             const note = stickyNotes.find((n) => n.id === id);
@@ -115,7 +121,7 @@ function CanvasPage(){
         }
     },[stickyNotes,getCanvaName]);
 
-
+    //seletor das stickies
     const selectedSticky = stickyNotes.filter((note) => note.selected);
 
 
@@ -182,8 +188,11 @@ function CanvasPage(){
         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened:false });
     }
 
-    //Atualiza para a nova cor das stickies selecionadas
+    
 
+    //Efeito para gerenciar o segurar do mouse ao selecionar cor
+    //Evitar que a cada mudança do <HexColorPicker> seja enviada spam de PUT para a API
+    //sendo só enviada o PUT quando o mouse levantado
     useEffect(() => {
         const handleMouseUp = () => {
             if(keepColour !== null) {
@@ -201,6 +210,7 @@ function CanvasPage(){
     },[stickyNotes, keepColour, updateModSticky]);
 
 
+    //Atualiza para a nova cor das stickies selecionadas
     const updatePalletSticky = (newColour) => {
         setKeepColour(newColour);
         setStickyNotes((prev) =>
