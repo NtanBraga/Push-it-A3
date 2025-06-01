@@ -12,6 +12,8 @@ function CanvasPage(){
 
     //Voltar para pagina anterior
     const navigate = useNavigate();
+
+    
     const location = useLocation();
 
 
@@ -89,8 +91,6 @@ function CanvasPage(){
                 colour: newSticky.colour,
                 fontColour: newSticky.fontColour,
             });
-
-
             setStickyNotes([...stickyNotes, newSticky]);
         }catch(e) {
             console.error('Erro criando o quadro:', e.message);
@@ -312,8 +312,28 @@ function CanvasPage(){
     const [ connections, setConnections ] = useState([]);
     const [ selectMain, setSelectMain ] = useState(null);
     const arrowsLayer = useRef(null);
-    
-    const lineColorTheme = document.documentElement.classList.contains('darkmode') ? "#FFFFFF" : "#000000" 
+
+    //Aplicada responsividade na linha ao mudar o tema da pagina de escuro para claro e vice-versa.
+    const [ lineColourTheme, setLineColourTheme ] = useState(() => 
+        document.documentElement.classList.contains('darkmode') ? "#FFFFFF" : "#000000"
+    );
+
+    useEffect(() => {
+        const watcher = new MutationObserver(() => {
+            const checkTheme = document.documentElement.classList.contains('darkmode');
+            setLineColourTheme(checkTheme ? "#FFFFFF" : "#000000");
+
+            if(arrowsLayer.current) {
+            arrowsLayer.current.batchDraw();
+        }
+        })
+        watcher.observe(document.documentElement, 
+            {   
+                attributes: true, attributeFilter: ['class']
+            });
+       return () => watcher.disconnect(); 
+    }, []);
+
 
     //Arranja as linhas para conexão
     const createArrowPos = (idMain, idSecond) => {
@@ -675,7 +695,7 @@ function CanvasPage(){
                             <Line
                                 key={`arrow-${connectId.fromId}-${connectId.toId}-${index}`}
                                 points={intersect}
-                                stroke={lineColorTheme}
+                                stroke={lineColourTheme}
                                 strokeWidth={2 / zoomPage}
                                 pointerLength={10/ zoomPage}
                                 pointerWidth={10/ zoomPage}
