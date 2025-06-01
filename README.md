@@ -1,6 +1,6 @@
 # Push-it-A3
 
-Repositório para o projeto do site (nome do site).
+Repositório para o projeto do site Push-it.
 
 ## Objetivo
 O Software planejado tem como objetivo possibilitar a criação e acesso a canvas públicos de organização de anotações, sem a necessidade de cadastro prévio ou autorização, sendo assim, se torna uma forma rápida e prática para o compartilhamento de informações mais simples e de uso breve.
