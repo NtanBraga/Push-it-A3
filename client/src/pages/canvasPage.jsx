@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState,useRef, useCallback } from "react";
 import { useLocation, useNavigate } from 'react-router-dom'
 import { PageThemeButton } from "../components/accessibility/pageThemeButton";
 import { Stage, Layer, Line} from 'react-konva'
@@ -92,7 +92,7 @@ function CanvasPage(){
         }
     };
 
-    const updateModSticky = async (id, changes) => {
+    const updateModSticky = useCallback(async (id, changes) => {
         try{
             const note = stickyNotes.find((n) => n.id === id);
             
@@ -113,7 +113,7 @@ function CanvasPage(){
         }catch(e) {
             console.error('Erro ao atualizar o quadro:', e.message);
         }
-    }
+    },[stickyNotes,getCanvaName]);
 
 
     const selectedSticky = stickyNotes.filter((note) => note.selected);
@@ -168,6 +168,7 @@ function CanvasPage(){
     //usando react-colorful para a melhor experiencia de usuario
 
     //variavel terá 3 estados, no qual verá se a paleta está aberta, o id do sticky e a cor atual
+    const [ keepColour, setKeepColour ] = useState(null);
     const [ colorfulPick, setColorfulPick ] = useState({
         palletOpened: false, stickyID: null, currentColour: "#FFFF00"
     });
@@ -182,14 +183,32 @@ function CanvasPage(){
     }
 
     //Atualiza para a nova cor das stickies selecionadas
+
+    useEffect(() => {
+        const handleMouseUp = () => {
+            if(keepColour !== null) {
+                const selected = stickyNotes.filter((note) => note.selected);
+                selected.forEach((note) => {
+                    updateModSticky(note.id, { colour: keepColour });
+                })
+                setKeepColour(null);
+            }
+        };
+        window.addEventListener('mouseup', handleMouseUp);
+        return () => {
+            window.removeEventListener('mouseup', handleMouseUp);
+        }
+    },[stickyNotes, keepColour, updateModSticky]);
+
+
     const updatePalletSticky = (newColour) => {
+        setKeepColour(newColour);
         setStickyNotes((prev) =>
             prev.map((note) =>
                 note.selected ? { ...note, colour: newColour } : note
             )
         );
         setColorfulPick({ ...colorfulPick, currentColour: newColour });
-        selectedSticky.forEach((note) => updateModSticky(note.id, { colour: newColour }));
     };
 
     
@@ -202,6 +221,7 @@ function CanvasPage(){
     //Terá que ser feita na mesma branch do RF010, 
     // pois usuario poderá mudar para uma cor que não torne a fonte atual visivel
 
+    const [ keepFontColour, setKeepFontColour ] = useState(null);
     const [ fontColorfulPick, setFontColorfulPick ] = useState({
         fontPalletOpened: false, fontStickyID: null, fontCurrentColour: "#000000"
     });
@@ -216,15 +236,31 @@ function CanvasPage(){
     }
 
     //Atualiza para a nova cor da font das stickies selecionadas 
+
+    useEffect(() => {
+        const handleMouseUp = () => {
+            if(keepFontColour !== null) {
+                const selected = stickyNotes.filter((note) => note.selected);
+                selected.forEach((note) => {
+                    updateModSticky(note.id, { fontColour: keepFontColour });
+                })
+                setKeepFontColour(null);
+            }
+        };
+        window.addEventListener('mouseup', handleMouseUp);
+        return () => {
+            window.removeEventListener('mouseup', handleMouseUp);
+        }
+    },[stickyNotes, keepFontColour, updateModSticky]);
+
     const updateFontPalletSticky = (newFontColour) => {
+        setKeepFontColour(newFontColour);
         setStickyNotes((prev) =>
             prev.map((note) =>
                 note.selected ? { ...note, fontColour: newFontColour } : note
             )
         );
         setFontColorfulPick({...fontColorfulPick,fontCurrentColour: newFontColour,});
-        selectedSticky.forEach((note) => updateModSticky(note.id, { fontColour: newFontColour }));
-        
     };
 
 
