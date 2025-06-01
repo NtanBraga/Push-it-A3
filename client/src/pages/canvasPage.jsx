@@ -5,7 +5,7 @@ import { Stage, Layer, Line} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
 import { HexColorPicker } from "react-colorful"
 import { takeScreenShot } from "../components/screenshot/screenshot";
-import { addStickyNote, getStickys, updateSticky } from "../components/api/ApiHandler";
+import { addStickyNote, getStickys, updateSticky, createConnection, deleteConnection } from "../components/api/ApiHandler";
 
 
 function CanvasPage(){
@@ -140,11 +140,19 @@ function CanvasPage(){
     };
 
     //Deletará um stickynode
-    const deleteStickyNode = (id) => {
-        setConnections(connections.filter((conn) => conn.fromId !== id && conn.toId !== id));
-        setStickyNotes(stickyNotes.filter(node => node.id !== id));
-        if(arrowsLayer.current){
-            arrowsLayer.current.batchDraw();
+    const deleteStickyNode = async (id) => {
+        try{
+            const deletedConnections = connections.filter((conn) => conn.fromId === id || conn.toId === id);
+            for(const connect of deletedConnections) {
+                await deleteConnection(getCanvaName, connect.fromId, connect.toId);
+            }
+            setConnections(connections.filter((conn) => conn.fromId !== id && conn.toId !== id));
+            setStickyNotes(stickyNotes.filter(node => node.id !== id));
+            if(arrowsLayer.current){
+                arrowsLayer.current.batchDraw();
+            }
+        }catch(e) {
+            console.error("Erro ao tentar deletar conexão: ", e.message);
         }
     };
 
@@ -287,7 +295,7 @@ function CanvasPage(){
     }
 
     //Seleciona as conexões escolidas pelo usuario
-    const handleSelectConnect = (id) => {
+    const handleSelectConnect = async (id) => {
         if(connectMode) {
             if(!selectMain) {
                 setSelectMain(id);
@@ -297,14 +305,19 @@ function CanvasPage(){
                     )
                 );
             } else if (selectMain !== id) {
-                setConnections([...connections, { fromId: selectMain, toId: id }]);
-                setSelectMain(null);
-                setStickyNotes((prev) =>
-                    prev.map((node) =>
-                        ({ ...node, selected: false})
+                try{
+                    await createConnection(getCanvaName, selectMain, id);
+                    setConnections([...connections, { fromId: selectMain, toId: id }]);
+                    setSelectMain(null);
+                    setStickyNotes((prev) =>
+                        prev.map((node) =>
+                            ({ ...node, selected: false})
+                        )
                     )
-                )
-                setConnectMode(false);
+                    setConnectMode(false);
+                }catch(e) {
+                    console.error('Erro ao criar conexão:', e.message);
+                }
             }
         } else if(deleteMode) {
             deleteStickyNode(id);
@@ -330,29 +343,45 @@ function CanvasPage(){
     // Logica para a remoção das conexões dentre os quadros
 
     //Ao selecionar um quadro, todas as conexões com ele são removidas
-    const removeConnectionAll = () => {
+    const removeConnectionAll = async () => {
         if(selectedSticky.length === 0) return;
         const selectedId = selectedSticky.map((note) => note.id);
-        setConnections(connections.filter((conn) => !selectedId.includes(conn.fromId) && !selectedId.includes(conn.toId)))
-        if(arrowsLayer.current){
-            arrowsLayer.current.batchDraw();
+        const removeAllConnections = connections.filter((conn) => selectedId.includes(conn.fromId) || selectedId.includes(conn.toId));
+
+        try{
+            for(const connection of removeAllConnections) {
+                await deleteConnection(getCanvaName, connection.fromId,connection.toId);
+            }
+            setConnections(connections.filter((conn) => !selectedId.includes(conn.fromId) && !selectedId.includes(conn.toId)))
+            if(arrowsLayer.current){
+                arrowsLayer.current.batchDraw();
+            }
+        }catch(e) {
+            console.error("Erro ao tentar remover conexões:", e.message);
         }
     };
 
     // Ao selecionar dois quadros, a conexão entre eles é removida
-    const removeConnectionSpecific = () => {
+    const removeConnectionSpecific = async () => {
         if (selectedSticky.length === 0) return;
 
         const [idFirst, idSecond] = selectedSticky.map((note) => note.id);
-        setConnections(
-            connections.filter(
-                (conn) => !((conn.fromId === idFirst && conn.toId === idSecond) || 
-                            (conn.fromId === idSecond && conn.toId === idFirst)
-                           )
-            )
-        );
-        if(arrowsLayer.current){
-            arrowsLayer.current.batchDraw();
+
+        try{
+            await deleteConnection(getCanvaName, idFirst, idSecond);
+            await deleteConnection(getCanvaName, idSecond, idFirst);
+            setConnections(
+                connections.filter(
+                    (conn) => !((conn.fromId === idFirst && conn.toId === idSecond) || 
+                                (conn.fromId === idSecond && conn.toId === idFirst)
+                            )
+                )
+            );
+            if(arrowsLayer.current){
+                arrowsLayer.current.batchDraw();
+            }
+        }catch(e) {
+            console.error("Erro ao tentar deletar conexão:", e.message);
         }
     };
 

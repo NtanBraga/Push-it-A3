@@ -108,6 +108,46 @@ export async function updateSticky(canvasName, id, sticky) {
     }
 }
 
+//Função para conectar dois quadros
+
+export async function createConnection(canvasName, fromId, toId) {
+    try{
+        const response = await fetch(`${APILOCAL}/${encodeURIComponent(canvasName)}/quadros/${encodeURIComponent(fromId)}/conexoes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ IdQuadroDestino: toId})
+        });
+
+        if(!response.ok) {
+            const text = await response.text();
+            throw new Error(`Erro ao criar conexão: ${response.status} - ${text}`);
+        }
+
+        return await response.json();
+    }catch(e) {
+        throw new Error('Erro ao tentar criar conexão:', e.message);
+    }
+}
+
+//Função para deletar conexões
+
+export async function deleteConnection(canvasName, fromId, toId) {
+    try{
+        const response = await fetch(`${APILOCAL}/${encodeURIComponent(canvasName)}/quadros/${encodeURIComponent(fromId)}/conexoes/${encodeURIComponent(toId)}`, {
+            method: 'DELETE',
+        });
+
+        if(!response.ok) {
+            const text = await response.text();
+            throw new Error(`Erro ao deletar conexão: ${response.status} - ${text}`);
+        }
+
+        return true;
+    }catch(e) {
+        throw new Error('Erroa o tentar deletar conexão:', e.message);
+    }
+}
+
 //função de DELETE do canvas -- NÃO IMPLEMENTADA
 /*
 export async function canvasDelete(name) {
