@@ -4,8 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("Quadros")]
 public class QuadrosEntity
 {
-    public const string defaultText = "";
-    public const string defaultColour = "#FFE338";
+    public const string defaultText = "Insira o texto aqui!";
+    public const string defaultQuadroColour = "#FFE338";
+    public const string defaultFontColour = "#000000";
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
