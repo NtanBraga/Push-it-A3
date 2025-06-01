@@ -144,23 +144,26 @@ export async function deleteConnection(canvasName, fromId, toId) {
 
         return true;
     }catch(e) {
-        throw new Error('Erroa o tentar deletar conexão:', e.message);
+        throw new Error('Erro ao tentar deletar conexão:', e.message);
     }
 }
 
 //função de DELETE do canvas -- NÃO IMPLEMENTADA
-/*
-export async function canvasDelete(name) {
 
-    const response = await fetch(`${APILOCAL}/${name}`, {
-        method: 'DELETE',
-    })
+export async function deleteSticky(canvasName, id) {
+    try{
+        const response = await fetch(`${APILOCAL}/${encodeURIComponent(canvasName)}/quadros/${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+        });
 
-    if(!response.ok){
-        const text = await response.text();
-        throw new Error(`Erro ao deletar: ${response.status} = ${text}`)
+        if(!response.ok){
+            const text = await response.text();
+            throw new Error(`Erro ao deletar: ${response.status} - ${text}`);
+        }
+
+        return true;
+    }catch(e) {
+        throw new Error('Erro ao tentar deletar conexão:', e.message);
     }
-
-    return await response.text();
 }
-    */
+    

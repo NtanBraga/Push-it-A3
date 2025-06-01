@@ -5,7 +5,7 @@ import { Stage, Layer, Line} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
 import { HexColorPicker } from "react-colorful"
 import { takeScreenShot } from "../components/screenshot/screenshot";
-import { addStickyNote, getStickys, updateSticky, createConnection, deleteConnection } from "../components/api/ApiHandler";
+import { addStickyNote, deleteSticky, getStickys, updateSticky, createConnection, deleteConnection } from "../components/api/ApiHandler";
 
 
 function CanvasPage(){
@@ -142,6 +142,7 @@ function CanvasPage(){
     //Deletará um stickynode
     const deleteStickyNode = async (id) => {
         try{
+            await deleteSticky(getCanvaName, id);
             const deletedConnections = connections.filter((conn) => conn.fromId === id || conn.toId === id);
             for(const connect of deletedConnections) {
                 await deleteConnection(getCanvaName, connect.fromId, connect.toId);
