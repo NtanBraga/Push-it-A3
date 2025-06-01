@@ -41,10 +41,14 @@ public class QuadrosEntity
     public string colour { get; set; }
 
     [Required]
+    [Column("FontColour")]
+    public string fontColour { get; set; }
+
+    [Required]
     [Column("LastModification")]
     public DateTime LastModification { get; set; }
 
-    public QuadrosEntity(int id, string localId, double x, double y, double width, double height, string text, string colour, DateTime lastModification)
+    public QuadrosEntity(int id, string localId, double x, double y, double width, double height, string text, string colour, string fontColour, DateTime lastModification)
     {
         this.id = id;
         this.localId = localId;
@@ -54,10 +58,11 @@ public class QuadrosEntity
         this.height = height;
         this.text = text;
         this.colour = colour;
+        this.fontColour = fontColour;
         this.LastModification = lastModification;
     }
 
-    public QuadrosEntity(string localId, double x, double y, double width, double height, string text, string colour, DateTime lastModification)
+    public QuadrosEntity(string localId, double x, double y, double width, double height, string text, string colour, string fontColour, DateTime lastModification)
     {
         this.localId = localId;
         this.x = x;
@@ -66,6 +71,7 @@ public class QuadrosEntity
         this.height = height;
         this.text = text;
         this.colour = colour;
+        this.fontColour = fontColour;
         this.LastModification = lastModification;
     }
 }

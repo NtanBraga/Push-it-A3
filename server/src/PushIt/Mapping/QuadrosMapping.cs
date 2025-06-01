@@ -10,6 +10,7 @@ public static class QuadrosMapping
             height: request.height,
             text: QuadroAnotacao.defaultText,
             colour: QuadroAnotacao.defaultColour,
+            fontColour: QuadroAnotacao.defaultColour,
             IDsConectados: new(), //visto que quadros recém criados não tem como possuir conexoes
             lastModification: DateTime.Now
         );
@@ -26,6 +27,7 @@ public static class QuadrosMapping
             height: request.height,
             text: request.text,
             colour: request.colour,
+            fontColour: request.fontColour,
             IDsConectados: default,
 
             lastModification: DateTime.Now
@@ -43,6 +45,7 @@ public static class QuadrosMapping
             height: entity.height,
             text: entity.text,
             colour: entity.colour,
+            fontColour: entity.fontColour,
 
             IDsConectados: _IDsConectados,
 
@@ -60,6 +63,7 @@ public static class QuadrosMapping
             height: quadroAnotacao.height,
             text: quadroAnotacao.text,
             colour: quadroAnotacao.colour,
+            fontColour: quadroAnotacao.fontColour,
             IDsConectados: quadroAnotacao.IDsConectados ?? new(),
             lastModification: quadroAnotacao.LastModification
         );
@@ -75,6 +79,7 @@ public static class QuadrosMapping
             height: quadroAnotacao.height,
             text: quadroAnotacao.text,
             colour: quadroAnotacao.colour,
+            fontColour: quadroAnotacao.fontColour,
             lastModification: quadroAnotacao.LastModification
         );
     }

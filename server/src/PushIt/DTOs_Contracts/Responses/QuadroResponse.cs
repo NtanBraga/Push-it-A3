@@ -7,6 +7,7 @@ public record QuadroResponse
     double height,
     string text,
     string colour,
+    string fontColour,
     List<string> IDsConectados,
 
     DateTime lastModification

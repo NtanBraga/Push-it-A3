@@ -6,5 +6,6 @@ public record CreateQuadroRequest
     double width,
     double height,
     string text,
-    string colour
+    string colour,
+    string fontColour
 );

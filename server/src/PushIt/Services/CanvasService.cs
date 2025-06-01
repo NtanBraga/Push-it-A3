@@ -140,6 +140,7 @@ public class CanvasService : ICanvasService
             quadroEntity.height = novoQuadro.height;
             quadroEntity.text = novoQuadro.text;
             quadroEntity.colour = novoQuadro.colour;
+            quadroEntity.fontColour = novoQuadro.fontColour;
             quadroEntity.LastModification = novoQuadro.LastModification;
         await dbContext.SaveChangesAsync();
 

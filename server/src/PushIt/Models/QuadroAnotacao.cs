@@ -13,13 +13,14 @@ public class QuadroAnotacao
     public double height { get; }
     public string text { get; }
     public string colour { get; }
+    public string fontColour { get; }
 
     //Obter Através de query "SELECT *" na tabela Quadro_Aponta_Quadro
     public List<string>? IDsConectados { get; }
 
     public DateTime LastModification { get; }
     
-    public QuadroAnotacao(string id, double x, double y, double width, double height, string text, string colour, List<string>? IDsConectados, DateTime lastModification)
+    public QuadroAnotacao(string id, double x, double y, double width, double height, string text, string colour, string fontColour, List<string>? IDsConectados, DateTime lastModification)
     {
         this.id = id;
         this.x = x;
@@ -28,6 +29,7 @@ public class QuadroAnotacao
         this.height = height;
         this.text = text;
         this.colour = colour;
+        this.fontColour = fontColour;
         this.IDsConectados = IDsConectados;
         this.LastModification = lastModification;
     }
