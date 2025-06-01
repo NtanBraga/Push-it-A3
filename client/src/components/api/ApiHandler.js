@@ -148,8 +148,7 @@ export async function deleteConnection(canvasName, fromId, toId) {
     }
 }
 
-//função de DELETE do canvas -- NÃO IMPLEMENTADA
-
+//Função para deletar quadro
 export async function deleteSticky(canvasName, id) {
     try{
         const response = await fetch(`${APILOCAL}/${encodeURIComponent(canvasName)}/quadros/${encodeURIComponent(id)}`, {

@@ -11,7 +11,7 @@ export function StickyNote({
     id, // Identificação do sticky
     text, // Texto
     colour, //Selecionar cor
-    fontColour,
+    fontColour, //Selecionar cor da fonte
     x, //Posição
     y, //Posição
     width, //Largura
