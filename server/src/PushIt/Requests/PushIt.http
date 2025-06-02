@@ -27,7 +27,8 @@ Content-Type: application/json
     "width":33,
     "height":1,
     "text":"placeholder",
-    "colour":"#000000"  
+    "colour":"#000000",
+    "fontColour":"#000000"
 }
 
 
@@ -41,7 +42,8 @@ Content-Type: application/json
     "width":66,
     "height":66,
     "text":"66",
-    "colour":"#01450"  
+    "colour":"#01450",
+    "fontColour":"#000000"
 }
 
 

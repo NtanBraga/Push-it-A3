@@ -11,7 +11,7 @@ export function StickyNote({
     id, // Identificação do sticky
     text, // Texto
     colour, //Selecionar cor
-    fontColour,
+    fontColour, //Selecionar cor da fonte
     x, //Posição
     y, //Posição
     width, //Largura
@@ -77,6 +77,7 @@ export function StickyNote({
         //Função de redimensionamento dos quadros
     function handleTransform() {
         const node = groupRef.current;
+        const transform = transformerRef.current;
         const scaleX = node.scaleX();
         const scaleY = node.scaleY();
 
@@ -88,8 +89,14 @@ export function StickyNote({
         const newWidth = Math.max(100, Math.min(defaultMaxWidth, width * scaleX));
         const newHeight = Math.max(100, Math.min(defaultMaxHeight, height * scaleY));
 
+
         //Callback com o dimensionamento novo
         onResize(newWidth, newHeight);
+
+        requestAnimationFrame(() => {
+            transform.nodes([node]);
+            transform.getLayer().batchDraw();
+        });
 
     }
 
@@ -111,7 +118,7 @@ export function StickyNote({
                 onClick={onClick}
                 onTap={onClick}
                 ref={groupRef}
-                onTransform={handleTransform}
+                onTransformEnd={handleTransform}
             >
             {/*Retangulo visual 1*/}
             <Rect

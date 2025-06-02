@@ -1,20 +1,63 @@
-import React, { useEffect, useState,useRef } from "react";
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState,useRef, useCallback } from "react";
+import { useLocation, useNavigate } from 'react-router-dom'
 import { PageThemeButton } from "../components/accessibility/pageThemeButton";
 import { Stage, Layer, Line} from 'react-konva'
 import { StickyNote } from "../components/StickyNotes/StickyNote";
 import { HexColorPicker } from "react-colorful"
 import { takeScreenShot } from "../components/screenshot/screenshot";
+import { addStickyNote, deleteSticky, getStickys, updateSticky, createConnection, deleteConnection } from "../components/api/ApiHandler";
+
 
 function CanvasPage(){
 
     //Voltar para pagina anterior
     const navigate = useNavigate();
 
+    
+    const location = useLocation();
 
 
+    //Logica para carregar o canvas através da API
+
+    // Obtenção do nome do canvas a partir da locação do Router
+    const getCanvaName = location.state?.code || '';
 
 
+    // Efeito que carregará os dados do canvas de formaça assincrona e as suaas conexões
+    useEffect(() => {
+        const loadCanva = async () => {
+            try{
+                const stickyData = await getStickys(getCanvaName);
+                const loadStickies = stickyData.quadros || [];
+                const loadedStickies = loadStickies.map((note) => ({
+                    id: note.id,
+                    x: note.x,
+                    y: note.y,
+                    width: note.width,
+                    height: note.height,
+                    text: note.text,
+                    colour: note.colour,
+                    fontColour: note.fontColour || "#000000",
+                    selected: false,
+                    idConnect: note.iDsConectados || [],
+                }));
+                setStickyNotes(loadedStickies);
+
+                const loadedConnect = [];
+                for(const sticky of loadStickies) {
+                    if(sticky.iDsConectados) {
+                        for(const toId of sticky.iDsConectados) {
+                            loadedConnect.push({ fromId: sticky.id, toId });
+                        }
+                    }
+                }
+                setConnections(loadedConnect);
+            }catch(e) {
+                console.error('Erro ao carregar o canvas: ', e.message);
+            }
+        };
+        loadCanva();
+    },[getCanvaName]);
 
 
     //Lógica para gerar Quadro de anotações em volta do canvas
@@ -23,9 +66,9 @@ function CanvasPage(){
     //Armazena os stickynotes
     const [ stickyNotes, setStickyNotes ] = useState([])
 
-    const addSticky = () => {
+    const addSticky = async () => {
         const newSticky = {
-            id: Date.now(), // ID unico de criação
+            id: Date.now().toString(), // ID unico de criação
             x: 20, //Posição fixa
             y: 20, //Posição fixa
             width: 250, // Largura do sticky
@@ -36,10 +79,49 @@ function CanvasPage(){
             fontColour: "#000000",
             idConnect: [] // Array de conexões do sticky
         };
-        //Adiciona a nova sticky no array
-        setStickyNotes([...stickyNotes,newSticky])
+
+        try {
+            await addStickyNote(getCanvaName, {
+                id: newSticky.id,
+                x: newSticky.x,
+                y: newSticky.y,
+                width:newSticky.width,
+                height: newSticky.height,
+                text: newSticky.text,
+                colour: newSticky.colour,
+                fontColour: newSticky.fontColour,
+            });
+            setStickyNotes([...stickyNotes, newSticky]);
+        }catch(e) {
+            console.error('Erro criando o quadro:', e.message);
+        }
     };
 
+    //Função que aplicará mudanças das stickies e enviara elas para a API(cor da pallet da fonte e quadro, text,resize e posição)
+    const updateModSticky = useCallback(async (id, changes) => {
+        try{
+            const note = stickyNotes.find((n) => n.id === id);
+            
+            if(!note) return;
+            
+            const modifiedNote = { ...note, ...changes };
+            await updateSticky(getCanvaName, id, {
+                x: modifiedNote.x,
+                y: modifiedNote.y,
+                width: modifiedNote.width,
+                height: modifiedNote.height,
+                text: modifiedNote.text,
+                colour: modifiedNote.colour,
+                fontColour: modifiedNote.fontColour,
+            });
+            setStickyNotes(stickyNotes.map((n) => (n.id === id ? modifiedNote: n)));
+
+        }catch(e) {
+            console.error('Erro ao atualizar o quadro:', e.message);
+        }
+    },[stickyNotes,getCanvaName]);
+
+    //seletor das stickies
     const selectedSticky = stickyNotes.filter((note) => note.selected);
 
 
@@ -64,11 +146,20 @@ function CanvasPage(){
     };
 
     //Deletará um stickynode
-    const deleteStickyNode = (id) => {
-        setConnections(connections.filter((conn) => conn.fromId !== id && conn.toId !== id));
-        setStickyNotes(stickyNotes.filter(node => node.id !== id));
-        if(arrowsLayer.current){
-            arrowsLayer.current.batchDraw();
+    const deleteStickyNode = async (id) => {
+        try{
+            await deleteSticky(getCanvaName, id);
+            const deletedConnections = connections.filter((conn) => conn.fromId === id || conn.toId === id);
+            for(const connect of deletedConnections) {
+                await deleteConnection(getCanvaName, connect.fromId, connect.toId);
+            }
+            setConnections(connections.filter((conn) => conn.fromId !== id && conn.toId !== id));
+            setStickyNotes(stickyNotes.filter(node => node.id !== id));
+            if(arrowsLayer.current){
+                arrowsLayer.current.batchDraw();
+            }
+        }catch(e) {
+            console.error("Erro ao tentar deletar conexão: ", e.message);
         }
     };
 
@@ -83,6 +174,7 @@ function CanvasPage(){
     //usando react-colorful para a melhor experiencia de usuario
 
     //variavel terá 3 estados, no qual verá se a paleta está aberta, o id do sticky e a cor atual
+    const [ keepColour, setKeepColour ] = useState(null);
     const [ colorfulPick, setColorfulPick ] = useState({
         palletOpened: false, stickyID: null, currentColour: "#FFFF00"
     });
@@ -96,8 +188,31 @@ function CanvasPage(){
         setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened:false });
     }
 
+    
+
+    //Efeito para gerenciar o segurar do mouse ao selecionar cor
+    //Evitar que a cada mudança do <HexColorPicker> seja enviada spam de PUT para a API
+    //sendo só enviada o PUT quando o mouse levantado
+    useEffect(() => {
+        const handleMouseUp = () => {
+            if(keepColour !== null) {
+                const selected = stickyNotes.filter((note) => note.selected);
+                selected.forEach((note) => {
+                    updateModSticky(note.id, { colour: keepColour });
+                })
+                setKeepColour(null);
+            }
+        };
+        window.addEventListener('mouseup', handleMouseUp);
+        return () => {
+            window.removeEventListener('mouseup', handleMouseUp);
+        }
+    },[stickyNotes, keepColour, updateModSticky]);
+
+
     //Atualiza para a nova cor das stickies selecionadas
     const updatePalletSticky = (newColour) => {
+        setKeepColour(newColour);
         setStickyNotes((prev) =>
             prev.map((note) =>
                 note.selected ? { ...note, colour: newColour } : note
@@ -116,6 +231,7 @@ function CanvasPage(){
     //Terá que ser feita na mesma branch do RF010, 
     // pois usuario poderá mudar para uma cor que não torne a fonte atual visivel
 
+    const [ keepFontColour, setKeepFontColour ] = useState(null);
     const [ fontColorfulPick, setFontColorfulPick ] = useState({
         fontPalletOpened: false, fontStickyID: null, fontCurrentColour: "#000000"
     });
@@ -130,14 +246,31 @@ function CanvasPage(){
     }
 
     //Atualiza para a nova cor da font das stickies selecionadas 
+
+    useEffect(() => {
+        const handleMouseUp = () => {
+            if(keepFontColour !== null) {
+                const selected = stickyNotes.filter((note) => note.selected);
+                selected.forEach((note) => {
+                    updateModSticky(note.id, { fontColour: keepFontColour });
+                })
+                setKeepFontColour(null);
+            }
+        };
+        window.addEventListener('mouseup', handleMouseUp);
+        return () => {
+            window.removeEventListener('mouseup', handleMouseUp);
+        }
+    },[stickyNotes, keepFontColour, updateModSticky]);
+
     const updateFontPalletSticky = (newFontColour) => {
+        setKeepFontColour(newFontColour);
         setStickyNotes((prev) =>
             prev.map((note) =>
                 note.selected ? { ...note, fontColour: newFontColour } : note
             )
         );
         setFontColorfulPick({...fontColorfulPick,fontCurrentColour: newFontColour,});
-        
     };
 
 
@@ -179,8 +312,28 @@ function CanvasPage(){
     const [ connections, setConnections ] = useState([]);
     const [ selectMain, setSelectMain ] = useState(null);
     const arrowsLayer = useRef(null);
-    
-    const lineColorTheme = document.documentElement.classList.contains('darkmode') ? "#FFFFFF" : "#000000" 
+
+    //Aplicada responsividade na linha ao mudar o tema da pagina de escuro para claro e vice-versa.
+    const [ lineColourTheme, setLineColourTheme ] = useState(() => 
+        document.documentElement.classList.contains('darkmode') ? "#FFFFFF" : "#000000"
+    );
+
+    useEffect(() => {
+        const watcher = new MutationObserver(() => {
+            const checkTheme = document.documentElement.classList.contains('darkmode');
+            setLineColourTheme(checkTheme ? "#FFFFFF" : "#000000");
+
+            if(arrowsLayer.current) {
+            arrowsLayer.current.batchDraw();
+        }
+        })
+        watcher.observe(document.documentElement, 
+            {   
+                attributes: true, attributeFilter: ['class']
+            });
+       return () => watcher.disconnect(); 
+    }, []);
+
 
     //Arranja as linhas para conexão
     const createArrowPos = (idMain, idSecond) => {
@@ -209,7 +362,7 @@ function CanvasPage(){
     }
 
     //Seleciona as conexões escolidas pelo usuario
-    const handleSelectConnect = (id) => {
+    const handleSelectConnect = async (id) => {
         if(connectMode) {
             if(!selectMain) {
                 setSelectMain(id);
@@ -219,14 +372,19 @@ function CanvasPage(){
                     )
                 );
             } else if (selectMain !== id) {
-                setConnections([...connections, { fromId: selectMain, toId: id }]);
-                setSelectMain(null);
-                setStickyNotes((prev) =>
-                    prev.map((node) =>
-                        ({ ...node, selected: false})
+                try{
+                    await createConnection(getCanvaName, selectMain, id);
+                    setConnections([...connections, { fromId: selectMain, toId: id }]);
+                    setSelectMain(null);
+                    setStickyNotes((prev) =>
+                        prev.map((node) =>
+                            ({ ...node, selected: false})
+                        )
                     )
-                )
-                setConnectMode(false);
+                    setConnectMode(false);
+                }catch(e) {
+                    console.error('Erro ao criar conexão:', e.message);
+                }
             }
         } else if(deleteMode) {
             deleteStickyNode(id);
@@ -252,29 +410,45 @@ function CanvasPage(){
     // Logica para a remoção das conexões dentre os quadros
 
     //Ao selecionar um quadro, todas as conexões com ele são removidas
-    const removeConnectionAll = () => {
+    const removeConnectionAll = async () => {
         if(selectedSticky.length === 0) return;
         const selectedId = selectedSticky.map((note) => note.id);
-        setConnections(connections.filter((conn) => !selectedId.includes(conn.fromId) && !selectedId.includes(conn.toId)))
-        if(arrowsLayer.current){
-            arrowsLayer.current.batchDraw();
+        const removeAllConnections = connections.filter((conn) => selectedId.includes(conn.fromId) || selectedId.includes(conn.toId));
+
+        try{
+            for(const connection of removeAllConnections) {
+                await deleteConnection(getCanvaName, connection.fromId,connection.toId);
+            }
+            setConnections(connections.filter((conn) => !selectedId.includes(conn.fromId) && !selectedId.includes(conn.toId)))
+            if(arrowsLayer.current){
+                arrowsLayer.current.batchDraw();
+            }
+        }catch(e) {
+            console.error("Erro ao tentar remover conexões:", e.message);
         }
     };
 
     // Ao selecionar dois quadros, a conexão entre eles é removida
-    const removeConnectionSpecific = () => {
+    const removeConnectionSpecific = async () => {
         if (selectedSticky.length === 0) return;
 
         const [idFirst, idSecond] = selectedSticky.map((note) => note.id);
-        setConnections(
-            connections.filter(
-                (conn) => !((conn.fromId === idFirst && conn.toId === idSecond) || 
-                            (conn.fromId === idSecond && conn.toId === idFirst)
-                           )
-            )
-        );
-        if(arrowsLayer.current){
-            arrowsLayer.current.batchDraw();
+
+        try{
+            await deleteConnection(getCanvaName, idFirst, idSecond);
+            await deleteConnection(getCanvaName, idSecond, idFirst);
+            setConnections(
+                connections.filter(
+                    (conn) => !((conn.fromId === idFirst && conn.toId === idSecond) || 
+                                (conn.fromId === idSecond && conn.toId === idFirst)
+                            )
+                )
+            );
+            if(arrowsLayer.current){
+                arrowsLayer.current.batchDraw();
+            }
+        }catch(e) {
+            console.error("Erro ao tentar deletar conexão:", e.message);
         }
     };
 
@@ -360,10 +534,14 @@ function CanvasPage(){
     useEffect(() => {
         const anySelectioned = stickyNotes.some((note) => note.selected);
         if(!anySelectioned && !connectMode){
-            setColorfulPick({ ...colorfulPick, palletOpened: false })
-            setFontColorfulPick({ ...fontColorfulPick, fontPalletOpened: false})
+            if(colorfulPick.palletOpened) {
+                setColorfulPick(prev => ({ ...prev, palletOpened:false }));
+            }
+            if(fontColorfulPick.fontPalletOpened) {
+                setFontColorfulPick(prev => ({ ...prev, fontPalletOpened: false}));
+            }
         }
-    },[connectMode,fontColorfulPick,colorfulPick,stickyNotes]);
+    },[connectMode,stickyNotes,colorfulPick.palletOpened,fontColorfulPick.fontPalletOpened]);
     
 
 
@@ -517,7 +695,7 @@ function CanvasPage(){
                             <Line
                                 key={`arrow-${connectId.fromId}-${connectId.toId}-${index}`}
                                 points={intersect}
-                                stroke={lineColorTheme}
+                                stroke={lineColourTheme}
                                 strokeWidth={2 / zoomPage}
                                 pointerLength={10/ zoomPage}
                                 pointerWidth={10/ zoomPage}
@@ -555,6 +733,7 @@ function CanvasPage(){
                                     n.id === objectNode.id ? { ...n, text: value } : n
                                 )
                             );
+                            updateModSticky(objectNode.id, {text: value})
                         }}
                         //Atualiza o estado de seleção para a edição de texto
                         // (sair e entrar no modo de edição do quadro)
@@ -573,12 +752,15 @@ function CanvasPage(){
                                     n.id === objectNode.id ? { ...n, width: newWidth, height: newHeight } : n
                                 )
                             );
+                            updateModSticky(objectNode.id, {width: newWidth, height: newHeight})
                             if(arrowsLayer.current) {
                                 arrowsLayer.current.batchDraw();
                             }
                         }}
                         onDragMove={updatePos}
-                        onDragEnd={updatePos}
+                        onDragEnd={(x, y) => {
+                            updateModSticky(objectNode.id, { x, y});
+                        }}
                     />
                     );
                     })}
