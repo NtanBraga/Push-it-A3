@@ -24,6 +24,39 @@ O Software planejado tem como objetivo possibilitar a criação e acesso a canva
 ![.NET](https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=fff)
 ![Static Badge](https://img.shields.io/badge/v9.0-512BD4)
 
+## Instalação
+
+Siga os passos para realizar a instalação dos processos do BackEnd e FrontEnd:
+
+Para a execução do BackEnd é necessário a instalação do .NET SDK 9 ou superior: 👉 [Download do .NET](https://dotnet.microsoft.com/pt-br/download/dotnet/9.0).
+
+Para o gerenciamento dos pacotes do FrontEnd é preciso instalar o Node.js na sua maquina:👉 [Downlaod do NodeJS](https://nodejs.org/pt).
+
+
+### Inicialização do BackEnd
+
+Para realizar a compilação da API siga estes passos:
+
+```
+cd server/src/Pushit
+```
+```
+dotnet run
+```
+
+
+### Inicialização do FrontEnd
+
+Para a execução do frontend siga estes passos:
+
+```
+cd client && npm install
+```
+```
+npm start
+```
+
+OBS: Para sair da pagina inicial do FrontEnd, é necessário que o BackEnd esteja sendo executado em segundo plano, pois a criação dos canvas depende da execução do banco de dados da API.
 
 ## Contribuindo
 Veja `contribuindo.md` para saber como começar.
